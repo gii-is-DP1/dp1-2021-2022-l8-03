@@ -31,7 +31,16 @@
         <spring-format.version>0.0.19</spring-format.version>
 
     </properties>
-
+<developers> 
+    <developer> 
+      <id>sonialm15</id> 
+      <name>Sonia</name> 
+      <email>soniaalaure@gmail.com</email> 
+      <roles> 
+        <role>developer</role> 
+      </roles> 
+    </developer> 
+</developers> 
     <dependencies>
         <!-- Spring and Spring Boot dependencies -->
         <dependency>
