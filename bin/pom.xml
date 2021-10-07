@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.springframework.samples</groupId>
-    <artifactId>L8-03</artifactId>
+    <artifactId>spring-petclinic</artifactId>
     <version>2.2.0.BUILD-SNAPSHOT</version>
 
     <parent>
@@ -12,7 +12,7 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.4.RELEASE</version>
     </parent>
-    <name>L8-03</name>
+    <name>petclinic</name>
 
     <properties>
 
@@ -31,51 +31,7 @@
         <spring-format.version>0.0.19</spring-format.version>
 
     </properties>
-    
-	<developers>
-		<developer>
-			<id>cardelbec</id>
-			<name>Carlos Delgado</name>
-			<email>Kiolpor.kolopo@gmail.com</email>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>Manueldm01</id>
-			<name>Manuel Domínguez</name>
-			<email>manueldominguezmagdaleno@gmail.com</email>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>manlopalm</id>
-			<name>Manuel López</name>
-			<email>manuellopezalmeida@gmail.com</email>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>celhersot</id>
-			<name>Celia Hermoso</name>
-			<email>a.celhersot@gmail.com</email>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer> 
-      		<id>sonialm15</id> 
-      		<name>Sonia</name> 
-      		<email>soniaalaure@gmail.com</email> 
-      		<roles> 
-        		<role>Developer</role> 
-      		</roles> 
-    	</developer> 
-		
-	</developers>
-	
+
     <dependencies>
         <!-- Spring and Spring Boot dependencies -->
         <dependency>
