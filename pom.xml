@@ -57,6 +57,14 @@
 				<role>Developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<id>celhersot</id>
+			<name>Celia Hermoso</name>
+			<email>a.celhersot@gmail.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
 		
 	</developers>
 	
