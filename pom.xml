@@ -65,6 +65,14 @@
 				<role>Developer</role>
 			</roles>
 		</developer>
+		<developer> 
+      		<id>sonialm15</id> 
+      		<name>Sonia</name> 
+      		<email>soniaalaure@gmail.com</email> 
+      		<roles> 
+        		<role>Developer</role> 
+      		</roles> 
+    	</developer> 
 		
 	</developers>
 	
