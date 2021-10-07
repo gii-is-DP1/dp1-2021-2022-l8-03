@@ -11,6 +11,8 @@ INSERT INTO authorities(id,username,authority) VALUES (3,'vet1','veterinarian');
 -- Meted aqui los usuarios antes de añadiros a la tabla de owners
 INSERT INTO users(username,password,enabled) VALUES ('cardelbec','cardelbec',TRUE);
 INSERT INTO authorities(id, username, authority) VALUES (4, 'cardelbec', 'owner');
+INSERT INTO users(username,password,enabled) VALUES ('sonlaumot','sonlaumot',TRUE);
+INSERT INTO authorities(id, username, authority) VALUES (5, 'sonlaumot', 'owner');
 
 INSERT INTO vets VALUES (1, 'James', 'Carter');
 INSERT INTO vets VALUES (2, 'Helen', 'Leary');
@@ -47,6 +49,7 @@ INSERT INTO owners VALUES (8, 'Maria', 'Escobito', '345 Maple St.', 'Madison', '
 INSERT INTO owners VALUES (9, 'David', 'Schroeder', '2749 Blackhawk Trail', 'Madison', '6085559435', 'owner1');
 INSERT INTO owners VALUES (10, 'Carlos', 'Estaban', '2335 Independence La.', 'Waunakee', '6085555487', 'owner1');
 INSERT INTO owners VALUES (11, 'Carlos', 'Delgado', '2335 Independence La.', 'Waunakee', '6085555487', 'cardelbec');
+INSERT INTO owners VALUES (12, 'Sonia', 'Laure', '2569 Happy St La.', 'Madison', '659658423', 'sonlaumot');
 
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (1, 'Leo', '2010-09-07', 1, 1);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (2, 'Basil', '2012-08-06', 6, 2);
@@ -62,6 +65,7 @@ INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (11, 'Freddy', '201
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (12, 'Lucky', '2010-06-24', 2, 10);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (13, 'Sly', '2012-06-08', 1, 10);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (14, 'Manolo', '2012-06-08', 1, 11);
+INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (15, 'Godolfreda', '2013-07-15', 4, 12);
 
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (1, 7, '2013-01-01', 'rabies shot');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02', 'rabies shot');
