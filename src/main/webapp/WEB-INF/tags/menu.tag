@@ -39,6 +39,12 @@
 					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 					<span>Veterinarians</span>
 				</petclinic:menuItem>
+				
+				<petclinic:menuItem active="${name eq 'rounds'}" url="/rounds"
+					title="rounds">
+					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+					<span>Rounds</span>
+				</petclinic:menuItem>
 
 				<petclinic:menuItem active="${name eq 'error'}" url="/oups"
 					title="trigger a RuntimeException to see how it is handled">
