@@ -28,8 +28,8 @@ public class Round extends BaseEntity {
 	@NotNull
 	private Boolean whirlpools;
 	
-	@Column(name = "numPlayers")
+	@Column(name = "num_players")
 	@NotNull
-	private Integer numPlayers;
+	private Integer num_players;
 
 }
