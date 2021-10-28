@@ -16,6 +16,9 @@
             <petclinic:inputField label="Rapids" name="rapids"/>
             <petclinic:inputField label="Whirlpools" name="whirlpools"/>
             <petclinic:inputField label="numPlayers" name="num_players"/>
+            <petclinic:inputField label="matchStart" name="match_start"/>
+            <petclinic:inputField label="matchEnd" name="match_end"/>
+            <petclinic:inputField label="turnStart" name="turn_start"/>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
