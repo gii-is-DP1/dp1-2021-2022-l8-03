@@ -11,8 +11,8 @@ public interface RoundRepository extends Repository<Round, Integer> {
 	
 	void save(Round round) throws DataAccessException;
 	
-	@Query("SELECT DISTINCT round FROM Round round")
-	public Collection<Round> findAll();
+	//@Query("SELECT DISTINCT round FROM Round round")
+	public Collection<Round> findAll() throws DataAccessException;
 	
 	@Query("SELECT DISTINCT round FROM Round round WHERE round.id=:id")
 	public Round findById(@Param("id") int id);
