@@ -47,22 +47,22 @@ class VisitControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitNewVisitForm() throws Exception {
-		mockMvc.perform(get("/owners/*/pets/{petId}/visits/new", TEST_PET_ID)).andExpect(status().isOk())
+		mockMvc.perform(get("/players/*/pets/{petId}/visits/new", TEST_PET_ID)).andExpect(status().isOk())
 				.andExpect(view().name("pets/createOrUpdateVisitForm"));
 	}
 
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessNewVisitFormSuccess() throws Exception {
-		mockMvc.perform(post("/owners/*/pets/{petId}/visits/new", TEST_PET_ID).param("name", "George").with(csrf())
+		mockMvc.perform(post("/players/*/pets/{petId}/visits/new", TEST_PET_ID).param("name", "George").with(csrf())
 				.param("description", "Visit Description")).andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/owners/{ownerId}"));
+				.andExpect(view().name("redirect:/players/{playerId}"));
 	}
 
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessNewVisitFormHasErrors() throws Exception {
-		mockMvc.perform(post("/owners/*/pets/{petId}/visits/new", TEST_PET_ID).with(csrf()).param("name", "George"))
+		mockMvc.perform(post("/players/*/pets/{petId}/visits/new", TEST_PET_ID).with(csrf()).param("name", "George"))
 				.andExpect(model().attributeHasErrors("visit")).andExpect(status().isOk())
 				.andExpect(view().name("pets/createOrUpdateVisitForm"));
 	}
@@ -70,7 +70,7 @@ class VisitControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testShowVisits() throws Exception {
-		mockMvc.perform(get("/owners/*/pets/{petId}/visits", TEST_PET_ID)).andExpect(status().isOk())
+		mockMvc.perform(get("/players/*/pets/{petId}/visits", TEST_PET_ID)).andExpect(status().isOk())
 				.andExpect(model().attributeExists("visits")).andExpect(view().name("visitList"));
 	}
 

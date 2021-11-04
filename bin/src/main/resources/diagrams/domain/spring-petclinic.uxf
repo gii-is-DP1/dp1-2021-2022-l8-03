@@ -124,7 +124,7 @@ description: String {NotBlank}</panel_attributes>
       <w>250</w>
       <h>90</h>
     </coordinates>
-    <panel_attributes>Owner
+    <panel_attributes>Player
 --
 address: String {NotBlank}
 city: String {NotBlank}</panel_attributes>

@@ -5,10 +5,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:layout pageName="owners">
-    <h2>Owners</h2>
+<petclinic:layout pageName="players">
+    <h2>Players</h2>
 
-    <table id="ownersTable" class="table table-striped">
+    <table id="playersTable" class="table table-striped">
         <thead>
         <tr>
             <th style="width: 150px;">Name</th>
@@ -19,25 +19,25 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${selections}" var="owner">
+        <c:forEach items="${selections}" var="player">
             <tr>
                 <td>
-                    <spring:url value="/owners/{ownerId}" var="ownerUrl">
-                        <spring:param name="ownerId" value="${owner.id}"/>
+                    <spring:url value="/players/{playerId}" var="playerUrl">
+                        <spring:param name="playerId" value="${player.id}"/>
                     </spring:url>
-                    <a href="${fn:escapeXml(ownerUrl)}"><c:out value="${owner.firstName} ${owner.lastName}"/></a>
+                    <a href="${fn:escapeXml(playerUrl)}"><c:out value="${player.firstName} ${player.lastName}"/></a>
                 </td>
                 <td>
-                    <c:out value="${owner.address}"/>
+                    <c:out value="${player.address}"/>
                 </td>
                 <td>
-                    <c:out value="${owner.city}"/>
+                    <c:out value="${player.city}"/>
                 </td>
                 <td>
-                    <c:out value="${owner.telephone}"/>
+                    <c:out value="${player.telephone}"/>
                 </td>
                 <td>
-                    <c:forEach var="pet" items="${owner.pets}">
+                    <c:forEach var="pet" items="${player.pets}">
                         <c:out value="${pet.name} "/>
                     </c:forEach>
                 </td>
@@ -45,10 +45,10 @@
       
 <!--
                 <td> 
-                    <c:out value="${owner.user.username}"/> 
+                    <c:out value="${player.user.username}"/> 
                 </td>
                 <td> 
-                   <c:out value="${owner.user.password}"/> 
+                   <c:out value="${player.user.password}"/> 
                 </td> 
 -->
                 
