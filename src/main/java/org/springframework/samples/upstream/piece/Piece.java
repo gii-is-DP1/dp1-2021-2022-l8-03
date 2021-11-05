@@ -1,8 +1,8 @@
-package org.springframework.samples.petclinic.piece;
+package org.springframework.samples.upstream.piece;
 
 import javax.persistence.Entity;
 
-import org.springframework.samples.petclinic.model.NamedEntity;
+import org.springframework.samples.upstream.model.NamedEntity;
 
 import lombok.Data;
 //Piece

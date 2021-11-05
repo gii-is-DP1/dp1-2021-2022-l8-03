@@ -28,7 +28,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.support.MutableSortDefinition;
@@ -50,18 +49,9 @@ import org.springframework.samples.upstream.user.User;
 @Table(name = "players")
 public class Player extends Person {
 
-	@Column(name = "address")
+	@Column(name = "email")
 	@NotEmpty
-	private String address;
-
-	@Column(name = "city")
-	@NotEmpty
-	private String city;
-
-	@Column(name = "telephone")
-	@NotEmpty
-	@Digits(fraction = 0, integer = 10)
-	private String telephone;
+	private String email;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
 	private Set<Pet> pets;
@@ -71,10 +61,6 @@ public class Player extends Person {
     @JoinColumn(name = "username", referencedColumnName = "username")
 	private User user;
 	//
-	
-	public String getAddress() {
-		return this.address;
-	}
 
 	public User getUser() {
 		return user;
@@ -83,25 +69,13 @@ public class Player extends Person {
 	public void setUser(User user) {
 		this.user = user;
 	}
-
-	public void setAddress(String address) {
-		this.address = address;
+	
+	public String getEmail() {
+		return email;
 	}
 
-	public String getCity() {
-		return this.city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getTelephone() {
-		return this.telephone;
-	}
-
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	protected Set<Pet> getPetsInternal() {
@@ -175,8 +149,7 @@ public class Player extends Person {
 		return new ToStringCreator(this)
 
 				.append("id", this.getId()).append("new", this.isNew()).append("lastName", this.getLastName())
-				.append("firstName", this.getFirstName()).append("address", this.address).append("city", this.city)
-				.append("telephone", this.telephone).toString();
+				.append("firstName", this.getFirstName()).append("email", this.email).toString();
 	}
 
 }
