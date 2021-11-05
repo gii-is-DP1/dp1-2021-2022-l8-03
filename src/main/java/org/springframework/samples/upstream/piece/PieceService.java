@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.piece;
+package org.springframework.samples.upstream.piece;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

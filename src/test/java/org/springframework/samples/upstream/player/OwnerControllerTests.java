@@ -63,9 +63,7 @@ class PlayerControllerTests {
 		george.setId(TEST_PLAYER_ID);
 		george.setFirstName("George");
 		george.setLastName("Franklin");
-		george.setAddress("110 W. Liberty St.");
-		george.setCity("Madison");
-		george.setTelephone("6085551023");
+		george.setEmail("ejemplo@gmail.com");
 		given(this.clinicService.findPlayerById(TEST_PLAYER_ID)).willReturn(george);
 
 	}
@@ -81,17 +79,15 @@ class PlayerControllerTests {
 	@Test
 	void testProcessCreationFormSuccess() throws Exception {
 		mockMvc.perform(post("/players/new").param("firstName", "Joe").param("lastName", "Bloggs").with(csrf())
-				.param("address", "123 Caramel Street").param("city", "London").param("telephone", "01316761638"))
+				.param("email", "123 Caramel Street").param("city", "London").param("telephone", "01316761638"))
 				.andExpect(status().is3xxRedirection());
 	}
 
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessCreationFormHasErrors() throws Exception {
-		mockMvc.perform(post("/players/new").with(csrf()).param("firstName", "Joe").param("lastName", "Bloggs")
-				.param("city", "London")).andExpect(status().isOk()).andExpect(model().attributeHasErrors("player"))
-				.andExpect(model().attributeHasFieldErrors("player", "address"))
-				.andExpect(model().attributeHasFieldErrors("player", "telephone"))
+		mockMvc.perform(post("/players/new").with(csrf()).param("firstName", "Joe").param("lastName", "Bloggs")).andExpect(status().isOk()).andExpect(model().attributeHasErrors("player"))
+				.andExpect(model().attributeHasFieldErrors("player", "email"))
 				.andExpect(view().name("players/createOrUpdatePlayerForm"));
 	}
 
@@ -135,9 +131,7 @@ class PlayerControllerTests {
 				.andExpect(model().attributeExists("player"))
 				.andExpect(model().attribute("player", hasProperty("lastName", is("Franklin"))))
 				.andExpect(model().attribute("player", hasProperty("firstName", is("George"))))
-				.andExpect(model().attribute("player", hasProperty("address", is("110 W. Liberty St."))))
-				.andExpect(model().attribute("player", hasProperty("city", is("Madison"))))
-				.andExpect(model().attribute("player", hasProperty("telephone", is("6085551023"))))
+				.andExpect(model().attribute("player", hasProperty("email", is("ejemlop@gmail.com"))))
 				.andExpect(view().name("players/createOrUpdatePlayerForm"));
 	}
 
@@ -145,8 +139,8 @@ class PlayerControllerTests {
 	@Test
 	void testProcessUpdatePlayerFormSuccess() throws Exception {
 		mockMvc.perform(post("/players/{playerId}/edit", TEST_PLAYER_ID).with(csrf()).param("firstName", "Joe")
-				.param("lastName", "Bloggs").param("address", "123 Caramel Street").param("city", "London")
-				.param("telephone", "01616291589")).andExpect(status().is3xxRedirection())
+				.param("lastName", "Bloggs").param("email", "ejemplo@gmail.com"))
+				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/players/{playerId}"));
 	}
 
@@ -154,10 +148,9 @@ class PlayerControllerTests {
 	@Test
 	void testProcessUpdatePlayerFormHasErrors() throws Exception {
 		mockMvc.perform(post("/players/{playerId}/edit", TEST_PLAYER_ID).with(csrf()).param("firstName", "Joe")
-				.param("lastName", "Bloggs").param("city", "London")).andExpect(status().isOk())
+				.param("lastName", "Bloggs")).andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("player"))
-				.andExpect(model().attributeHasFieldErrors("player", "address"))
-				.andExpect(model().attributeHasFieldErrors("player", "telephone"))
+				.andExpect(model().attributeHasFieldErrors("player", "email"))
 				.andExpect(view().name("players/createOrUpdatePlayerForm"));
 	}
 
@@ -167,9 +160,7 @@ class PlayerControllerTests {
 		mockMvc.perform(get("/players/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk())
 				.andExpect(model().attribute("player", hasProperty("lastName", is("Franklin"))))
 				.andExpect(model().attribute("player", hasProperty("firstName", is("George"))))
-				.andExpect(model().attribute("player", hasProperty("address", is("110 W. Liberty St."))))
-				.andExpect(model().attribute("player", hasProperty("city", is("Madison"))))
-				.andExpect(model().attribute("player", hasProperty("telephone", is("6085551023"))))
+				.andExpect(model().attribute("player", hasProperty("email", is("ejemlop@gmail.com"))))
 				.andExpect(view().name("players/playerDetails"));
 	}
 
