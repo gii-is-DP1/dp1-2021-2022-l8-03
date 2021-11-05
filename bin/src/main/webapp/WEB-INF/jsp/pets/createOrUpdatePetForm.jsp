@@ -4,7 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:layout pageName="owners">
+<petclinic:layout pageName="players">
     <jsp:attribute name="customScript">
         <script>
             $(function () {
@@ -21,9 +21,9 @@
             <input type="hidden" name="id" value="${pet.id}"/>
             <div class="form-group has-feedback">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Owner</label>
+                    <label class="col-sm-2 control-label">Player</label>
                     <div class="col-sm-10">
-                        <c:out value="${pet.owner.firstName} ${pet.owner.lastName}"/>
+                        <c:out value="${pet.player.firstName} ${pet.player.lastName}"/>
                     </div>
                 </div>
                 <petclinic:inputField label="Name" name="name"/>

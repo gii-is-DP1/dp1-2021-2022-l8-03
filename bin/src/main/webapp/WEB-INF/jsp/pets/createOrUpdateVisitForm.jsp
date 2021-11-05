@@ -5,7 +5,7 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 
-<petclinic:layout pageName="owners">
+<petclinic:layout pageName="players">
     <jsp:attribute name="customScript">
         <script>
             $(function () {
@@ -23,14 +23,14 @@
                 <th>Name</th>
                 <th>Birth Date</th>
                 <th>Type</th>
-                <th>Owner</th>
+                <th>Player</th>
             </tr>
             </thead>
             <tr>
                 <td><c:out value="${visit.pet.name}"/></td>
                 <td><petclinic:localDate date="${visit.pet.birthDate}" pattern="yyyy/MM/dd"/></td>
                 <td><c:out value="${visit.pet.type.name}"/></td>
-                <td><c:out value="${visit.pet.owner.firstName} ${visit.pet.owner.lastName}"/></td>
+                <td><c:out value="${visit.pet.player.firstName} ${visit.pet.player.lastName}"/></td>
             </tr>
         </table>
 

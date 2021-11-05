@@ -4,37 +4,37 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:layout pageName="owners">
+<petclinic:layout pageName="players">
 
-    <h2>Owner Information</h2>
+    <h2>Player Information</h2>
 
 
     <table class="table table-striped">
         <tr>
             <th>Name</th>
-            <td><b><c:out value="${owner.firstName} ${owner.lastName}"/></b></td>
+            <td><b><c:out value="${player.firstName} ${player.lastName}"/></b></td>
         </tr>
         <tr>
             <th>Address</th>
-            <td><c:out value="${owner.address}"/></td>
+            <td><c:out value="${player.address}"/></td>
         </tr>
         <tr>
             <th>City</th>
-            <td><c:out value="${owner.city}"/></td>
+            <td><c:out value="${player.city}"/></td>
         </tr>
         <tr>
             <th>Telephone</th>
-            <td><c:out value="${owner.telephone}"/></td>
+            <td><c:out value="${player.telephone}"/></td>
         </tr>
     </table>
 
-    <spring:url value="{ownerId}/edit" var="editUrl">
-        <spring:param name="ownerId" value="${owner.id}"/>
+    <spring:url value="{playerId}/edit" var="editUrl">
+        <spring:param name="playerId" value="${player.id}"/>
     </spring:url>
-    <a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Edit Owner</a>
+    <a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Edit Player</a>
 
-    <spring:url value="{ownerId}/pets/new" var="addUrl">
-        <spring:param name="ownerId" value="${owner.id}"/>
+    <spring:url value="{playerId}/pets/new" var="addUrl">
+        <spring:param name="playerId" value="${player.id}"/>
     </spring:url>
     <a href="${fn:escapeXml(addUrl)}" class="btn btn-default">Add New Pet</a>
 
@@ -44,7 +44,7 @@
     <h2>Pets and Visits</h2>
 
     <table class="table table-striped">
-        <c:forEach var="pet" items="${owner.pets}">
+        <c:forEach var="pet" items="${player.pets}">
 
             <tr>
                 <td valign="top">
@@ -73,15 +73,15 @@
                         </c:forEach>
                         <tr>
                             <td>
-                                <spring:url value="/owners/{ownerId}/pets/{petId}/edit" var="petUrl">
-                                    <spring:param name="ownerId" value="${owner.id}"/>
+                                <spring:url value="/players/{playerId}/pets/{petId}/edit" var="petUrl">
+                                    <spring:param name="playerId" value="${player.id}"/>
                                     <spring:param name="petId" value="${pet.id}"/>
                                 </spring:url>
                                 <a href="${fn:escapeXml(petUrl)}">Edit Pet</a>
                             </td>
                             <td>
-                                <spring:url value="/owners/{ownerId}/pets/{petId}/visits/new" var="visitUrl">
-                                    <spring:param name="ownerId" value="${owner.id}"/>
+                                <spring:url value="/players/{playerId}/pets/{petId}/visits/new" var="visitUrl">
+                                    <spring:param name="playerId" value="${player.id}"/>
                                     <spring:param name="petId" value="${pet.id}"/>
                                 </spring:url>
                                 <a href="${fn:escapeXml(visitUrl)}">Add Visit</a>
