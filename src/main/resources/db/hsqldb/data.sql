@@ -15,8 +15,11 @@ INSERT INTO users(username,password,enabled) VALUES ('sonlaumot','sonlaumot',TRU
 INSERT INTO authorities(id, username, authority) VALUES (5, 'sonlaumot', 'owner');
 INSERT INTO users(username,password,enabled) VALUES ('celhersot','c3lh3rs0t',TRUE);
 INSERT INTO authorities(id, username, authority) VALUES (6, 'celhersot', 'owner');
+INSERT INTO users(username,password,enabled) VALUES ('manlopalm', 'manlopalm',TRUE);
+INSERT INTO authorities(id, username, authority) VALUES (7, 'manlopalm', 'owner');
 INSERT INTO users(username,password,enabled) VALUES ('mandommag','mandommag',TRUE);
-INSERT INTO authorities(id, username, authority) VALUES (7, 'mandommag', 'owner');
+INSERT INTO authorities(id, username, authority) VALUES (8, 'mandommag', 'owner');
+
 
 
 INSERT INTO vets VALUES (1, 'James', 'Carter');
@@ -56,7 +59,8 @@ INSERT INTO owners VALUES (10, 'Carlos', 'Estaban', '2335 Independence La.', 'Wa
 INSERT INTO owners VALUES (11, 'Carlos', 'Delgado', '2335 Independence La.', 'Waunakee', '6085555487', 'cardelbec');
 INSERT INTO owners VALUES (12, 'Sonia', 'Laure', '2569 Happy St La.', 'Madison', '659658423', 'sonlaumot');
 INSERT INTO owners VALUES (13, 'Celia', 'Hermoso', '101 Jazmin', 'Waunakee', '955000000', 'celhersot');
-INSERT INTO owners VALUES (14, 'Manuel', 'Dominguez', '2336 Independence La.', 'Waunakee', '6085555488', 'mandommag');
+INSERT INTO owners VALUES (14, 'Manuel', 'López', '2040 Independence La.', 'Wuanukee', '654321123','manlopalm');
+INSERT INTO owners VALUES (15, 'Manuel', 'Dominguez', '2336 Independence La.', 'Waunakee', '6085555488', 'mandommag');
 
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (1, 'Leo', '2010-09-07', 1, 1);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (2, 'Basil', '2012-08-06', 6, 2);
@@ -74,10 +78,13 @@ INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (13, 'Sly', '2012-0
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (14, 'Manolo', '2012-06-08', 1, 11);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (15, 'Godolfreda', '2013-07-15', 4, 12);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (16, 'Chicharrones', '2010-01-31', 3, 13);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (17, 'Celia la Lagarta', '2010-01-30', 3, 14);
+INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (17, 'Pepe', '2009-02-24', 6, 14);
+INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (18, 'Celia la Lagarta', '2010-01-30', 3, 15);
+
 
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (1, 7, '2013-01-01', 'rabies shot');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02', 'rabies shot');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (3, 8, '2013-01-03', 'neutered');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');
 
+INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start) VALUES (1, 0, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00');
