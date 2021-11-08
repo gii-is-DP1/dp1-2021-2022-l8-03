@@ -15,16 +15,8 @@
             <td><b><c:out value="${player.firstName} ${player.lastName}"/></b></td>
         </tr>
         <tr>
-            <th>Address</th>
-            <td><c:out value="${player.address}"/></td>
-        </tr>
-        <tr>
-            <th>City</th>
-            <td><c:out value="${player.city}"/></td>
-        </tr>
-        <tr>
-            <th>Telephone</th>
-            <td><c:out value="${player.telephone}"/></td>
+            <th>Email</th>
+            <td><c:out value="${player.email}"/></td>
         </tr>
     </table>
 

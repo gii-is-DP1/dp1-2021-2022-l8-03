@@ -12,9 +12,7 @@
         <thead>
         <tr>
             <th style="width: 150px;">Name</th>
-            <th style="width: 200px;">Address</th>
-            <th>City</th>
-            <th style="width: 120px">Telephone</th>
+            <th style="width: 200px;">Email</th>
             <th>Pets</th>
         </tr>
         </thead>
@@ -28,13 +26,7 @@
                     <a href="${fn:escapeXml(playerUrl)}"><c:out value="${player.firstName} ${player.lastName}"/></a>
                 </td>
                 <td>
-                    <c:out value="${player.address}"/>
-                </td>
-                <td>
-                    <c:out value="${player.city}"/>
-                </td>
-                <td>
-                    <c:out value="${player.telephone}"/>
+                    <c:out value="${player.email}"/>
                 </td>
                 <td>
                     <c:forEach var="pet" items="${player.pets}">
