@@ -16,6 +16,7 @@
 package org.springframework.samples.upstream.player;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -35,6 +37,8 @@ import org.springframework.beans.support.PropertyComparator;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.samples.upstream.model.Person;
 import org.springframework.samples.upstream.pet.Pet;
+import org.springframework.samples.upstream.piece.Piece;
+import org.springframework.samples.upstream.score.Score;
 import org.springframework.samples.upstream.user.User;
 
 /**
@@ -55,6 +59,12 @@ public class Player extends Person {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
 	private Set<Pet> pets;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
+	private Collection<Piece> pieces;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
+	private Collection<Score> scores;
 	
 	//
 	@OneToOne(cascade = CascadeType.ALL)

@@ -1,15 +1,20 @@
 package org.springframework.samples.upstream.round;
 
 
+import java.util.Collection;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.upstream.model.BaseEntity;
+import org.springframework.samples.upstream.piece.Piece;
+import org.springframework.samples.upstream.score.Score;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -50,4 +55,10 @@ public class Round extends BaseEntity {
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	@NotNull
 	private Date turn_start;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
+	private Collection<Piece> pieces;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
+	private Collection<Score> scores;
 }
