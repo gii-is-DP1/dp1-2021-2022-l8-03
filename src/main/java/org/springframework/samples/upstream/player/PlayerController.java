@@ -20,9 +20,13 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -112,8 +116,17 @@ public class PlayerController {
 	@GetMapping(value = "/players/{playerId}/edit")
 	public String initUpdatePlayerForm(@PathVariable("playerId") int playerId, Model model) {
 		Player player = this.playerService.findPlayerById(playerId);
-		model.addAttribute(player);
-		return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
+		String username = player.getUser().getUsername();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		String currentUsername = currentUser.getUsername();
+		if(!username.equals(currentUsername)) {
+			return "players/playerList";
+		} else {
+			model.addAttribute(player);
+			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
+		}
+		
 	}
 
 	@PostMapping(value = "/players/{playerId}/edit")
