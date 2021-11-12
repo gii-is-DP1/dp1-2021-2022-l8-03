@@ -131,7 +131,7 @@ class PlayerControllerTests {
 				.andExpect(model().attributeExists("player"))
 				.andExpect(model().attribute("player", hasProperty("lastName", is("Franklin"))))
 				.andExpect(model().attribute("player", hasProperty("firstName", is("George"))))
-				.andExpect(model().attribute("player", hasProperty("email", is("ejemlop@gmail.com"))))
+				.andExpect(model().attribute("player", hasProperty("email", is("ejemplo@gmail.com"))))
 				.andExpect(view().name("players/createOrUpdatePlayerForm"));
 	}
 
@@ -160,7 +160,7 @@ class PlayerControllerTests {
 		mockMvc.perform(get("/players/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk())
 				.andExpect(model().attribute("player", hasProperty("lastName", is("Franklin"))))
 				.andExpect(model().attribute("player", hasProperty("firstName", is("George"))))
-				.andExpect(model().attribute("player", hasProperty("email", is("ejemlop@gmail.com"))))
+				.andExpect(model().attribute("player", hasProperty("email", is("ejemplo@gmail.com"))))
 				.andExpect(view().name("players/playerDetails"));
 	}
 
