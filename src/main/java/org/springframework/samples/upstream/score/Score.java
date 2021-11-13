@@ -4,7 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.springframework.samples.upstream.model.NamedEntity;
+
+import org.springframework.samples.upstream.model.BaseEntity;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.round.Round;
 
@@ -14,7 +15,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-public class Score extends NamedEntity{
+public class Score extends BaseEntity{
 	private Integer value;
 	
 	@ManyToOne(optional = false)
