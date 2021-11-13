@@ -13,6 +13,7 @@
         <tr>
             <th style="width: 150px;">Row</th>
             <th style="width: 150px;">Column</th>
+            <th style="width: 150px;">SalmonEggs</th>
         </tr>
         </thead>
         <tbody>
