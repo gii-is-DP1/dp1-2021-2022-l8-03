@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -120,13 +121,23 @@ public class PlayerController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User currentUser = (User)authentication.getPrincipal();
 		String currentUsername = currentUser.getUsername();
-		if(!username.equals(currentUsername)) {
-			return "players/playerList";
+		if(!username.equals(currentUsername) && !checkAdmin(currentUser)) {
+			return "exception";
 		} else {
 			model.addAttribute(player);
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
 		}
 		
+	}
+	
+	private Boolean checkAdmin(User user) {
+		Collection<GrantedAuthority> authorities = user.getAuthorities();
+		for(GrantedAuthority g : authorities) {
+			if(g.toString().equals("admin")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@PostMapping(value = "/players/{playerId}/edit")
