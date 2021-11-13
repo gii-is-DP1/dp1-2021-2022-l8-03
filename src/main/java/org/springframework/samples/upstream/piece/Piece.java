@@ -7,10 +7,13 @@ import javax.persistence.ManyToOne;
 import org.springframework.samples.upstream.model.NamedEntity;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.round.Round;
+import org.springframework.samples.upstream.tile.Tile;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 //Piece
-@Data
+@Getter
+@Setter
 @Entity
 public class Piece extends NamedEntity{
 	private Integer numSalmon;
@@ -22,5 +25,9 @@ public class Piece extends NamedEntity{
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "round_id")
 	private Round round;
+	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "tile_id")
+	private Tile tile;
 	
 }
