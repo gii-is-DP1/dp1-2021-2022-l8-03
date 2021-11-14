@@ -15,7 +15,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.upstream.model.BaseEntity;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.score.Score;
-import org.springframework.samples.upstream.tile.Tile;
+import org.springframework.samples.upstream.tile.RapidsTile;
+import org.springframework.samples.upstream.tile.RockTile;
+import org.springframework.samples.upstream.tile.SeaTile;
+import org.springframework.samples.upstream.tile.SpawnTile;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -64,5 +67,14 @@ public class Round extends BaseEntity {
 	private Collection<Score> scores;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
-	private Collection<Tile> tiles;
+	private Collection<RapidsTile> rapidsTiles;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
+	private Collection<RockTile> rockTiles;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
+	private Collection<SeaTile> seaTiles;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
+	private Collection<SpawnTile> spawnTiles;
 }
