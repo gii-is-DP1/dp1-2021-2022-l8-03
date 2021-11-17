@@ -7,6 +7,8 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -14,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.upstream.model.BaseEntity;
 import org.springframework.samples.upstream.piece.Piece;
+import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.score.Score;
 import org.springframework.samples.upstream.tile.BearTile;
 import org.springframework.samples.upstream.tile.EagleTile;
@@ -48,6 +51,12 @@ public class Round extends BaseEntity {
 	@Column(name = "num_players")
 	@NotNull
 	private Integer num_players;
+	
+	@ManyToOne(optional = false)
+    @JoinColumn(name = "player_id")
+    private Player player;
+	
+
 	
 	@Column(name = "match_start")
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")

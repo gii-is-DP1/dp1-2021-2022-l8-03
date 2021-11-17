@@ -26,7 +26,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -38,6 +37,7 @@ import org.springframework.core.style.ToStringCreator;
 import org.springframework.samples.upstream.model.Person;
 import org.springframework.samples.upstream.pet.Pet;
 import org.springframework.samples.upstream.piece.Piece;
+import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.score.Score;
 import org.springframework.samples.upstream.user.User;
 
@@ -56,6 +56,8 @@ public class Player extends Person {
 	@Column(name = "email")
 	@NotEmpty
 	private String email;
+	
+
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
 	private Set<Pet> pets;
@@ -65,6 +67,9 @@ public class Player extends Person {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
 	private Collection<Score> scores;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
+    private Collection<Round> rounds;
 	
 	//
 	@OneToOne(cascade = CascadeType.ALL)
