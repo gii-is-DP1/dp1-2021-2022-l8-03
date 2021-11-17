@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class EagleTile {	
+public class EagleTile extends Tile{	
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "round_id")

@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class WaterfallTile {
+public class WaterfallTile extends Tile{
 private Integer orientation;
 	
 	

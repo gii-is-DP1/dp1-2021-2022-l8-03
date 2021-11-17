@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class HeronTile {
+public class HeronTile extends Tile{
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "round_id")
 	private Round round;
