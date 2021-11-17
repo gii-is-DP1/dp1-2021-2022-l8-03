@@ -7,10 +7,14 @@ import javax.persistence.ManyToOne;
 import org.springframework.samples.upstream.model.BaseEntity;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.round.Round;
+import org.springframework.samples.upstream.tile.BearTile;
+import org.springframework.samples.upstream.tile.EagleTile;
+import org.springframework.samples.upstream.tile.HeronTile;
 import org.springframework.samples.upstream.tile.RapidsTile;
 import org.springframework.samples.upstream.tile.RockTile;
 import org.springframework.samples.upstream.tile.SeaTile;
 import org.springframework.samples.upstream.tile.SpawnTile;
+import org.springframework.samples.upstream.tile.WaterfallTile;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +49,22 @@ public class Piece extends BaseEntity{
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "spawnTile_id")
 	private SpawnTile spawnTile;
+	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "bearTile_id")
+	private BearTile bearTile;
+	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "eagleTile_id")
+	private EagleTile eagleTile;
+	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "heronTile_id")
+	private HeronTile heronTile;
+	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "waterfallTile_id")
+	private WaterfallTile waterfallTile;
 	
 	
 	
