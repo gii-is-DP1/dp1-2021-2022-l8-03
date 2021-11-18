@@ -34,6 +34,7 @@ import javax.validation.constraints.NotEmpty;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.core.style.ToStringCreator;
+import org.springframework.samples.upstream.actingPlayer.ActingPlayer;
 import org.springframework.samples.upstream.model.Person;
 import org.springframework.samples.upstream.pet.Pet;
 import org.springframework.samples.upstream.piece.Piece;
@@ -57,7 +58,6 @@ public class Player extends Person {
 	@NotEmpty
 	private String email;
 	
-
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
 	private Set<Pet> pets;
