@@ -10,10 +10,12 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.upstream.actingPlayer.ActingPlayer;
 import org.springframework.samples.upstream.model.BaseEntity;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.player.Player;
@@ -55,6 +57,9 @@ public class Round extends BaseEntity {
 	@ManyToOne(optional = false)
     @JoinColumn(name = "player_id")
     private Player player;
+	
+	@OneToOne(optional = false, mappedBy="round")
+	private ActingPlayer actingPlayer;
 	
 
 	
