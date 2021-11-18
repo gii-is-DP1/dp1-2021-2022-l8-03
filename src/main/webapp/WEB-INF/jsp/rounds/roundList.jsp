@@ -14,7 +14,8 @@
             <th>Duration</th>
             <th>Rapids</th>
             <th>Whirlpools</th>
-            <th>numPlayers</th>
+            <th>NumPlayers</th>
+            <th>RoundCreator</th>
             <th style="width: 360px">start</th>
             <th style="width: 360px">end</th>
             <th style="width: 360px">turnStart</th>
@@ -36,6 +37,9 @@
                     <c:out value="${round.num_players}"/>
                 </td>
                 <td>
+                    <c:out value="${round.player.email}"/>
+                </td>  
+                <td>
                     <c:out value="${round.match_start}"/>
                 </td>
                 <td>
@@ -43,7 +47,7 @@
                 </td>
                 <td>
                     <c:out value="${round.turn_start}"/>
-                </td>   
+                </td>    
                 <td>
                 	<spring:url value="/rounds/{roundId}/edit" var="roundUrl">
                         <spring:param name="roundId" value="${round.id}"/>
