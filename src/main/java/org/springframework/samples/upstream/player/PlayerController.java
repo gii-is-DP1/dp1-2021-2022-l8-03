@@ -122,7 +122,7 @@ public class PlayerController {
 		User currentUser = (User)authentication.getPrincipal();
 		String currentUsername = currentUser.getUsername();
 		if(!username.equals(currentUsername) && !checkAdmin(currentUser)) {
-			return "exception";
+			return "exception";		//HAY QUE HACER UN MENSAJE DE ERROR EN CONDICIONES
 		} else {
 			model.addAttribute(player);
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;

@@ -12,13 +12,6 @@ public class TileController {
 	
 	@Autowired
 	TileService tileService;
-	
-	@GetMapping()
-	public String listadoTile(ModelMap modelMap) {
-		String vista="tiles/listadoTiles";
-		Iterable<Tile> tiles=tileService.findAllTiles();
-		modelMap.addAttribute("tiles", tiles);
-		return vista;
-	}
+
 	
 }
