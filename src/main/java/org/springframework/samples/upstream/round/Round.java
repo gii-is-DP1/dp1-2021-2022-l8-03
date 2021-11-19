@@ -39,7 +39,6 @@ import lombok.Setter;
 public class Round extends BaseEntity {
 	
 	@Column(name = "duration")
-	@NotNull
 	private Double duration;
 	
 	@Column(name = "rapids")
@@ -65,17 +64,14 @@ public class Round extends BaseEntity {
 	
 	@Column(name = "match_start")
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
-	@NotNull
 	private Date match_start;
 	
 	@Column(name = "match_end")
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
-	@NotNull
 	private Date match_end;
 	
 	@Column(name = "turn_start")
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
-	@NotNull
 	private Date turn_start;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")

@@ -11,9 +11,10 @@
     <table id="playersTable" class="table table-striped">
         <thead>
         <tr>
-            <th style="width: 150px;">Name</th>
+        	<th style="width: 200px;">Username</th>
+            <th style="width: 150px;">First name</th>
+            <th style="width: 200px;">Last name</th>
             <th style="width: 200px;">Email</th>
-            <th>Pets</th>
         </tr>
         </thead>
         <tbody>
@@ -23,15 +24,16 @@
                     <spring:url value="/players/{playerId}" var="playerUrl">
                         <spring:param name="playerId" value="${player.id}"/>
                     </spring:url>
-                    <a href="${fn:escapeXml(playerUrl)}"><c:out value="${player.firstName} ${player.lastName}"/></a>
+                    <a href="${fn:escapeXml(playerUrl)}"><c:out value="${player.user.username}"/></a>
+                </td>
+                <td>
+                    <c:out value="${player.firstName}"/>
+                </td>
+                <td>
+                    <c:out value="${player.lastName}"/>
                 </td>
                 <td>
                     <c:out value="${player.email}"/>
-                </td>
-                <td>
-                    <c:forEach var="pet" items="${player.pets}">
-                        <c:out value="${pet.name} "/>
-                    </c:forEach>
                 </td>
                 
       
