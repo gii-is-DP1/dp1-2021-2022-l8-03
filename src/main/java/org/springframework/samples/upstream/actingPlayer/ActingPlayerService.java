@@ -1,7 +1,10 @@
 package org.springframework.samples.upstream.actingPlayer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ActingPlayerService {
@@ -13,14 +16,13 @@ public class ActingPlayerService {
 		this.actingPlayerRepository = actingPlayerRepository;
 	}
 	
-	public void swim(Integer id) {
-		ActingPlayer jugador = this.actingPlayerRepository.findByRound(id);
-		jugador.setPoints((jugador.getPoints()-1));
+	@Transactional(readOnly = true)
+	public ActingPlayer findActingPlayerById(int id) throws DataAccessException {
+		return actingPlayerRepository.findById(id);
 	}
 	
-	public void jump(Integer id) {
-		ActingPlayer jugador = this.actingPlayerRepository.findByRound(id);
-		jugador.setPoints((jugador.getPoints()-2));
+	@Transactional(readOnly = true)
+	public ActingPlayer findActingPlayerByRound(int id) throws DataAccessException {
+		return actingPlayerRepository.findByRound(id);
 	}
-
 }
