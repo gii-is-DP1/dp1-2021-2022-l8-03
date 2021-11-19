@@ -37,7 +37,7 @@
                     <c:out value="${round.num_players}"/>
                 </td>
                 <td>
-                    <c:out value="${round.player.email}"/>
+                    <c:out value="${round.player.user.username}"/>
                 </td>  
                 <td>
                     <c:out value="${round.match_start}"/>
