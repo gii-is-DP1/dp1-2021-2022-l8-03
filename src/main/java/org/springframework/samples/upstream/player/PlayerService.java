@@ -64,6 +64,10 @@ public class PlayerService {
 		userService.saveUser(player.getUser());
 		//creating authorities
 		authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");
-	}		
+	}
+	
+	public void delete(Player player) {
+		playerRepository.delete(player);
+	}
 
 }
