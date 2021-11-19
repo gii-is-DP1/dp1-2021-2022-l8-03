@@ -8,17 +8,43 @@
 
 <petclinic:layout pageName="rounds">
     <h2>
-        <c:if test="${round['new']}">New </c:if> round
+        <c:if test="${round['new']}">New </c:if> 
+        <c:if test="${!round['new']}">Update </c:if> round
     </h2>
-    <form:form modelAttribute="round" class="form-horizontal" id="add-round-form">
+    <form:form modelAttribute="round" class="form-horizontal" id="add-round-form" action="/rounds">
         <div class="form-group has-feedback">
-            <petclinic:inputField label="Duration" name="duration"/>
-            <petclinic:inputField label="Rapids" name="rapids"/>
-            <petclinic:inputField label="Whirlpools" name="whirlpools"/>
-            <petclinic:inputField label="numPlayers" name="num_players"/>
-            <petclinic:inputField label="matchStart" name="match_start"/>
-            <petclinic:inputField label="matchEnd" name="match_end"/>
-            <petclinic:inputField label="turnStart" name="turn_start"/>
+        	<div class="col-sm-offset-2 col-sm-10">
+		        <div class="row-md">
+		        	<label>Game mode:
+			            <div class="control-group"> 
+			            		<label for="rapids">Whirlpool</label>
+			                    <input type="radio" name="Whirlpool" value="true">
+			  					<label for="whirlpool"> yes</label> 
+			  					<input type="radio" name="Whirlpool" value="false">
+			  					<label for="whirlpool"> no</label>
+			  					<br>
+			  					<label for="rapids">Rapids</label> 
+			  					<input type="radio" name="rapids" value="true">
+			  					<label for="whirlpool"> yes</label> 
+			  					<input type="radio" name="rapids" value="false">
+			  					<label for="whirlpool"> no</label>
+			            </div>
+		        	</label>
+		        </div>
+		        <div class="row-md">
+		 			<label>Players number
+			            <select label="Players number" name="num_players">
+							 <option>2</option>
+							 <option>3</option>
+							 <option>4</option>
+							 <option>5</option>
+						</select>
+					</label>
+				</div>
+				<petclinic:inputField label="matchStart" name="match_start"/>
+	            <petclinic:inputField label="matchEnd" name="match_end"/>
+	            <petclinic:inputField label="turnStart" name="turn_start"/>
+			</div>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">

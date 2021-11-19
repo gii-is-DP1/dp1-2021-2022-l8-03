@@ -18,6 +18,10 @@
             <th style="width: 360px">start</th>
             <th style="width: 360px">end</th>
             <th style="width: 360px">turnStart</th>
+            <th> 
+            	<spring:url value="/rounds/new" var="roundUrl"></spring:url>
+                <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Create round</href></a>
+            </th>
         </tr>
         </thead>
         <tbody>
