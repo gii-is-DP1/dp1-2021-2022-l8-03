@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.upstream.model.BaseEntity;
@@ -30,14 +31,14 @@ import org.springframework.samples.upstream.player.PlayerRepository;
  * @author Michael Isvy
  * @since 15.1.2013
  */
-public interface PlayerRepository extends Repository<Player, Integer> {
+public interface PlayerRepository extends CrudRepository<Player, Integer> {
 
 	/**
 	 * Save an <code>Player</code> to the data store, either inserting or updating it.
 	 * @param player the <code>Player</code> to save
 	 * @see BaseEntity#isNew
 	 */
-	void save(Player player) throws DataAccessException;
+	//void save(Player player) throws DataAccessException;
 
 	/**
 	 * Retrieve <code>Player</code>s from the data store by last name, returning all players

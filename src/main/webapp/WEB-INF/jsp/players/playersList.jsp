@@ -15,6 +15,8 @@
             <th style="width: 150px;">First name</th>
             <th style="width: 200px;">Last name</th>
             <th style="width: 200px;">Email</th>
+            <th style="width: 200px;"></th>
+            <th style="width: 200px;"></th>
         </tr>
         </thead>
         <tbody>
@@ -34,6 +36,18 @@
                 </td>
                 <td>
                     <c:out value="${player.email}"/>
+                </td>
+                <td>
+                	<spring:url value="/players/{playerId}/edit" var="playerUrl">
+                        <spring:param name="playerId" value="${player.id}"/>
+                    </spring:url>
+                    <a href="${fn:escapeXml(playerUrl)}" class="btn btn-default" type="submit">Update player</href></a>
+                </td>
+                <td>
+                	<spring:url value="/players/delete/{playerId}" var="playerUrl">
+                        <spring:param name="playerId" value="${player.id}"/>
+                    </spring:url>
+                    <a href="${fn:escapeXml(playerUrl)}" class="btn btn-default" type="submit">Delete player</href></a>
                 </td>
                 
       

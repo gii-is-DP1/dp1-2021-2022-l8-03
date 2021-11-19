@@ -60,6 +60,7 @@ INSERT INTO players VALUES (13, 'Celia', 'Hermoso', 'ejemplo@gmail.com', 'celher
 INSERT INTO players VALUES (14, 'Manuel', 'López', 'ejemplo@gmail.com','manlopalm');
 INSERT INTO players VALUES (15, 'Manuel', 'Dominguez', 'ejemplo@gmail.com', 'mandommag');
 
+/**
 INSERT INTO pets(id,name,birth_date,type_id,player_id) VALUES (1, 'Leo', '2010-09-07', 1, 1);
 INSERT INTO pets(id,name,birth_date,type_id,player_id) VALUES (2, 'Basil', '2012-08-06', 6, 2);
 INSERT INTO pets(id,name,birth_date,type_id,player_id) VALUES (3, 'Rosy', '2011-04-17', 2, 3);
@@ -82,7 +83,7 @@ INSERT INTO pets(id,name,birth_date,type_id,player_id) VALUES (18, 'Celia la Lag
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (1, 7, '2013-01-01', 'rabies shot');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02', 'rabies shot');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (3, 8, '2013-01-03', 'neutered');
-INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');
+INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');**/
 
 INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id) VALUES (1, 0, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13);
 INSERT INTO acting_players(id, player, points,round_id) VALUES (1,11,5,1);

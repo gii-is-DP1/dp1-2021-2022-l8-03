@@ -17,6 +17,7 @@ package org.springframework.samples.upstream.player;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -30,6 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -148,11 +150,26 @@ public class PlayerController {
 		}
 		else {
 			player.setId(playerId);
+			player.getUser().setPassword(this.playerService.findPlayerById(playerId).getUser().getPassword());
 			this.playerService.savePlayer(player);
 			return "redirect:/players/{playerId}";
 		}
 	}
-
+	
+	@GetMapping(value = "/players/delete/{playerId}")
+	public String deletePlayer(@PathVariable("playerId") int playerId, ModelMap model) {
+		String view = "/players/playersList";
+		Player player = this.playerService.findPlayerById(playerId);
+		if(!player.equals(null)) {
+			playerService.delete(player);
+			model.addAttribute("message","Player successfully deleted");
+		}
+		else {
+			model.addAttribute("message", "Player not found");
+		}
+		return view;
+	}
+	
 	/**
 	 * Custom handler for displaying an player.
 	 * @param playerId the ID of the player to display
