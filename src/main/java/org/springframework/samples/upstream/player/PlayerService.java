@@ -16,9 +16,14 @@
 package org.springframework.samples.upstream.player;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.upstream.actingPlayer.ActingPlayerRepository;
+import org.springframework.samples.upstream.round.Round;
+import org.springframework.samples.upstream.round.RoundRepository;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
 import org.springframework.security.core.Authentication;
@@ -37,7 +42,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PlayerService {
 
-	private PlayerRepository playerRepository;	
+	private PlayerRepository playerRepository;
+	private ActingPlayerRepository actingPlayerRepository;	
+	private RoundRepository roundRepository;
+		
+		
 	
 	@Autowired
 	private UserService userService;
@@ -46,8 +55,10 @@ public class PlayerService {
 	private AuthoritiesService authoritiesService;
 
 	@Autowired
-	public PlayerService(PlayerRepository playerRepository) {
+	public PlayerService(PlayerRepository playerRepository,RoundRepository roundRepository, ActingPlayerRepository actingPlayerRepository) {
 		this.playerRepository = playerRepository;
+		this.roundRepository = roundRepository;
+		this.actingPlayerRepository=actingPlayerRepository;
 	}	
 
 	@Transactional(readOnly = true)
@@ -75,6 +86,13 @@ public class PlayerService {
 	}		
 	
 	public void delete(Player player) {
+		Collection<Round> rounds=roundRepository.findRoundByPlayerId(player.getId());
+		if(!rounds.isEmpty()) {
+			for(Round r:rounds) {
+				actingPlayerRepository.delete(actingPlayerRepository.findByRound(r.getId()));
+				roundRepository.delete(roundRepository.findById(r.getId()).get());
+			}
+		}
 		playerRepository.delete(player);
 	}
 
