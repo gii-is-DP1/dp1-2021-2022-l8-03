@@ -4,7 +4,10 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.upstream.player.Player;
+import org.springframework.samples.upstream.player.PlayerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -12,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,6 +26,7 @@ public class RoundController {
 	private static final String VIEWS_ROUND_CREATE_OR_UPDATE_FORM = "rounds/createOrUpdateRoundForm";
 	
 	private final RoundService roundService;
+
 	
 	@Autowired
 	public RoundController(RoundService roundService) {
@@ -68,17 +73,20 @@ public class RoundController {
 	}
 
 	@PostMapping(value = "/rounds/{roundId}/edit")
-	public String processUpdateRoundForm(@Valid Round round, BindingResult result,
-			@PathVariable("roundId") int roundId) {
+	public String processUpdateRoundForm(@Valid Round round, BindingResult result,Player player,
+			@PathVariable("roundId") int roundId,ModelMap model) {
 		if (result.hasErrors()) {
+			model.put("round",round);
 			return VIEWS_ROUND_CREATE_OR_UPDATE_FORM;
 		}
 		else {
-			round.setId(roundId);
+			Round roundToUpdate=this.roundService.findRoundById(roundId);
+			BeanUtils.copyProperties(round, roundToUpdate,"id","player");
 			this.roundService.saveRound(round);
 			return "redirect:/rounds";
 		}
 	}
+	
 
 	/**
 	 * Custom handler for displaying an owner.
