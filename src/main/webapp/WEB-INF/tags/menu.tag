@@ -1,6 +1,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <!--  >%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%-->
@@ -27,18 +28,13 @@
 					<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 					<span>Home</span>
 				</petclinic:menuItem>
-
+				<sec:authorize access="hasAuthority('admin')">
 				<petclinic:menuItem active="${name eq 'playersFind'}" url="/players/find"
 					title="find players">
 					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 					<span>Find players</span>
 				</petclinic:menuItem>
-
-				<petclinic:menuItem active="${name eq 'players'}" url="/players"
-					title="players">
-					<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-					<span>Players</span>
-				</petclinic:menuItem>
+				</sec:authorize>
 				
 				<petclinic:menuItem active="${name eq 'rounds'}" url="/rounds"
 					title="rounds">
@@ -85,6 +81,12 @@
 												<a href="<c:url value="/logout" />"
 													class="btn btn-primary btn-block btn-sm">Logout</a>
 											</p>
+											<sec:authorize access="!hasAuthority('admin')">
+											<p class="text-left">
+												<a href="<c:url value="/players/playerDetails" />"
+													class="btn btn-primary btn-block btn-sm">Profile</a>
+											</p>
+											</sec:authorize>
 										</div>
 									</div>
 								</div>

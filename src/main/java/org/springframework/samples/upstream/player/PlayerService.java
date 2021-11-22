@@ -70,6 +70,11 @@ public class PlayerService {
 	public Collection<Player> findPlayerByLastName(String lastName) throws DataAccessException {
 		return playerRepository.findByLastName(lastName);
 	}
+	
+	@Transactional(readOnly = true)
+	public Player findPlayerByUsername(String username) throws DataAccessException {
+		return playerRepository.findByUsername(username);
+	}
 
 	@Transactional
 	public void savePlayer(Player player) throws DataAccessException {
@@ -83,17 +88,29 @@ public class PlayerService {
 			authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");
 		}
 		
-	}		
+	}	
+	
+	@Transactional
+	public void saveNewPlayer(Player player) throws DataAccessException {
+			//creating player
+			playerRepository.save(player);		
+			//creating user
+			userService.saveUser(player.getUser());
+			//creating authorities
+			authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");		
+	}	
 	
 	public void delete(Player player) {
 		Collection<Round> rounds=roundRepository.findRoundByPlayerId(player.getId());
-		if(!rounds.isEmpty()) {
-			for(Round r:rounds) {
-				actingPlayerRepository.delete(actingPlayerRepository.findByRound(r.getId()));
-				roundRepository.delete(roundRepository.findById(r.getId()).get());
+		if(checkAdmin()) {
+			if(!rounds.isEmpty()) {
+				for(Round r:rounds) {
+					actingPlayerRepository.delete(actingPlayerRepository.findByRound(r.getId()));
+					roundRepository.delete(roundRepository.findById(r.getId()).get());
+				}
 			}
+			playerRepository.delete(player);
 		}
-		playerRepository.delete(player);
 	}
 
 
@@ -112,5 +129,17 @@ public class PlayerService {
 		}
 		return false;
 	}
+  
+  public Boolean checkAdmin() {
+	  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	  User currentUser = (User)authentication.getPrincipal(); 
+	  Collection<GrantedAuthority> authorities = currentUser.getAuthorities();
+	  for(GrantedAuthority g : authorities) {
+		  if(g.toString().equals("admin")) {
+			  return true;
+		  }
+	  }
+	  return false;
+  }
 
 }

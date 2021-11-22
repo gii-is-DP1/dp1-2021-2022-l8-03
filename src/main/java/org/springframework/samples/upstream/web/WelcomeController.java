@@ -5,16 +5,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.upstream.model.Person;
+import org.springframework.samples.upstream.player.Player;
+import org.springframework.samples.upstream.player.PlayerService;
+import org.springframework.samples.upstream.user.AuthoritiesService;
+import org.springframework.samples.upstream.user.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class WelcomeController {
 	
-	
 	  @GetMapping({"/","/welcome"})
 	  public String welcome(Map<String, Object> model) {
+		  
 		  List<Person> persons = new ArrayList<Person>();
 		  Person manuel = new Person();
 		  manuel.setFirstName("Manuel");
@@ -44,4 +51,5 @@ public class WelcomeController {
 
 	    return "welcome";
 	  }
+	 
 }
