@@ -20,14 +20,7 @@ import org.springframework.samples.upstream.model.BaseEntity;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.score.Score;
-import org.springframework.samples.upstream.tile.BearTile;
-import org.springframework.samples.upstream.tile.EagleTile;
-import org.springframework.samples.upstream.tile.HeronTile;
-import org.springframework.samples.upstream.tile.RapidsTile;
-import org.springframework.samples.upstream.tile.RockTile;
-import org.springframework.samples.upstream.tile.SeaTile;
-import org.springframework.samples.upstream.tile.SpawnTile;
-import org.springframework.samples.upstream.tile.WaterfallTile;
+
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,7 +32,6 @@ import lombok.Setter;
 public class Round extends BaseEntity {
 	
 	@Column(name = "duration")
-	@NotNull
 	private Double duration;
 	
 	@Column(name = "rapids")
@@ -65,17 +57,14 @@ public class Round extends BaseEntity {
 	
 	@Column(name = "match_start")
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
-	@NotNull
 	private Date match_start;
 	
 	@Column(name = "match_end")
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
-	@NotNull
 	private Date match_end;
 	
 	@Column(name = "turn_start")
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
-	@NotNull
 	private Date turn_start;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
@@ -83,28 +72,5 @@ public class Round extends BaseEntity {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
 	private Collection<Score> scores;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
-	private Collection<RapidsTile> rapidsTiles;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
-	private Collection<RockTile> rockTiles;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
-	private Collection<SeaTile> seaTiles;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
-	private Collection<SpawnTile> spawnTiles;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
-	private Collection<BearTile> bearTiles;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
-	private Collection<HeronTile> heronTiles;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
-	private Collection<EagleTile> eagleTiles;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
-	private Collection<WaterfallTile> waterfallTiles;
+
 }

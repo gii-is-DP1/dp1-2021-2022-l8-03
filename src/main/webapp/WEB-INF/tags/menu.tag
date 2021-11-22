@@ -28,16 +28,16 @@
 					<span>Home</span>
 				</petclinic:menuItem>
 
-				<petclinic:menuItem active="${name eq 'players'}" url="/players/find"
+				<petclinic:menuItem active="${name eq 'playersFind'}" url="/players/find"
 					title="find players">
 					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 					<span>Find players</span>
 				</petclinic:menuItem>
 
-				<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
-					title="veterinarians">
-					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Veterinarians</span>
+				<petclinic:menuItem active="${name eq 'players'}" url="/players"
+					title="players">
+					<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+					<span>Players</span>
 				</petclinic:menuItem>
 				
 				<petclinic:menuItem active="${name eq 'rounds'}" url="/rounds"

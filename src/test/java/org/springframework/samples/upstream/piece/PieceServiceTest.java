@@ -13,10 +13,4 @@ import org.springframework.stereotype.Service;
 public class PieceServiceTest {
 	@Autowired
 	private PieceService pieceService;
-
-	@Test //importada con jUnit5
-	public void testCountWithInitialData(){
-		int count = pieceService.pieceCount();
-		assertEquals(count,1); //importar el tercero
-	}
 }

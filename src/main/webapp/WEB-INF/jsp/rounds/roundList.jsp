@@ -19,6 +19,10 @@
             <th style="width: 360px">start</th>
             <th style="width: 360px">end</th>
             <th style="width: 360px">turnStart</th>
+            <th> 
+            	<spring:url value="/rounds/new" var="roundUrl"></spring:url>
+                <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Create round</href></a>
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -37,7 +41,7 @@
                     <c:out value="${round.num_players}"/>
                 </td>
                 <td>
-                    <c:out value="${round.player.email}"/>
+                    <c:out value="${round.player.user.username}"/>
                 </td>  
                 <td>
                     <c:out value="${round.match_start}"/>

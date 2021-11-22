@@ -22,6 +22,10 @@ import lombok.Setter;
 @Table(name = "acting_players")
 public class ActingPlayer extends BaseEntity {
 	
+	@Column(name = "player")
+	@NotNull
+	private Integer player;
+	
 	@Column(name = "points")
 	@NotNull
 	private Integer points;

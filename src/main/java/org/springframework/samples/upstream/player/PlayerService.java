@@ -74,7 +74,12 @@ public class PlayerService {
 		
 	}		
 	
-	public Boolean checkAdminAndInitiatedUser(String username) {
+	public void delete(Player player) {
+		playerRepository.delete(player);
+	}
+
+
+  public Boolean checkAdminAndInitiatedUser(String username) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User currentUser = (User)authentication.getPrincipal();
 		String currentUsername = currentUser.getUsername();
@@ -89,6 +94,5 @@ public class PlayerService {
 		}
 		return false;
 	}
-	
 
 }
