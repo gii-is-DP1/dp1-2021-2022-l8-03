@@ -59,5 +59,8 @@ public interface PlayerRepository extends CrudRepository<Player, Integer> {
 	 */	
 	@Query("SELECT player FROM Player player left join fetch player.pets WHERE player.id =:id")
 	public Player findById(@Param("id") int id);
-
+	
+	@Query(value="SELECT * FROM Players WHERE username=:username", nativeQuery=true)
+	public Player findByUsername(@Param("username") String username);
+	
 }
