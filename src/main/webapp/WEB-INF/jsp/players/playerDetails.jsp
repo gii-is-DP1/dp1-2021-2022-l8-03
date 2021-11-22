@@ -22,18 +22,17 @@
         </tr>
     </table>
 	
-	<sec:authorize access="hasAuthority('admin')">
+		<c:if test = "${permission}">
 		<spring:url value="{playerId}/edit" var="editUrl">
         	<spring:param name="playerId" value="${player.id}"/>
     	</spring:url>
     	<a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Edit Player</a>
-    </sec:authorize>
     
-    <spring:url value="{playerId}/pets/new" var="addUrl">
-       	<spring:param name="playerId" value="${player.id}"/>
-    </spring:url>
-    <a href="${fn:escapeXml(addUrl)}" class="btn btn-default">Add New Pet</a>
-		
+    	<spring:url value="{playerId}/pets/new" var="addUrl">
+       		<spring:param name="playerId" value="${player.id}"/>
+    	</spring:url>
+    	<a href="${fn:escapeXml(addUrl)}" class="btn btn-default">Add New Pet</a>
+		</c:if>
 	
 
     

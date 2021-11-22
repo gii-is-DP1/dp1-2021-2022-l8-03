@@ -25,10 +25,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -120,11 +116,9 @@ public class PlayerController {
 	public String initUpdatePlayerForm(@PathVariable("playerId") int playerId, Model model) {
 		Player player = this.playerService.findPlayerById(playerId);
 		String username = player.getUser().getUsername();
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		User currentUser = (User)authentication.getPrincipal();
-		String currentUsername = currentUser.getUsername();
-		if(!username.equals(currentUsername) && !checkAdmin(currentUser)) {
-			return "exception";		//HAY QUE HACER UN MENSAJE DE ERROR EN CONDICIONES
+		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
+		if(permission) {
+			return "exception";
 		} else {
 			model.addAttribute(player);
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
@@ -132,15 +126,7 @@ public class PlayerController {
 		
 	}
 	
-	private Boolean checkAdmin(User user) {
-		Collection<GrantedAuthority> authorities = user.getAuthorities();
-		for(GrantedAuthority g : authorities) {
-			if(g.toString().equals("admin")) {
-				return true;
-			}
-		}
-		return false;
-	}
+	
 
 	@PostMapping(value = "/players/{playerId}/edit")
 	public String processUpdatePlayerForm(@Valid Player player, BindingResult result,
@@ -178,7 +164,11 @@ public class PlayerController {
 	@GetMapping("/players/{playerId}")
 	public ModelAndView showPlayer(@PathVariable("playerId") int playerId) {
 		ModelAndView mav = new ModelAndView("players/playerDetails");
-		mav.addObject(this.playerService.findPlayerById(playerId));
+		Player player = this.playerService.findPlayerById(playerId);
+		String username = player.getUser().getUsername();
+		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
+		mav.addObject(player);
+		mav.addObject("permission", !permission);
 		return mav;
 	}
 
