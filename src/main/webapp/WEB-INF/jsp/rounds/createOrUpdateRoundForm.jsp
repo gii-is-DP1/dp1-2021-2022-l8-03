@@ -17,33 +17,27 @@
 		        <div class="row-md">
 		        	<label>Game mode:
 			            <div class="control-group"> 
-			            		<label for="rapids">Whirlpool</label>
+			            		<label for="whirlpool">Whirlpool</label>
 			                    <input type="radio" name="Whirlpool" value="true">
-			  					<label for="whirlpool"> yes</label> 
-			  					<input type="radio" name="Whirlpool" value="false">
-			  					<label for="whirlpool"> no</label>
+			  					<label for="whirlpool"> Yes</label> 
+			  					<input type="radio" name="Whirlpool" value="false" checked>
+			  					<label for="whirlpool"> No</label>
 			  					<br>
 			  					<label for="rapids">Rapids</label> 
-			  					<input type="radio" name="rapids" value="true">
-			  					<label for="whirlpool"> yes</label> 
-			  					<input type="radio" name="rapids" value="false">
-			  					<label for="whirlpool"> no</label>
+			  					<input type="radio" name="rapids" value="true">Yes 
+			  					<input type="radio" name="rapids" value="false" checked>No
 			            </div>
 		        	</label>
 		        </div>
 		        <div class="row-md">
-		 			<label>Players number
-			            <select label="Players number" name="num_players">
-							 <option>2</option>
-							 <option>3</option>
-							 <option>4</option>
-							 <option>5</option>
-						</select>
-					</label>
+		 			<label for="num_players">Players number</label>
+			        <select label="Players number" name="num_players" id="num_players">
+						<option value=2>2</option>
+						<option value=3>3</option>
+						<option value=4>4</option>
+						<option value=5>5</option>
+					</select>
 				</div>
-				<petclinic:inputField label="matchStart" name="match_start"/>
-	            <petclinic:inputField label="matchEnd" name="match_end"/>
-	            <petclinic:inputField label="turnStart" name="turn_start"/>
 			</div>
         </div>
         <div class="form-group">

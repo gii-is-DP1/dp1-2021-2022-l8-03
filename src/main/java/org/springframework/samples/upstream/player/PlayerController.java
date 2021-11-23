@@ -128,6 +128,9 @@ public class PlayerController {
 	public String initUpdatePlayerForm(@PathVariable("playerId") int playerId, Model model) {
 		Player player = this.playerService.findPlayerById(playerId);
 		String username = player.getUser().getUsername();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		String currentUsername = currentUser.getUsername();
 		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
 		if(permission) {
 			return "exception";
