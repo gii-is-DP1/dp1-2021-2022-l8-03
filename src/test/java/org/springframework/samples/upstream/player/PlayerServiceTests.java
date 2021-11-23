@@ -86,11 +86,13 @@ class PlayerServiceTests {
 	
 	@Test
 	@Transactional
-	@WithMockUser(username = "admin1")
-	public void shouldDeletePlayer() {
+	@WithMockUser(authorities = "admin")
+	public void shouldDeletePlayer() {               
         Player playerToDelete = playerService.findPlayerByUsername("cardelbec");
-        playerService.delete(playerToDelete);       
+        assertThat(playerToDelete).isNotEqualTo(null);
         
+        playerService.delete(playerToDelete);     
+
         Player deletedPlayer = playerService.findPlayerByUsername("cardelbec");
         assertThat(deletedPlayer).isEqualTo(null);
 	}
