@@ -124,7 +124,7 @@ public class PlayerController {
 		User currentUser = (User)authentication.getPrincipal();
 		String currentUsername = currentUser.getUsername();
 		if(!username.equals(currentUsername) && !checkAdmin(currentUser)) {
-			return "exception";		//HAY QUE HACER UN MENSAJE DE ERROR EN CONDICIONES
+			return "You are not allowed to update this player";	
 		} else {
 			model.addAttribute(player);
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
