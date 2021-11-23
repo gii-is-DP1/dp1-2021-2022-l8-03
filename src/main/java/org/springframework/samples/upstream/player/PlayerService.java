@@ -100,7 +100,8 @@ public class PlayerService {
 			authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");		
 	}	
 	
-	public void delete(Player player) {
+	@Transactional
+	public void delete(Player player) throws DataAccessException {
 		Collection<Round> rounds=roundRepository.findRoundByPlayerId(player.getId());
 		if(checkAdmin()) {
 			if(!rounds.isEmpty()) {

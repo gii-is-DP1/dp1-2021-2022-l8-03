@@ -13,11 +13,5 @@ public class ScoreServiceTest {
 	
 	@Autowired
 	private ScoreService scoreService;
-	
-	@Test
-	public void testCountWithInititalData() {
-		int count=scoreService.scoreCount();
-		assertEquals(count,0);
-	}
 
 }
