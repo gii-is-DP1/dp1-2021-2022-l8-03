@@ -26,6 +26,10 @@ import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,23 +78,68 @@ public class PlayerService {
 
 	@Transactional
 	public void savePlayer(Player player) throws DataAccessException {
-		//creating player
-		playerRepository.save(player);		
-		//creating user
-		userService.saveUser(player.getUser());
-		//creating authorities
-		authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");
-	}
+		String username = player.getUser().getUsername();
+		if(checkAdminAndInitiatedUser(username)) {
+			//creating player
+			playerRepository.save(player);		
+			//creating user
+			userService.saveUser(player.getUser());
+			//creating authorities
+			authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");
+		}
+		
+	}	
+	
+	@Transactional
+	public void saveNewPlayer(Player player) throws DataAccessException {
+			//creating player
+			playerRepository.save(player);		
+			//creating user
+			userService.saveUser(player.getUser());
+			//creating authorities
+			authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");		
+	}	
 	
 	public void delete(Player player) {
 		Collection<Round> rounds=roundRepository.findRoundByPlayerId(player.getId());
-		if(!rounds.isEmpty()) {
-			for(Round r:rounds) {
-				actingPlayerRepository.delete(actingPlayerRepository.findByRound(r.getId()));
-				roundRepository.delete(roundRepository.findById(r.getId()).get());
+		if(checkAdmin()) {
+			if(!rounds.isEmpty()) {
+				for(Round r:rounds) {
+					actingPlayerRepository.delete(actingPlayerRepository.findByRound(r.getId()));
+					roundRepository.delete(roundRepository.findById(r.getId()).get());
+				}
+			}
+			playerRepository.delete(player);
+		}
+	}
+
+
+  public Boolean checkAdminAndInitiatedUser(String username) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		String currentUsername = currentUser.getUsername();
+		if(username.equals(currentUsername)) {
+			return true;
+		}
+		Collection<GrantedAuthority> authorities = currentUser.getAuthorities();
+		for(GrantedAuthority g : authorities) {
+			if(g.toString().equals("admin")) {
+				return true;
 			}
 		}
-		playerRepository.delete(player);
+		return false;
 	}
+  
+  public Boolean checkAdmin() {
+	  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	  User currentUser = (User)authentication.getPrincipal(); 
+	  Collection<GrantedAuthority> authorities = currentUser.getAuthorities();
+	  for(GrantedAuthority g : authorities) {
+		  if(g.toString().equals("admin")) {
+			  return true;
+		  }
+	  }
+	  return false;
+  }
 
 }
