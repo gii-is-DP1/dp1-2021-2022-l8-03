@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.upstream.user.User;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,14 +71,28 @@ class PlayerServiceTests {
 		players = this.playerService.findPlayerByLastName("Daviss");
 		assertThat(players.isEmpty()).isTrue();
 	}
-
+	
 	@Test
-	void shouldFindSinglePlayerWithPet() {
+	void shouldFindPlayersById() {
 		Player player = this.playerService.findPlayerById(1);
-		assertThat(player.getLastName()).startsWith("Franklin");
-		assertThat(player.getPets().size()).isEqualTo(1);
-		assertThat(player.getPets().get(0).getType()).isNotNull();
-		assertThat(player.getPets().get(0).getType().getName()).isEqualTo("cat");
+		assertThat(player.getUser().getUsername()).isEqualTo("player1");
+	}
+	
+	@Test
+	void shouldFindPlayersByUsername() {
+		Player player = this.playerService.findPlayerByUsername("player1");
+		assertThat(player.getUser().getUsername()).isEqualTo("player1");
+	}
+	
+	@Test
+	@Transactional
+	@WithMockUser(username = "admin1")
+	public void shouldDeletePlayer() {
+        Player playerToDelete = playerService.findPlayerByUsername("cardelbec");
+        playerService.delete(playerToDelete);       
+        
+        Player deletedPlayer = playerService.findPlayerByUsername("cardelbec");
+        assertThat(deletedPlayer).isEqualTo(null);
 	}
 
 	@Test
@@ -96,7 +111,7 @@ class PlayerServiceTests {
                 user.setEnabled(true);
                 player.setUser(user);                
                 
-		this.playerService.savePlayer(player);
+		this.playerService.saveNewPlayer(player);
 		assertThat(player.getId().longValue()).isNotEqualTo(0);
 
 		players = this.playerService.findPlayerByLastName("Schultz");
@@ -105,11 +120,13 @@ class PlayerServiceTests {
 
 	@Test
 	@Transactional
+	@WithMockUser(username = "player1")
 	void shouldUpdatePlayer() {
 		Player player = this.playerService.findPlayerById(1);
 		String oldLastName = player.getLastName();
 		String newLastName = oldLastName + "X";
-
+		
+		
 		player.setLastName(newLastName);
 		this.playerService.savePlayer(player);
 

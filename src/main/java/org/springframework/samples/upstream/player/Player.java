@@ -29,6 +29,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.support.MutableSortDefinition;
@@ -56,6 +57,7 @@ public class Player extends Person {
 
 	@Column(name = "email")
 	@NotEmpty
+	@Email
 	private String email;
 	
 
