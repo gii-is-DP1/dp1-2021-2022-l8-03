@@ -16,6 +16,7 @@
 package org.springframework.samples.upstream.player;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,6 +24,8 @@ import javax.validation.Valid;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
 import org.springframework.security.core.Authentication;
@@ -104,9 +107,11 @@ public class PlayerController {
 		if (player.getLastName() == null) {
 			player.setLastName(""); // empty string signifies broadest possible search
 		}
+		
+		Pageable pageable = PageRequest.of(0, 5);
+        List<Player> results = this.playerService.findPlayerByLastNamePageable(player.getLastName(), pageable);
 
 		// find players by last name
-		Collection<Player> results = this.playerService.findPlayerByLastName(player.getLastName());
 		if (results.isEmpty()) {
 			// no players found
 			result.rejectValue("lastName", "notFound", "not found");
