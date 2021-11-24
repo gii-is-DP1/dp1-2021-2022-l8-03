@@ -67,21 +67,36 @@ class PlayerServiceTests {
 	void shouldFindPlayersByLastName() {
 		Collection<Player> players = this.playerService.findPlayerByLastName("Davis");
 		assertThat(players.size()).isEqualTo(2);
-
-		players = this.playerService.findPlayerByLastName("Daviss");
+	}
+	
+	@Test
+	void shouldNotFindPlayersByLastName() {
+		Collection<Player> players = this.playerService.findPlayerByLastName("Daviss");
 		assertThat(players.isEmpty()).isTrue();
 	}
 	
 	@Test
-	void shouldFindPlayersById() {
+	void shouldFindPlayerById() {
 		Player player = this.playerService.findPlayerById(1);
 		assertThat(player.getUser().getUsername()).isEqualTo("player1");
 	}
 	
 	@Test
-	void shouldFindPlayersByUsername() {
+	void shouldNotFindPlayerById() {
+		Player player = this.playerService.findPlayerById(250);
+		assertThat(player).isEqualTo(null);
+	}
+	
+	@Test
+	void shouldFindPlayerByUsername() {
 		Player player = this.playerService.findPlayerByUsername("player1");
 		assertThat(player.getUser().getUsername()).isEqualTo("player1");
+	}
+	
+	@Test
+	void shouldNotFindPlayerByUsername() {
+		Player player = this.playerService.findPlayerByUsername("fekir");
+		assertThat(player).isEqualTo(null);
 	}
 	
 	@Test
@@ -95,6 +110,20 @@ class PlayerServiceTests {
 
         Player deletedPlayer = playerService.findPlayerByUsername("cardelbec");
         assertThat(deletedPlayer).isEqualTo(null);
+	}
+	
+	@Test
+	@Transactional
+	@WithMockUser(authorities = "player")
+	public void shouldNotDeletePlayer() {
+		Player playerToDelete = playerService.findPlayerByUsername("manlopalm");
+		assertThat(playerToDelete).isNotEqualTo(null);
+		
+		playerService.delete(playerToDelete);
+		
+		Player deletedPlayer = playerService.findPlayerByUsername("manlopalm");
+        assertThat(deletedPlayer).isNotEqualTo(null);
+		
 	}
 
 	@Test
@@ -119,6 +148,29 @@ class PlayerServiceTests {
 		players = this.playerService.findPlayerByLastName("Schultz");
 		assertThat(players.size()).isEqualTo(found + 1);
 	}
+	
+	/*@Test
+	@Transactional
+	public void shouldNotInsertPlayer() {
+		Collection<Player> players = this.playerService.findPlayerByLastName("Daviss");
+		int found = players.size();
+
+		Player player = new Player();
+		player.setFirstName("Sam");
+		player.setLastName("Schultz");
+		player.setEmail("ejemplo@gmail.com");
+                User user=new User();
+                user.setUsername("Sam");
+                user.setPassword("supersecretpassword");
+                user.setEnabled(true);
+                player.setUser(user);                
+                
+		this.playerService.saveNewPlayer(player);
+		assertThat(player.getId().longValue()).isNotEqualTo(0);
+
+		players = this.playerService.findPlayerByLastName("Schultz");
+		assertThat(players.size()).isEqualTo(found + 1);
+	}*/
 	
 
 //H14
@@ -150,6 +202,23 @@ class PlayerServiceTests {
 	@Transactional
 	@WithMockUser(username = "player1")
 	void shouldUpdatePlayer() {
+		Player player = this.playerService.findPlayerById(1);
+		String oldLastName = player.getLastName();
+		String newLastName = oldLastName + "X";
+		
+		
+		player.setLastName(newLastName);
+		this.playerService.savePlayer(player);
+
+		// retrieving new name from database
+		player = this.playerService.findPlayerById(1);
+		assertThat(player.getLastName()).isEqualTo(newLastName);
+	}
+	
+	@Test
+	@Transactional
+	@WithMockUser(authorities = "player")
+	void shouldNotUpdatePlayer() {
 		Player player = this.playerService.findPlayerById(1);
 		String oldLastName = player.getLastName();
 		String newLastName = oldLastName + "X";
