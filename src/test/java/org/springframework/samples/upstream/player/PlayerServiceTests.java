@@ -119,11 +119,56 @@ class PlayerServiceTests {
 		players = this.playerService.findPlayerByLastName("Schultz");
 		assertThat(players.size()).isEqualTo(found + 1);
 	}
+	
+
+//H14
+	@Test
+	@Transactional
+	@WithMockUser(authorities = "admin")
+	public void shouldInsertPlayerBeingAdmin() {
+		Collection<Player> players = this.playerService.findPlayerByLastName("Swift");
+		int found = players.size();
+
+		Player player = new Player();
+		player.setFirstName("Jonathan");
+		player.setLastName("Swift");
+		player.setEmail("jonas@gmail.com");
+                User user=new User();
+                user.setUsername("Jonathan");
+                user.setPassword("1234");
+                user.setEnabled(true);
+                player.setUser(user);                
+                
+		this.playerService.saveNewPlayer(player);
+		assertThat(player.getId().longValue()).isNotEqualTo(0);
+
+		players = this.playerService.findPlayerByLastName("Swift");
+		assertThat(players.size()).isEqualTo(found + 1);
+	}
 
 	@Test
 	@Transactional
 	@WithMockUser(username = "player1")
 	void shouldUpdatePlayer() {
+		Player player = this.playerService.findPlayerById(1);
+		String oldLastName = player.getLastName();
+		String newLastName = oldLastName + "X";
+		
+		
+		player.setLastName(newLastName);
+		this.playerService.savePlayer(player);
+
+		// retrieving new name from database
+		player = this.playerService.findPlayerById(1);
+		assertThat(player.getLastName()).isEqualTo(newLastName);
+	}
+
+	
+//H14
+	@Test
+	@Transactional
+	@WithMockUser(authorities = "admin")
+	void shouldUpdatePlayerBeingAdmin() {
 		Player player = this.playerService.findPlayerById(1);
 		String oldLastName = player.getLastName();
 		String newLastName = oldLastName + "X";
