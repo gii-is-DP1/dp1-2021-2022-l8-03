@@ -49,7 +49,8 @@ public interface PlayerRepository extends CrudRepository<Player, Integer> {
 	 */	
 	@Query("SELECT DISTINCT player FROM Player player left join fetch player.pets WHERE player.lastName LIKE :lastName%")
 	public Collection<Player> findByLastName(@Param("lastName") String lastName);
-
+	
+	public Collection<Player> findAll() throws DataAccessException;
 
 	/**
 	 * Retrieve an <code>Player</code> from the data store by id.

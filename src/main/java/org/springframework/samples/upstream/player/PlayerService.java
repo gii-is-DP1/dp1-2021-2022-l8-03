@@ -90,6 +90,11 @@ public class PlayerService {
 		
 	}	
 	
+	@Transactional(readOnly = true)
+    public Collection<Player> findAll() throws DataAccessException {
+        return playerRepository.findAll();
+    }
+	
 	@Transactional
 	public void saveNewPlayer(Player player) throws DataAccessException {
 			//creating player
