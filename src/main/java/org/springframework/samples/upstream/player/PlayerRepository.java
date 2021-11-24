@@ -16,8 +16,10 @@
 package org.springframework.samples.upstream.player;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
@@ -50,7 +52,12 @@ public interface PlayerRepository extends CrudRepository<Player, Integer> {
 	@Query("SELECT DISTINCT player FROM Player player left join fetch player.pets WHERE player.lastName LIKE :lastName%")
 	public Collection<Player> findByLastName(@Param("lastName") String lastName);
 	
+	@Query("SELECT DISTINCT player FROM Player player left join fetch player.pets WHERE player.lastName LIKE :lastName%")
+    public List<Player> findByLastNamePageable(@Param("lastName") String lastName, Pageable pageable);
+	
 	public Collection<Player> findAll() throws DataAccessException;
+	
+	
 
 	/**
 	 * Retrieve an <code>Player</code> from the data store by id.
