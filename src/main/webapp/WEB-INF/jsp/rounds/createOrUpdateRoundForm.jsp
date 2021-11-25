@@ -45,10 +45,10 @@
                 <c:choose>
                     <c:when test="${round['new']}">
                         <button class="btn btn-default" type="submit">Add round</button>
-                    </c:when>
+                    </c:when>               
                     <c:otherwise>
                         <button class="btn btn-default" type="submit">Update round</button>
-                    </c:otherwise>
+                    </c:otherwise>                    
                 </c:choose>
             </div>
         </div>

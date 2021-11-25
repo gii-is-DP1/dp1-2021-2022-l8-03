@@ -51,13 +51,15 @@
                 </td>
                 <td>
                     <c:out value="${round.turn_start}"/>
-                </td>    
-                <td>
+                </td>   
+                <!--
+                <td>                
                 	<spring:url value="/rounds/{roundId}/edit" var="roundUrl">
                         <spring:param name="roundId" value="${round.id}"/>
                     </spring:url>
                     <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Update round</href></a>
-                </td>
+                </td>    
+                -->         
             </tr>
         </c:forEach>
         </tbody>

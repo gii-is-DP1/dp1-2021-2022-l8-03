@@ -61,7 +61,7 @@ public class RoundController {
 		else {
 			round.setPlayer(player);
 			this.roundService.saveRound(round);
-			return "redirect:/rounds/" + round.getId();
+			return "redirect:/rounds/";
 		}
 	}
 	
