@@ -16,10 +16,17 @@
 package org.springframework.samples.upstream.player;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collection;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+
+import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,6 +34,7 @@ import org.springframework.samples.upstream.user.User;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
  * Integration test of the Service and the Repository layer.
@@ -62,6 +70,12 @@ import org.springframework.transaction.annotation.Transactional;
 class PlayerServiceTests {                
         @Autowired
 	protected PlayerService playerService;
+        
+    private Validator createValidator() {
+    	LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+    	localValidatorFactoryBean.afterPropertiesSet();
+    	return localValidatorFactoryBean;
+    }
 
 	@Test
 	void shouldFindPlayersByLastName() {
@@ -149,28 +163,22 @@ class PlayerServiceTests {
 		assertThat(players.size()).isEqualTo(found + 1);
 	}
 	
-	/*@Test
+	@Test
 	@Transactional
 	public void shouldNotInsertPlayer() {
-		Collection<Player> players = this.playerService.findPlayerByLastName("Daviss");
-		int found = players.size();
 
 		Player player = new Player();
 		player.setFirstName("Sam");
 		player.setLastName("Schultz");
-		player.setEmail("ejemplo@gmail.com");
-                User user=new User();
-                user.setUsername("Sam");
-                user.setPassword("supersecretpassword");
-                user.setEnabled(true);
-                player.setUser(user);                
-                
-		this.playerService.saveNewPlayer(player);
-		assertThat(player.getId().longValue()).isNotEqualTo(0);
+		player.setEmail("");
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Player>> constraintViolations = validator.validate(player);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+		ConstraintViolation<Player> violation = constraintViolations.iterator().next();
+		assertThat(violation.getPropertyPath().toString()).isEqualTo("email");
+		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
 
-		players = this.playerService.findPlayerByLastName("Schultz");
-		assertThat(players.size()).isEqualTo(found + 1);
-	}*/
+	}
 	
 
 //H14
