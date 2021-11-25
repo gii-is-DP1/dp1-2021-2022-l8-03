@@ -13,7 +13,7 @@
     <h2>Find Players</h2>
 
     
-    <form:form modelAttribute="player" action="/players" method="get" class="form-horizontal"
+    <form:form modelAttribute="player" action="/players?page=0&size=6" method="get" class="form-horizontal"
                id="search-player-form">
         <div class="form-group">
             <div class="control-group" id="lastName">

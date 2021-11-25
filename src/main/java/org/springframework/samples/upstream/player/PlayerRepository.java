@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -49,11 +50,11 @@ public interface PlayerRepository extends CrudRepository<Player, Integer> {
 	 * @return a <code>Collection</code> of matching <code>Player</code>s (or an empty
 	 * <code>Collection</code> if none found)
 	 */	
-	@Query("SELECT DISTINCT player FROM Player player left join fetch player.pets WHERE player.lastName LIKE :lastName%")
+	@Query("SELECT DISTINCT player FROM Player player WHERE player.lastName LIKE :lastName%")
 	public Collection<Player> findByLastName(@Param("lastName") String lastName);
 	
-	@Query("SELECT DISTINCT player FROM Player player left join fetch player.pets WHERE player.lastName LIKE :lastName%")
-    public List<Player> findByLastNamePageable(@Param("lastName") String lastName, Pageable pageable);
+	@Query("SELECT DISTINCT player FROM Player player WHERE player.lastName LIKE :lastName%")
+    public Page<Player> findByLastNamePageable(@Param("lastName") String lastName, Pageable pageable);
 	
 	public Collection<Player> findAll() throws DataAccessException;
 	

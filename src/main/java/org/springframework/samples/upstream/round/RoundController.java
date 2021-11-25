@@ -50,7 +50,7 @@ public class RoundController {
 	}
 	
 	@PostMapping(value="/rounds/new")
-	public String processCreationForm(@Valid Round round, BindingResult result) {	
+	public String processCreationForm(@Valid Round round, BindingResult result) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User currentUser = (User)authentication.getPrincipal();
 		String currentUsername = currentUser.getUsername();

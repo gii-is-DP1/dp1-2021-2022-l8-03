@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.upstream.actingPlayer.ActingPlayerRepository;
 import org.springframework.samples.upstream.round.Round;
@@ -73,7 +74,7 @@ public class PlayerService {
 	}
 	
 	@Transactional(readOnly = true)
-    public List<Player> findPlayerByLastNamePageable(String lastName, Pageable pageable) throws DataAccessException {
+    public Page<Player> findPlayerByLastNamePageable(String lastName, Pageable pageable) throws DataAccessException {
         return playerRepository.findByLastNamePageable(lastName, pageable);
     }
 	
