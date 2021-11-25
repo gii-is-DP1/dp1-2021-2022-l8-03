@@ -24,6 +24,7 @@ import javax.validation.Valid;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.upstream.user.AuthoritiesService;
@@ -41,6 +42,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -97,8 +99,7 @@ public class PlayerController {
 	}
 
 	@GetMapping(value = "/players")
-	public String processFindForm(Player player, BindingResult result, Map<String, Object> model) {
-		
+	public String processFindForm(Player player, BindingResult result, Map<String, Object> model,Pageable pageable) {
 		Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
 			return "exception";
@@ -107,17 +108,17 @@ public class PlayerController {
 		if (player.getLastName() == null) {
 			player.setLastName(""); // empty string signifies broadest possible search
 		}
-		
-		Pageable pageable = PageRequest.of(0, 5);
-        List<Player> results = this.playerService.findPlayerByLastNamePageable(player.getLastName(), pageable);
-
-		// find players by last name
+        Page<Player> results = this.playerService.findPlayerByLastNamePageable(player.getLastName(), pageable);
+        boolean esPrimera=results.isFirst();
+        boolean esUltima=results.isLast();
+        
+        // find players by last name
 		if (results.isEmpty()) {
 			// no players found
 			result.rejectValue("lastName", "notFound", "not found");
 			return "players/findPlayers";
 		}
-		else if (results.size() == 1) {
+		else if (results.getSize() == 1) {
 			// 1 player found
 			player = results.iterator().next();
 			return "redirect:/players/" + player.getId();
@@ -125,6 +126,8 @@ public class PlayerController {
 		else {
 			// multiple players found
 			model.put("selections", results);
+			model.put("esPrimero",!esPrimera);
+			model.put("esUltima",!esUltima);
 			return "players/playersList";
 		}
 	}

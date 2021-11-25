@@ -20,7 +20,7 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${selections}" var="player">
+        <c:forEach items="${selections.content}" var="player">
             <tr>
                 <td>
                     <spring:url value="/players/{playerId}" var="playerUrl">
@@ -48,20 +48,24 @@
                         <spring:param name="playerId" value="${player.id}"/>
                     </spring:url>
                     <a href="${fn:escapeXml(playerUrl)}" class="btn btn-default" type="submit">Delete player</href></a>
-                </td>
-                
-      
-<!--
-                <td> 
-                    <c:out value="${player.user.username}"/> 
-                </td>
-                <td> 
-                   <c:out value="${player.user.password}"/> 
-                </td> 
--->
-                
+                </td>              
             </tr>
         </c:forEach>
+
+			<c:if test="${esPrimera}">
+	                    <spring:url value="/players?page={pageNumber}&size=6" var="previousUrl">
+	                        <spring:param name="pageNumber" value="${selections.number-1}"/>
+	                    </spring:url>
+	                    <a href="${fn:escapeXml(previousUrl)}" class="btn btn-default" type="submit">Previous page</href></a>
+	        </c:if>      
+	        <c:if test="${esUltima}">            
+	                    <spring:url value="/players?page={pageNumber}&size=6" var="nextUrl">
+	                        <spring:param name="pageNumber" value="${selections.number+1}"/>
+	                    </spring:url>
+	                    <a href="${fn:escapeXml(nextUrl)}" class="btn btn-default" type="submit">Next page</href></a>
+	        </c:if>     
+
+    
         </tbody>
     </table>
 </petclinic:layout>

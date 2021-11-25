@@ -11,17 +11,17 @@
         <c:if test="${round['new']}">New </c:if> 
         <c:if test="${!round['new']}">Update </c:if> round
     </h2>
-    <form:form modelAttribute="round" class="form-horizontal" id="add-round-form" action="/rounds">
+    <form:form modelAttribute="round" class="form-horizontal" id="add-round-form">
         <div class="form-group has-feedback">
         	<div class="col-sm-offset-2 col-sm-10">
 		        <div class="row-md">
 		        	<label>Game mode:
 			            <div class="control-group"> 
-			            		<label for="whirlpool">Whirlpool</label>
-			                    <input type="radio" name="Whirlpool" value="true">
-			  					<label for="whirlpool"> Yes</label> 
-			  					<input type="radio" name="Whirlpool" value="false" checked>
-			  					<label for="whirlpool"> No</label>
+			            		<label for="whirlpools">Whirlpool</label>
+			                    <input type="radio" name="whirlpools" value="true">
+			  					<label for="whirlpools"> Yes</label> 
+			  					<input type="radio" name="whirlpools" value="false" checked>
+			  					<label for="whirlpools"> No</label>
 			  					<br>
 			  					<label for="rapids">Rapids</label> 
 			  					<input type="radio" name="rapids" value="true">Yes 
