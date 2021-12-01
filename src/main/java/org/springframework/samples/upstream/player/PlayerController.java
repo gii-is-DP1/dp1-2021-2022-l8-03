@@ -137,9 +137,6 @@ public class PlayerController {
 	public String initUpdatePlayerForm(@PathVariable("playerId") int playerId, Model model) {
 		Player player = this.playerService.findPlayerById(playerId);
 		String username = player.getUser().getUsername();
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		User currentUser = (User)authentication.getPrincipal();
-		String currentUsername = currentUser.getUsername();
 		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
 		if(permission) {
 			return "exception";
@@ -160,9 +157,9 @@ public class PlayerController {
 		}
 		else {
 			player.setId(playerId);
-			player.getUser().setPassword(this.playerService.findPlayerById(playerId).getUser().getPassword());
 			this.playerService.savePlayer(player);
 			return "redirect:/players/{playerId}";
+			
 		}
 	}
 	
@@ -171,7 +168,7 @@ public class PlayerController {
 		String view = "/players/playersList";
 		Player player = this.playerService.findPlayerById(playerId);
 		if(!player.equals(null)) {
-			playerService.delete(player);
+			this.playerService.delete(player);
 			model.addAttribute("message","Player successfully deleted");
 		}
 		else {

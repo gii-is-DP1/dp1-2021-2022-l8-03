@@ -109,6 +109,46 @@ public class PlayerControllerTests {
 				.andExpect(model().attributeHasFieldErrors("player", "lastName"))
 				.andExpect(model().attributeHasFieldErrorCode("player", "lastName", "notFound"))
 				.andExpect(view().name("players/findPlayers"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testInitUpdatePlayerForm() throws Exception {
+		mockMvc.perform(get("/players/{playerId}/edit", TEST_PLAYER_ID)).andExpect(status().isOk())
+				.andExpect(model().attributeExists("player"))
+				.andExpect(model().attribute("player", hasProperty("lastName", is("Franklin"))))
+				.andExpect(model().attribute("player", hasProperty("firstName", is("George"))))
+				.andExpect(model().attribute("player", hasProperty("email", is("ejemplo@gmail.com"))))
+				.andExpect(view().name("players/createOrUpdatePlayerForm"));
+	}*/
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessUpdatePlayerFormSuccess() throws Exception {
+		mockMvc.perform(post("/players/{playerId}/edit", TEST_PLAYER_ID).with(csrf()).param("firstName", "Juan")
+				.param("lastName", "Diaz").param("email", "ejemplo2@gmail.com"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/players/{playerId}"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessUpdatePlayerFormHasErrors() throws Exception {
+		mockMvc.perform(post("/players/{playerId}/edit", TEST_PLAYER_ID).with(csrf()).param("firstName", "Juan")
+				.param("lastName", "Diaz")).andExpect(status().isOk())
+				.andExpect(model().attributeHasErrors("player"))
+				.andExpect(model().attributeHasFieldErrors("player", "email"))
+				.andExpect(view().name("players/createOrUpdatePlayerForm"));
+	}
+	
+	/*@WithMockUser(value = "spring")
+	@Test
+	void testShowPlayer() throws Exception {
+		mockMvc.perform(get("/players/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk())
+				.andExpect(model().attribute("player", hasProperty("lastName", is("Franklin"))))
+				.andExpect(model().attribute("player", hasProperty("firstName", is("George"))))
+				.andExpect(model().attribute("player", hasProperty("email", is("ejemplo@gmail.com"))))
+				.andExpect(view().name("players/playersDetails"));
 	}*/
 
 }
