@@ -26,6 +26,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -73,6 +74,10 @@ public class Player extends Person {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
     private Collection<Round> rounds;
 	
+	@ManyToOne(optional = true)
+    @JoinColumn(name = "round_id")
+    private Round round;
+
 	//
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")
@@ -85,6 +90,14 @@ public class Player extends Person {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public Round getRound() {
+		return round;
+	}
+	
+	public void setRound(Round round) {
+		this.round = round;
 	}
 	
 	public String getEmail() {
