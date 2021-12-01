@@ -101,17 +101,25 @@ public class PlayerController {
 		if (player.getLastName() == null) {
 			player.setLastName(""); // empty string signifies broadest possible search
 		}
-        Page<Player> results = this.playerService.findPlayerByLastNamePageable(player.getLastName(), pageable);
+		
+		Page<Player> results=null;
+		
+		if(player.getLastName()=="") {
+			results = this.playerService.findAllPageable(pageable);
+		}else {
+			results = this.playerService.findPlayerByLastNamePageable(player.getLastName(), pageable);
+		}
+		
         boolean esPrimera=results.isFirst();
         boolean esUltima=results.isLast();
-        
         // find players by last name
 		if (results.isEmpty()) {
 			// no players found
 			result.rejectValue("lastName", "notFound", "not found");
 			return "players/findPlayers";
 		}
-		else if (results.getSize() == 1) {
+		
+		else if (results.getTotalElements() == 1) {
 			// 1 player found
 			player = results.iterator().next();
 			return "redirect:/players/" + player.getId();
@@ -119,7 +127,7 @@ public class PlayerController {
 		else {
 			// multiple players found
 			model.put("selections", results);
-			model.put("esPrimero",!esPrimera);
+			model.put("esPrimera",!esPrimera);
 			model.put("esUltima",!esUltima);
 			return "players/playersList";
 		}

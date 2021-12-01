@@ -102,6 +102,11 @@ public class PlayerService {
         return playerRepository.findAll();
     }
 	
+	@Transactional(readOnly = true)
+    public Page<Player> findAllPageable(Pageable pageable) throws DataAccessException {
+        return playerRepository.findAllPageable(pageable);
+    }
+	
 	@Transactional
 	public void saveNewPlayer(Player player) throws DataAccessException {
 			//creating player
