@@ -56,6 +56,9 @@ public interface PlayerRepository extends CrudRepository<Player, Integer> {
 	@Query("SELECT DISTINCT player FROM Player player WHERE player.lastName LIKE :lastName%")
     public Page<Player> findByLastNamePageable(@Param("lastName") String lastName, Pageable pageable);
 	
+	@Query("SELECT DISTINCT player FROM Player player")
+    public Page<Player> findAllPageable(Pageable pageable);
+	
 	public Collection<Player> findAll() throws DataAccessException;
 	
 	

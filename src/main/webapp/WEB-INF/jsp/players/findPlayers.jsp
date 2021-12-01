@@ -19,7 +19,7 @@
             <div class="control-group" id="lastName">
                 <label class="col-sm-2 control-label">Last name </label>
                 <div class="col-sm-10">
-                    <form:input class="form-control" path="lastName" size="30" maxlength="80" placeholder="If you let this field empty you will get the entire list"/>
+                    <form:input class="form-control" path="lastName" size="30" maxlength="80"/>
                     <span class="help-inline"><form:errors path="*"/></span>
                 </div>
             </div>
@@ -27,6 +27,9 @@
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-default">Find Player</button>
+            </div>
+            <div class="col-sm-offset-2 col-sm-10">
+                <a href="/players?page=0&size=6"><button type="button" class="btn btn-default">See All Players</button></a>
             </div>
         </div>
 
