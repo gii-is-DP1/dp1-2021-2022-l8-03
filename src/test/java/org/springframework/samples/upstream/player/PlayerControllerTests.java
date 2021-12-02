@@ -3,15 +3,19 @@ package org.springframework.samples.upstream.player;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import org.springframework.samples.upstream.user.User;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -46,15 +50,22 @@ public class PlayerControllerTests {
 	private MockMvc mockMvc;
 	
 	private Player george;
+	private User userGeorge;
 	
 	@BeforeEach
 	void setup() {
 		george = new Player();
+		userGeorge = new User();
 		george.setId(TEST_PLAYER_ID);
 		george.setFirstName("George");
 		george.setLastName("Franklin");
 		george.setEmail("ejemplo@gmail.com");
+		userGeorge.setUsername("player1");
+		userGeorge.setPassword("0wn3r");
+		george.setUser(userGeorge);
 		given(this.playerService.findPlayerById(TEST_PLAYER_ID)).willReturn(george);
+		when(this.playerService.checkAdminAndInitiatedUser("player1")).thenReturn(true);
+		when(this.playerService.checkAdmin()).thenReturn(true);
 	}
 	
 	@WithMockUser(value = "spring")
@@ -80,13 +91,14 @@ public class PlayerControllerTests {
 				.andExpect(view().name("players/createOrUpdatePlayerForm"));
 	}
 	
-	/*@WithMockUser(value = "spring")
+	@WithMockUser(value = "spring")
 	@Test
 	void testInitFindForm() throws Exception {
 		mockMvc.perform(get("/players/find")).andExpect(status().isOk()).andExpect(model().attributeExists("player"))
 				.andExpect(view().name("players/findPlayers"));
 	}
 	
+	@Disabled
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormSuccess() throws Exception {
@@ -94,6 +106,7 @@ public class PlayerControllerTests {
 		mockMvc.perform(get("/players")).andExpect(status().isOk()).andExpect(view().name("players/playersList"));
 	}
 	
+	@Disabled
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormByLastName() throws Exception {
@@ -102,6 +115,7 @@ public class PlayerControllerTests {
 				.andExpect(view().name("redirect:/players/" + TEST_PLAYER_ID));
 	}
 	
+	@Disabled
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormNoPlayersFound() throws Exception {
@@ -110,6 +124,7 @@ public class PlayerControllerTests {
 				.andExpect(model().attributeHasFieldErrorCode("player", "lastName", "notFound"))
 				.andExpect(view().name("players/findPlayers"));
 	}
+	
 	
 	@WithMockUser(value = "spring")
 	@Test
@@ -120,7 +135,7 @@ public class PlayerControllerTests {
 				.andExpect(model().attribute("player", hasProperty("firstName", is("George"))))
 				.andExpect(model().attribute("player", hasProperty("email", is("ejemplo@gmail.com"))))
 				.andExpect(view().name("players/createOrUpdatePlayerForm"));
-	}*/
+	}
 	
 	@WithMockUser(value = "spring")
 	@Test
@@ -141,14 +156,21 @@ public class PlayerControllerTests {
 				.andExpect(view().name("players/createOrUpdatePlayerForm"));
 	}
 	
-	/*@WithMockUser(value = "spring")
+	@WithMockUser(value = "spring")
 	@Test
 	void testShowPlayer() throws Exception {
 		mockMvc.perform(get("/players/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk())
 				.andExpect(model().attribute("player", hasProperty("lastName", is("Franklin"))))
 				.andExpect(model().attribute("player", hasProperty("firstName", is("George"))))
 				.andExpect(model().attribute("player", hasProperty("email", is("ejemplo@gmail.com"))))
-				.andExpect(view().name("players/playersDetails"));
-	}*/
+				.andExpect(view().name("players/playerDetails"));
+	}
+	
+	@Disabled
+	@WithMockUser(value = "spring")
+	@Test
+	void testDeletePlayer() throws Exception {
+		mockMvc.perform(delete("/players/delete/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk());
+	}
 
 }
