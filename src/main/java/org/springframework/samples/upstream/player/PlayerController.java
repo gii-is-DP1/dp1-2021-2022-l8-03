@@ -70,6 +70,7 @@ public class PlayerController {
 
 	@PostMapping(value = "/players/new")
 	public String processCreationForm(@Valid Player player, BindingResult result) {
+		
 		if (result.hasErrors()) {
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
 		}

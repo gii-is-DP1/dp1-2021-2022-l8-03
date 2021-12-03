@@ -68,12 +68,43 @@ public class RoundController {
 	}
 	
 	@GetMapping(value = "/rounds")
-	public String processFindForm(ModelMap model) {
-		String vista = "rounds/roundList";
-		Iterable<Round> rounds = roundService.findAll();
-		model.addAttribute("rounds", rounds);
-		return vista;
-	}
+    public String processFindForm(ModelMap model) {
+        String vista = "rounds/roundList";
+        Iterable<Round> rounds = roundService.findCreatedRounds();
+        boolean esFinished=false;
+        model.addAttribute("rounds", rounds);
+        model.addAttribute("esFinished",esFinished);
+        return vista;
+    }
+
+    @GetMapping(value = "/rounds/inCourse")
+    public String processFindInCourse(ModelMap model) {
+    	Boolean admin = this.playerService.checkAdmin();
+		if(!admin) {
+			return "exception";
+		}
+    	
+        String vista = "rounds/roundList";
+        Iterable<Round> rounds = roundService.findInCourseRounds();
+        boolean esFinished=false;
+        model.addAttribute("rounds", rounds);
+        model.addAttribute("esFinished",esFinished);
+        return vista;
+    }
+
+    @GetMapping(value = "/rounds/finished")
+    public String processFindfinished(ModelMap model) {
+    	Boolean admin = this.playerService.checkAdmin();
+		if(!admin) {
+			return "exception";
+		}
+        String vista = "rounds/roundList";
+        Iterable<Round> rounds = roundService.findFinishedRounds();
+        boolean esFinished=true;
+        model.addAttribute("rounds", rounds);
+        model.addAttribute("esFinished",esFinished);
+        return vista;
+    }
 	
 	@GetMapping(value = "/rounds/{roundId}/edit")
 	public String initUpdateRoundForm(@PathVariable("roundId") int roundId, Model model) {

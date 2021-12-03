@@ -11,16 +11,28 @@
     <table id="rounds" class="table table-striped">
         <thead>
         <tr>
+        <c:if test="${esFinished}">
             <th>Duration</th>
+        </c:if>
             <th>Rapids</th>
             <th>Whirlpools</th>
             <th>NumPlayers</th>
             <th>RoundCreator</th>
+            
+        <c:if test="${esFinished}">
             <th style="width: 360px">start</th>
+        </c:if>
+        
+        <c:if test="${esFinished}">
             <th style="width: 360px">end</th>
+        </c:if>
+        
+        <c:if test="${esFinished}">
             <th style="width: 360px">turnStart</th>
+        </c:if>
+
             <th> 
-            	<spring:url value="/rounds/new" var="roundUrl"></spring:url>
+                <spring:url value="/rounds/new" var="roundUrl"></spring:url>
                 <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Create round</href></a>
             </th>
         </tr>
@@ -28,9 +40,12 @@
         <tbody>
         <c:forEach items="${rounds}" var="round">
             <tr>
+            
+            <c:if test="${esFinished}">
                 <td>
-                	<c:out value="${round.duration}"/>
+                    <c:out value="${round.duration}"/>
                 </td>
+            </c:if>
                 <td>
                     <c:out value="${round.rapids}"/>
                 </td>
@@ -42,24 +57,22 @@
                 </td>
                 <td>
                     <c:out value="${round.player.user.username}"/>
-                </td>  
+                </td>
+           <c:if test="${esFinished}">  
                 <td>
                     <c:out value="${round.match_start}"/>
                 </td>
+           </c:if>     
+           <c:if test="${esFinished}">
                 <td>
                     <c:out value="${round.match_end}"/>
                 </td>
+           </c:if>     
+           <c:if test="${esFinished}">
                 <td>
                     <c:out value="${round.turn_start}"/>
                 </td>   
-                <!--
-                <td>                
-                	<spring:url value="/rounds/{roundId}/edit" var="roundUrl">
-                        <spring:param name="roundId" value="${round.id}"/>
-                    </spring:url>
-                    <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Update round</href></a>
-                </td>    
-                -->         
+           </c:if>
             </tr>
         </c:forEach>
         </tbody>

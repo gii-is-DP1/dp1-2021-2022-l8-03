@@ -21,6 +21,13 @@ public interface RoundRepository extends CrudRepository<Round, Integer> {
 	@Query(value="SELECT * FROM Rounds WHERE rounds.player_id=:player_id", nativeQuery=true)
 	public Collection<Round> findRoundByPlayerId(@Param("player_id") int player_id);
 	
+	@Query("SELECT DISTINCT round FROM Round round WHERE round.round_state=0")
+    public Collection<Round> findCreatedRounds();
 
+    @Query("SELECT DISTINCT round FROM Round round WHERE round.round_state=1")
+    public Collection<Round> findInCourseRounds();
+
+    @Query("SELECT DISTINCT round FROM Round round WHERE round.round_state=2")
+    public Collection<Round> findFinishedRounds();
 	
 }
