@@ -33,4 +33,19 @@ public class RoundService {
 	public void saveRound(Round round) throws DataAccessException {
 		roundRepository.save(round);
 	}
+	
+	@Transactional(readOnly = true)
+    public Collection<Round> findCreatedRounds() throws DataAccessException {
+        return roundRepository.findCreatedRounds();
+    }
+
+    @Transactional(readOnly = true)
+    public Collection<Round> findInCourseRounds() throws DataAccessException {
+        return roundRepository.findInCourseRounds();
+    }
+
+    @Transactional(readOnly = true)
+    public Collection<Round> findFinishedRounds() throws DataAccessException {
+        return roundRepository.findFinishedRounds();
+    }
 }
