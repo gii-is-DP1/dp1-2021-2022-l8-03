@@ -166,11 +166,11 @@ public class PlayerControllerTests {
 				.andExpect(view().name("players/playerDetails"));
 	}
 	
-	@Disabled
 	@WithMockUser(value = "spring")
 	@Test
 	void testDeletePlayer() throws Exception {
-		mockMvc.perform(delete("/players/delete/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk());
+		mockMvc.perform(get("/players/delete/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk())
+				.andExpect(view().name("/players/playersList"));
 	}
 
 }
