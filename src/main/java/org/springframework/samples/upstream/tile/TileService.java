@@ -28,5 +28,10 @@ public class TileService {
 		return tileRepository.findById(id);
 	}
 	
+	@Transactional(readOnly = true)
+	public Tile findByPosition(int row, int column) throws DataAccessException {
+		return tileRepository.findByPosition(row, column);
+	}
+	
 
 }
