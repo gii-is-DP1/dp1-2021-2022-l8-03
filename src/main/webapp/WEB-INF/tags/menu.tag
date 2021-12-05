@@ -29,25 +29,56 @@
 					<span>Home</span>
 				</petclinic:menuItem>
 				<sec:authorize access="hasAuthority('admin')">
+				
 				<petclinic:menuItem active="${name eq 'playersFind'}" url="/players/find"
 					title="find players">
 					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 					<span>Find players</span>
 				</petclinic:menuItem>
-				</sec:authorize>
 				
-				<petclinic:menuItem active="${name eq 'rounds'}" url="/rounds"
-					title="rounds">
-					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Rounds</span>
-				</petclinic:menuItem>
+				</sec:authorize>
+				<sec:authorize access="isAuthenticated()">
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+							<span>Rounds</span>
+							<span class="glyphicon glyphicon-chevron-down"></span>
+					</a>
+						<ul class="dropdown-menu">
+							<li>
+								<div class="navbar-rounds">
+									<div class="row">
+										<div class="col-lg-12">
+											<sec:authorize access="hasAuthority('admin')">
+											<p class="text-left">
+												<a href="<c:url value="/rounds/finished" />"
+													class="btn btn-primary btn-block btn-sm">Finished rounds</a>
+											</p>
+											</br>
+											<p class="text-left">
+												<a href="<c:url value="/rounds/inCourse" />"
+													class="btn btn-primary btn-block btn-sm">Rounds in course</a>
+											</p>
+											</sec:authorize>
+											<sec:authorize access="!hasAuthority('admin')">
+											<p class="text-left">
+												<a href="<c:url value="/rounds" />"
+													class="btn btn-primary btn-block btn-sm">Created rounds</a>
+											</p>
+											</sec:authorize>
+										</div>
+									</div>
+								</div>
+							</li>
+							<li class="divider"></li>
+						</ul></li>
+				</sec:authorize>
 
 				<petclinic:menuItem active="${name eq 'error'}" url="/oups"
 					title="trigger a RuntimeException to see how it is handled">
 					<span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
 					<span>Error</span>
 				</petclinic:menuItem>
-
+				
 			</ul>
 
 

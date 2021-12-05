@@ -6,6 +6,8 @@ import java.util.Collection;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -25,7 +27,9 @@ public class Tile extends BaseEntity {
 	private Integer columnIndex;
 	private Integer orientation;
 	private Integer salmonEggs;
-	private Enum<TileType> tileType;
+	
+	@Enumerated(EnumType.ORDINAL)
+	private TileType tileType;
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "round_id")

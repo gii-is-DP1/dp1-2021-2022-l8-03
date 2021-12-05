@@ -106,6 +106,14 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04',
 */
 
 INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (1, 0, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13, 0);
+
 INSERT INTO acting_players(id, player, points,round_id) VALUES (1,11,5,1);
+
+INSERT INTO tile(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (1, 1, 1, 1, 0, 0, 1);
+INSERT INTO tile(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (2, 1, 2, 1, 0, 0, 1);
+INSERT INTO tile(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (3, 1, 3, 1, 0, 0, 1);
+
+
+INSERT INTO piece(id, num_salmon, player_id, round_id, tile_id) VALUES (1, 2, 1, 1, 1);
 
 INSERT INTO score(id, value, player_id, round_id) VALUES (1, 10, 1, 1);
