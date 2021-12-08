@@ -31,9 +31,10 @@ public class PieceController {
 	private static final String VIEWS_PIECE_CREATE_OR_UPDATE_FORM = "pieces/createOrUpdatePieceForm";
 	
 	private PieceService pieceService;
+	private TileService tileService;
 	private PlayerService playerService;
 	private RoundService roundService;
-	private TileService tileService;
+	
 	
 	@Autowired
 	public PieceController(PieceService pieceService, PlayerService playerService, RoundService roundService, TileService tileService) {
@@ -61,21 +62,15 @@ public class PieceController {
 	@GetMapping(value = "/piece/{pieceId}/edit")
 	public String initUpdatePieceForm(@PathVariable("pieceId") int pieceId, Model model) {
 		Piece piece = this.pieceService.findPieceById(pieceId);
-		model.addAttribute(piece);
-//		Round round = piece.getRound();
-//		Integer actingPlayer = round.getActingPlayer().getPlayer();
-//		List<Player> players = (List<Player>) round.getPlayers();
-//		String actingUsername = players.get(actingPlayer).getUser().getUsername();
-//		String pieceUsername = piece.getPlayer().getUser().getUsername();
-//		String authenticatedUsername = getCurrentUsername();
 //		if(!(round.getRound_state().equals(RoundState.IN_COURSE))) {
 //			return "exception"; //NO SE PUEDE MODIFICAR UNA PIEZA SI LA PARTIDA NO HA EMPEZADO
 //		}
-//		if(!(actingUsername.equals(pieceUsername)&&actingUsername.equals(authenticatedUsername))){
-//			return "exception";	//NO SE PUEDE MODIFICAR UNA PIEZA SI NO ES TUYA O NO ES TU TURNO
-//		}else {
+		if(!(this.pieceService.checkUser(piece))){
+			return "exception";	//NO SE PUEDE MODIFICAR UNA PIEZA SI NO ES TUYA O NO ES TU TURNO
+		}else {
+			model.addAttribute(piece);
 			return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
-//		}
+		}
 	}
 
 	@PostMapping(value = "/piece/{pieceId}/edit")
@@ -89,20 +84,8 @@ public class PieceController {
 			Integer newColumn = piece.getTile().getColumnIndex();
 			Piece pieceToUpdate = this.pieceService.findPieceById(pieceId);
 			Tile newTile = this.tileService.findByPosition(newRow, newColumn);
-			piece.setId(pieceToUpdate.getId());
-			piece.setNumSalmon(pieceToUpdate.getNumSalmon());
-			piece.setPlayer(pieceToUpdate.getPlayer());
-			piece.setRound(pieceToUpdate.getRound());
-			piece.setTile(newTile);
-			this.pieceService.savePiece(piece);
+			this.pieceService.swim(pieceToUpdate, pieceToUpdate.getTile(), newTile);
 			return "redirect:/rounds";
 		}
-	}
-	
-	public String getCurrentUsername() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		User currentUser = (User)authentication.getPrincipal();
-		String currentUsername = currentUser.getUsername();
-		return currentUsername;
 	}
 }

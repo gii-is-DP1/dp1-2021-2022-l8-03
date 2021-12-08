@@ -25,4 +25,8 @@ public class ActingPlayerService {
 	public ActingPlayer findActingPlayerByRound(int id) throws DataAccessException {
 		return actingPlayerRepository.findByRound(id);
 	}
+	
+	public void saveActingPlayer(ActingPlayer actingPlayer) throws DataAccessException {
+		this.actingPlayerRepository.save(actingPlayer);
+	}
 }

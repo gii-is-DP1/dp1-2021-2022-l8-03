@@ -33,5 +33,8 @@ public class TileService {
 		return tileRepository.findByPosition(row, column);
 	}
 	
-
+	public void saveTile(Tile tile) throws DataAccessException {
+		this.tileRepository.save(tile);
+	}
+	
 }
