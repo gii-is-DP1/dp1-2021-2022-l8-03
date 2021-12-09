@@ -1,5 +1,7 @@
 package org.springframework.samples.upstream.round;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -60,6 +62,10 @@ public class RoundController {
 		}
 		else {
 			round.setPlayer(player);
+			round.setRound_state(RoundState.CREATED);
+			Collection<Player> players=new ArrayList<Player>();
+			players.add(player);
+			round.setPlayers(players);
 			this.roundService.saveRound(round);
 			player.setRound(round);
 			this.playerService.savePlayer(player);
@@ -125,6 +131,33 @@ public class RoundController {
 			BeanUtils.copyProperties(round, roundToUpdate,"id","player");
 			this.roundService.saveRound(round);
 			return "redirect:/rounds";
+		}
+	}
+	
+	@GetMapping(value = "/rounds/{roundId}/join")
+	public String initJoinRound(@PathVariable("roundId") int roundId, Model model) {
+		Round round = this.roundService.findRoundById(roundId);
+		model.addAttribute(round);
+		return VIEWS_ROUND_CREATE_OR_UPDATE_FORM;
+	}
+	
+	@PostMapping(value = "/rounds/{roundId}/join")
+	public String processJoinRound(@PathVariable("roundId") int roundId,ModelMap model) {
+		Round round=this.roundService.findRoundById(roundId);
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		String currentUsername = currentUser.getUsername();
+		Player player=playerService.findPlayerByUsername(currentUsername);
+		if(round.getPlayers().size()<round.getNum_players()) {
+			player.setRound(round);
+			this.playerService.savePlayer(player);
+			Collection<Player> players=round.getPlayers();
+			players.add(player);
+			round.setPlayers(players);
+			this.roundService.saveRound(round);
+			return "redirect:/rounds/{roundId}";
+		}else {
+			return "redirect:/oups";
 		}
 	}
 	
