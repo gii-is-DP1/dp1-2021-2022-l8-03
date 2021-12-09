@@ -73,6 +73,12 @@
                     <c:out value="${round.turn_start}"/>
                 </td>   
            </c:if>
+           		<td> 
+	                <spring:url value="/rounds/{roundId}/join" var="roundUrl">
+	                	<spring:param name="roundId" value="${round.id}"/>
+	                </spring:url>
+	                <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Join</href></a>
+            	</td>
             </tr>
         </c:forEach>
         </tbody>
