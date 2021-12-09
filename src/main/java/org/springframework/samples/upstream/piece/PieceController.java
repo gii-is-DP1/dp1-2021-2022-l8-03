@@ -85,6 +85,7 @@ public class PieceController {
 			Piece pieceToUpdate = this.pieceService.findPieceById(pieceId);
 			Tile newTile = this.tileService.findByPosition(newRow, newColumn);
 			this.pieceService.swim(pieceToUpdate, pieceToUpdate.getTile(), newTile);
+			//this.pieceService.jump(pieceToUpdate, pieceToUpdate.getTile(), newTile);
 			return "redirect:/rounds";
 		}
 	}

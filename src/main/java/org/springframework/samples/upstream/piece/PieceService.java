@@ -56,8 +56,17 @@ public class PieceService {
 	}
 	
 	public void jump(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException {
+		if(checkUser(piece) && sameTile(oldTile, newTile) && checkDistance(oldTile, newTile) 
+			&& checkCapacity(newTile, piece.getRound()) && checkDirection(oldTile, newTile)
+			&& checkJumpPoints(piece.getRound())) {
+			
+			piece = checkBear(piece, oldTile, newTile);
+			substractMovementPointsJump(piece.getRound());
+			piece.setTile(newTile);
+			pieceRepository.save(piece);
+			
+		}
 		
-		pieceRepository.save(piece);
 	}
 	
 	public Boolean checkUser(Piece piece) {
@@ -220,10 +229,28 @@ public class PieceService {
 		return piece;
 	}
 	
+	public Piece checkBear(Piece piece, Tile oldTile, Tile newTile) {
+		Integer numSalmon = piece.getNumSalmon();
+		if(oldTile.getTileType().equals(TileType.BEAR)) {
+			numSalmon += -1;
+			piece.setNumSalmon(numSalmon);
+		} else if (newTile.getTileType().equals(TileType.BEAR)) {
+			numSalmon += -1;
+			piece.setNumSalmon(numSalmon);
+		}
+		return piece;
+	}
+	
 	public void substractMovementPointsSwim(Round round) {
 		ActingPlayer actingPlayer = round.getActingPlayer();
 		actingPlayer.setPoints(actingPlayer.getPoints()-1);
 		actingPlayerService.saveActingPlayer(actingPlayer);		
+	}
+	
+	public void substractMovementPointsJump(Round round) {
+		ActingPlayer actingPlayer = round.getActingPlayer();
+		actingPlayer.setPoints(actingPlayer.getPoints()-2);
+		actingPlayerService.saveActingPlayer(actingPlayer);
 	}
 	
 	public String getCurrentUsername() {
