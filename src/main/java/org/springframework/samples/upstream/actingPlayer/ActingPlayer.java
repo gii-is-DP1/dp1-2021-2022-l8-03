@@ -2,6 +2,7 @@ package org.springframework.samples.upstream.actingPlayer;
 
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -30,7 +31,7 @@ public class ActingPlayer extends BaseEntity {
 	@NotNull
 	private Integer points;
 	
-	@OneToOne(optional = false)
+	@OneToOne(optional = false,cascade=CascadeType.ALL)
 	@JoinColumn(name = "round_id")
 	private Round round;
 

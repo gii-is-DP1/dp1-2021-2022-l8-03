@@ -50,11 +50,11 @@ public class Round extends BaseEntity {
 	@Column(name = "round_state")
 	private RoundState round_state;
 	
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true,cascade = CascadeType.ALL)
     @JoinColumn(name = "player_id")
     private Player player;
 	
-	@OneToOne(optional = false, mappedBy="round")
+	@OneToOne(optional = true, mappedBy="round",cascade = CascadeType.ALL)
 	private ActingPlayer actingPlayer;
 	
 
@@ -71,13 +71,13 @@ public class Round extends BaseEntity {
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private Date turn_start;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round",orphanRemoval=true)
 	private Collection<Piece> pieces;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round",orphanRemoval=true)
 	private Collection<Score> scores;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round",orphanRemoval=true)
     private Collection<Player> players;
 
 }

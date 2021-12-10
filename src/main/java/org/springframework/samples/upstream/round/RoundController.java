@@ -134,21 +134,14 @@ public class RoundController {
 		}
 	}
 	
-	@GetMapping(value = "/rounds/{roundId}/join")
-	public String initJoinRound(@PathVariable("roundId") int roundId, Model model) {
-		Round round = this.roundService.findRoundById(roundId);
-		model.addAttribute(round);
-		return VIEWS_ROUND_CREATE_OR_UPDATE_FORM;
-	}
-	
-	@PostMapping(value = "/rounds/{roundId}/join")
-	public String processJoinRound(@PathVariable("roundId") int roundId,ModelMap model) {
+	@GetMapping(value = "/rounds/join/{roundId}")
+	public String joinRound(@PathVariable("roundId") int roundId, ModelMap model) {
 		Round round=this.roundService.findRoundById(roundId);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User currentUser = (User)authentication.getPrincipal();
 		String currentUsername = currentUser.getUsername();
 		Player player=playerService.findPlayerByUsername(currentUsername);
-		if(round.getPlayers().size()<round.getNum_players()) {
+		if(round!=null && round.getPlayers().size()<round.getNum_players()) {
 			player.setRound(round);
 			this.playerService.savePlayer(player);
 			Collection<Player> players=round.getPlayers();
@@ -156,9 +149,36 @@ public class RoundController {
 			round.setPlayers(players);
 			this.roundService.saveRound(round);
 			return "redirect:/rounds/{roundId}";
-		}else {
-			return "redirect:/oups";
 		}
+		else {
+			return "redirect:/rounds/oups";
+		}
+		
+	}
+	
+	@GetMapping(value = "/rounds/leave/{roundId}")
+	public String leaveRound(@PathVariable("roundId") int roundId, ModelMap model) {
+		Round round=this.roundService.findRoundById(roundId);
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		String currentUsername = currentUser.getUsername();
+		Player player=playerService.findPlayerByUsername(currentUsername);
+		Collection<Player> players=round.getPlayers();
+		if(round!=null && players.contains(player)) {
+//			if(player==round.getPlayer()) {
+//				this.roundService.
+//			}
+			player.setRound(null);
+			this.playerService.savePlayer(player);
+			players.remove(player);
+			round.setPlayers(players);
+			this.roundService.saveRound(round);
+			return "redirect:/rounds";
+		}
+		else {
+			return "redirect:/rounds/oups";
+		}
+		
 	}
 	
 
