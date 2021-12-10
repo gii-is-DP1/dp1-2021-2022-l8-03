@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.upstream.actingPlayer.ActingPlayer;
 import org.springframework.samples.upstream.actingPlayer.ActingPlayerRepository;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
@@ -117,15 +118,17 @@ public class PlayerService {
 	
 	@Transactional
 	public void delete(Player player) throws DataAccessException {
-		Collection<Round> rounds=roundRepository.findRoundByPlayerId(player.getId());
+		Collection<Round> rounds=this.roundRepository.findRoundByPlayerId(player.getId());
 		if(checkAdmin()) {
 			if(!rounds.isEmpty()) {
 				for(Round r:rounds) {
-					actingPlayerRepository.delete(actingPlayerRepository.findByRound(r.getId()));
-					roundRepository.delete(roundRepository.findById(r.getId()).get());
+					if(this.actingPlayerRepository.findByRound(r.getId())!=null) {
+						this.actingPlayerRepository.delete(this.actingPlayerRepository.findByRound(r.getId()));
+					}
+					this.roundRepository.delete(this.roundRepository.findById(r.getId()).get());
 				}
 			}
-			playerRepository.delete(player);
+			this.playerRepository.delete(player);
 		}
 	}
 

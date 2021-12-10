@@ -85,7 +85,7 @@
 	            </c:if>
 	            <c:if test="${round.players.size()<round.num_players}">
 	           		<td> 
-		                <spring:url value="/rounds/{roundId}/join" var="roundUrl">
+		                <spring:url value="/rounds/join/{roundId}" var="roundUrl">
 		                	<spring:param name="roundId" value="${round.id}"/>
 		                </spring:url>
 		                <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Join</href></a>

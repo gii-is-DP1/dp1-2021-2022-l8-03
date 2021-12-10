@@ -4,8 +4,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:layout pageName="owners">
-
+<petclinic:layout pageName="rounds">
+	
+	<spring:url value="/rounds/leave/{roundId}" var="leftUrl">
+        <spring:param name="roundId" value="${round.id}"/>
+    </spring:url>
+    <a href="${fn:escapeXml(leftUrl)}" class="btn btn-default">Leave Game</a>
+	
+	
     <h2>Owner Information</h2>
 
 
