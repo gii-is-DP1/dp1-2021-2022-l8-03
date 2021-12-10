@@ -168,7 +168,7 @@ public class PlayerController {
 	public String deletePlayer(@PathVariable("playerId") int playerId, ModelMap model) {
 		String view = "/players/playersList";
 		Player player = this.playerService.findPlayerById(playerId);
-		if(!player.equals(null)) {
+		if(player!=null) {
 			this.playerService.delete(player);
 			model.addAttribute("message","Player successfully deleted");
 		}

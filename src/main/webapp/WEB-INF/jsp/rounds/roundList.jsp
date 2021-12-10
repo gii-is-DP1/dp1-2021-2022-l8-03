@@ -18,6 +18,11 @@
             <th>Whirlpools</th>
             <th>NumPlayers</th>
             <th>RoundCreator</th>
+            <th>Player1</th>
+            <th>Player2</th>
+            <th>Player3</th>
+            <th>Player4</th>
+            <th>Player5</th>
             
         <c:if test="${esFinished}">
             <th style="width: 360px">start</th>
@@ -40,45 +45,52 @@
         <tbody>
         <c:forEach items="${rounds}" var="round">
             <tr>
-            
-            <c:if test="${esFinished}">
-                <td>
-                    <c:out value="${round.duration}"/>
-                </td>
-            </c:if>
-                <td>
-                    <c:out value="${round.rapids}"/>
-                </td>
-                <td>
-                    <c:out value="${round.whirlpools}"/>
-                </td>
-                <td>
-                    <c:out value="${round.num_players}"/>
-                </td>
-                <td>
-                    <c:out value="${round.player.user.username}"/>
-                </td>
-           <c:if test="${esFinished}">  
-                <td>
-                    <c:out value="${round.match_start}"/>
-                </td>
-           </c:if>     
-           <c:if test="${esFinished}">
-                <td>
-                    <c:out value="${round.match_end}"/>
-                </td>
-           </c:if>     
-           <c:if test="${esFinished}">
-                <td>
-                    <c:out value="${round.turn_start}"/>
-                </td>   
-           </c:if>
-           		<td> 
-	                <spring:url value="/rounds/{roundId}/join" var="roundUrl">
-	                	<spring:param name="roundId" value="${round.id}"/>
-	                </spring:url>
-	                <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Join</href></a>
-            	</td>
+	            <c:if test="${esFinished}">
+	                <td>
+	                    <c:out value="${round.duration}"/>
+	                </td>
+	            </c:if>
+	                <td>
+	                    <c:out value="${round.rapids}"/>
+	                </td>
+	                <td>
+	                    <c:out value="${round.whirlpools}"/>
+	                </td>
+	                <td>
+	                    <c:out value="${round.num_players}"/>
+	                </td>
+	                <td>
+	                    <c:out value="${round.player.user.username}"/>
+	                </td>
+                <c:forEach items="${round.players}" var="players">
+                	<td>
+                		<c:out value="${players.user.username}"/>
+                	</td>
+                </c:forEach>
+	
+	            <c:if test="${esFinished}">  
+	                <td>
+	                    <c:out value="${round.match_start}"/>
+	                </td>
+	            </c:if>     
+	            <c:if test="${esFinished}">
+	                <td>
+	                    <c:out value="${round.match_end}"/>
+	                </td>
+	            </c:if>     
+	            <c:if test="${esFinished}">
+	                <td>
+	                    <c:out value="${round.turn_start}"/>
+	                </td>   
+	            </c:if>
+	            <c:if test="${round.players.size()<round.num_players}">
+	           		<td> 
+		                <spring:url value="/rounds/{roundId}/join" var="roundUrl">
+		                	<spring:param name="roundId" value="${round.id}"/>
+		                </spring:url>
+		                <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Join</href></a>
+	            	</td>
+	            </c:if>
             </tr>
         </c:forEach>
         </tbody>
