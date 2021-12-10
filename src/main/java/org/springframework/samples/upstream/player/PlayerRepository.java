@@ -65,7 +65,7 @@ public interface PlayerRepository extends CrudRepository<Player, Integer> {
 	 * @return the <code>Player</code> if found
 	 * @throws org.springframework.dao.DataRetrievalFailureException if not found
 	 */	
-	@Query("SELECT player FROM Player player left join fetch player.pets WHERE player.id =:id")
+	@Query("SELECT player FROM Player player WHERE player.id =:id")
 	public Player findById(@Param("id") int id);
 	
 	@Query(value="SELECT * FROM Players WHERE username=:username", nativeQuery=true)
