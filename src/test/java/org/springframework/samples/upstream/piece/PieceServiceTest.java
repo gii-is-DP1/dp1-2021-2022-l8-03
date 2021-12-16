@@ -15,9 +15,16 @@ public class PieceServiceTest {
     @Autowired
     protected PieceService pieceService;
 
-//    @Test
-//    void shouldFindPieceById() {
-//        Piece piece = this.pieceService.findPieceById(1);
-//        assertThat(piece.getNumSalmon()==3);
-//    }
+
+    @Test
+    void shouldFindPieceById() {
+    	Piece piece = this.pieceService.findPieceById(1);
+    	assertThat(piece.getPlayer().getUser().getUsername()).isEqualTo("cardelbec");
+    }
+    
+    @Test
+    void shouldNotFindPieceById() {
+    	Piece piece = this.pieceService.findPieceById(250);
+    	assertThat(piece).isEqualTo(null);
+    }
 }
