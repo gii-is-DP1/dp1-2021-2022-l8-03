@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 
 @Controller
 public class PieceController {
@@ -62,20 +63,23 @@ public class PieceController {
 	@GetMapping(value = "/piece/{pieceId}/edit")
 	public String initUpdatePieceForm(@PathVariable("pieceId") int pieceId, Model model) {
 		Piece piece = this.pieceService.findPieceById(pieceId);
+		MovementTypeWrapper movementTypeWrapper = new MovementTypeWrapper(piece, false);
 //		if(!(round.getRound_state().equals(RoundState.IN_COURSE))) {
 //			return "exception"; //NO SE PUEDE MODIFICAR UNA PIEZA SI LA PARTIDA NO HA EMPEZADO
 //		}
 		if(!(this.pieceService.checkUser(piece))){
 			return "exception";	//NO SE PUEDE MODIFICAR UNA PIEZA SI NO ES TUYA O NO ES TU TURNO
 		}else {
-			model.addAttribute(piece);
+			model.addAttribute(movementTypeWrapper);
 			return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
 		}
 	}
 
 	@PostMapping(value = "/piece/{pieceId}/edit")
-	public String processUpdatePieceForm(@Valid @ModelAttribute Piece piece, BindingResult result,
-			@PathVariable("pieceId") int pieceId, ModelMap model) {
+	public String processUpdatePieceForm(@Valid @ModelAttribute MovementTypeWrapper movementTypeWrapper,
+			BindingResult result, @PathVariable("pieceId") int pieceId, ModelMap model) {
+		Piece piece = movementTypeWrapper.getPiece();
+		Boolean movementType = movementTypeWrapper.getMovementType();
 		if(result.hasErrors()) {
 			return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
 		}
@@ -84,8 +88,11 @@ public class PieceController {
 			Integer newColumn = piece.getTile().getColumnIndex();
 			Piece pieceToUpdate = this.pieceService.findPieceById(pieceId);
 			Tile newTile = this.tileService.findByPosition(newRow, newColumn);
-			this.pieceService.swim(pieceToUpdate, pieceToUpdate.getTile(), newTile);
-			//this.pieceService.jump(pieceToUpdate, pieceToUpdate.getTile(), newTile);
+			if(movementType) {
+				this.pieceService.jump(pieceToUpdate, pieceToUpdate.getTile(), newTile);
+			}else {
+				this.pieceService.swim(pieceToUpdate, pieceToUpdate.getTile(), newTile);
+			}
 			return "redirect:/rounds";
 		}
 	}

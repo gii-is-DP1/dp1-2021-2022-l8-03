@@ -17,6 +17,7 @@ import lombok.Setter;
 @Entity
 public class Piece extends BaseEntity{
 	private Integer numSalmon;
+	private Boolean stuck;
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "player_id")
