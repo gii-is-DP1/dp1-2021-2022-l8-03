@@ -8,23 +8,19 @@
 
 <petclinic:layout pageName="piece">
     <h2>
-        <c:if test="${piece['new']}">New </c:if> piece
+        Moving piece
     </h2>
-    <form:form modelAttribute="piece" class="form-horizontal" id="add-piece-form">
+    <form:form modelAttribute="movementTypeWrapper" class="form-horizontal" id="add-piece-form">
         <div class="form-group has-feedback">
-            <petclinic:inputField label="Row" name="tile.rowIndex"/>
-            <petclinic:inputField label="Column" name="tile.columnIndex"/> 
+            <petclinic:inputField label="Row" name="piece.tile.rowIndex"/>
+            <petclinic:inputField label="Column" name="piece.tile.columnIndex"/> 
         </div>
-        <div class="form-group">
+        <label for="movementType">Movement Type</label> 
+        	<input type="radio" name="movementType" value="false" checked>Swim
+        	<input type="radio" name="movementType" value="true">Jump
+        <div class="form-group"> 
             <div class="col-sm-offset-2 col-sm-10">
-                <c:choose>
-                    <c:when test="${piece['new']}">
-                        <button class="btn btn-default" type="submit">Add piece</button>
-                    </c:when>
-                    <c:otherwise>
-                        <button class="btn btn-default" type="submit">Update piece</button>
-                    </c:otherwise>
-                </c:choose>
+                  <button class="btn btn-default" type="submit">Move</button>
             </div>
         </div>
     </form:form>
