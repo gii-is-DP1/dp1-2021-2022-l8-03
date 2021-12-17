@@ -50,7 +50,7 @@ public class Round extends BaseEntity {
 	@Column(name = "round_state")
 	private RoundState round_state;
 	
-	@ManyToOne(optional = true,cascade = CascadeType.ALL)
+	@ManyToOne(optional = true)
     @JoinColumn(name = "player_id")
     private Player player;
 	
@@ -77,7 +77,7 @@ public class Round extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round",orphanRemoval=true)
 	private Collection<Score> scores;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round",orphanRemoval=true)
+	@OneToMany(mappedBy = "round")
     private Collection<Player> players;
 
 }

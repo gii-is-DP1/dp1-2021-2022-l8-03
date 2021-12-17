@@ -194,6 +194,10 @@ public class RoundController {
 			player.setRound(null);
 			this.playerService.savePlayer(player);
 			players.remove(player);
+			Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
+			User currentUser1 = (User)authentication1.getPrincipal();
+			String currentUsername1 = currentUser1.getUsername();
+			Player player1=playerService.findPlayerByUsername(currentUsername1);
 			round.setPlayers(players);
 			this.roundService.saveRound(round);
 			List<Piece> pieces=this.pieceService.findPiecesOfPlayer(player.getId());

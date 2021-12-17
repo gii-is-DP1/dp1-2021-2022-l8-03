@@ -48,13 +48,13 @@ public class Player extends Person {
 
 
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player",orphanRemoval=true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
 	private Collection<Piece> pieces;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player",orphanRemoval=true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
 	private Collection<Score> scores;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player",orphanRemoval=true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
     private Collection<Round> rounds;
 	
 	@ManyToOne(optional = true)
