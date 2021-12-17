@@ -15,7 +15,6 @@ import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.player.PlayerService;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
-import org.springframework.samples.upstream.tile.TileType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -190,26 +189,26 @@ public class RoundController {
 		String currentUsername = currentUser.getUsername();
 		Player player=playerService.findPlayerByUsername(currentUsername);
 		Collection<Player> players=round.getPlayers();
+		Collection<Piece> pieces=round.getPieces();
 		if(round!=null && players.contains(player)) {
-			player.setRound(null);
-			this.playerService.savePlayer(player);
-			players.remove(player);
-			Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
-			User currentUser1 = (User)authentication1.getPrincipal();
-			String currentUsername1 = currentUser1.getUsername();
-			Player player1=playerService.findPlayerByUsername(currentUsername1);
-			round.setPlayers(players);
-			this.roundService.saveRound(round);
-			List<Piece> pieces=this.pieceService.findPiecesOfPlayer(player.getId());
-			for(Piece p:pieces) {
-				this.pieceService.delete(p);
+			if(round.getPlayer()==player) {
+				player.setRound(null);
+				this.roundService.deleteRound(round);
+			}else {
+				player.setRound(null);
+				this.playerService.savePlayer(player);
+				players.remove(player);
+				
+				List<Piece> piecesPlayer=this.pieceService.findPiecesOfPlayer(player.getId());
+				pieces.removeAll(piecesPlayer);
+				
+				this.roundService.saveRound(round);
 			}
 			return "redirect:/rounds";
 		}
 		else {
 			return "redirect:/rounds/oups";
 		}
-		
 	}
 	
 

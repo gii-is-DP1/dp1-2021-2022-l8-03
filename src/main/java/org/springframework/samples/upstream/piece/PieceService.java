@@ -19,9 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 //PieceService
 @Service
 public class PieceService {
+	@Autowired
 	private PieceRepository pieceRepository;
+	
 	@Autowired
 	private ActingPlayerService actingPlayerService;
+	
 	@Autowired
 	private TileService tileService;
 	
