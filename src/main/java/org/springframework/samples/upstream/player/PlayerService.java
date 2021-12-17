@@ -122,10 +122,9 @@ public class PlayerService {
 		if(checkAdmin()) {
 			if(!rounds.isEmpty()) {
 				for(Round r:rounds) {
-					if(this.actingPlayerRepository.findByRound(r.getId())!=null) {
-						this.actingPlayerRepository.delete(this.actingPlayerRepository.findByRound(r.getId()));
+					for(Player p:r.getPlayers()) {
+						p.setRound(null);
 					}
-					this.roundRepository.delete(this.roundRepository.findById(r.getId()).get());
 				}
 			}
 			this.playerRepository.delete(player);
