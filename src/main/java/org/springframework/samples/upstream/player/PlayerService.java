@@ -21,10 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.samples.upstream.actingPlayer.ActingPlayer;
 import org.springframework.samples.upstream.actingPlayer.ActingPlayerRepository;
+import org.springframework.samples.upstream.piece.Piece;
+import org.springframework.samples.upstream.piece.PieceRepository;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
+import org.springframework.samples.upstream.tile.Tile;
+import org.springframework.samples.upstream.tile.TileRepository;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
 import org.springframework.security.core.Authentication;
@@ -46,6 +49,8 @@ public class PlayerService {
 	private PlayerRepository playerRepository;
 	private ActingPlayerRepository actingPlayerRepository;	
 	private RoundRepository roundRepository;
+	private TileRepository tileRepository;
+	private PieceRepository pieceRepository;
 		
 		
 	
@@ -56,10 +61,12 @@ public class PlayerService {
 	private AuthoritiesService authoritiesService;
 
 	@Autowired
-	public PlayerService(PlayerRepository playerRepository,RoundRepository roundRepository, ActingPlayerRepository actingPlayerRepository) {
+	public PlayerService(PlayerRepository playerRepository,RoundRepository roundRepository, ActingPlayerRepository actingPlayerRepository,TileRepository tileRepository,PieceRepository pieceRepository) {
 		this.playerRepository = playerRepository;
 		this.roundRepository = roundRepository;
 		this.actingPlayerRepository=actingPlayerRepository;
+		this.tileRepository=tileRepository;
+		this.pieceRepository=pieceRepository;
 	}	
 
 	@Transactional(readOnly = true)
@@ -125,6 +132,14 @@ public class PlayerService {
 					if(this.actingPlayerRepository.findByRound(r.getId())!=null) {
 						this.actingPlayerRepository.delete(this.actingPlayerRepository.findByRound(r.getId()));
 					}
+					for(Tile t: this.tileRepository.findTilesInRound(r.getId())) {
+						this.tileRepository.delete(t);
+					}
+					for(Piece p: this.pieceRepository.findPiecesInRound(r.getId())) {
+						this.pieceRepository.delete(p);
+					}
+					
+					
 					this.roundRepository.delete(this.roundRepository.findById(r.getId()).get());
 				}
 			}
