@@ -132,12 +132,6 @@ public class PlayerService {
 					for(Player p:r.getPlayers()) {
 						p.setRound(null);
 					}
-					for(Tile t: this.tileRepository.findTilesInRound(r.getId())) {
-						this.tileRepository.delete(t);
-					}
-					for(Piece p: this.pieceRepository.findPiecesInRound(r.getId())) {
-						this.pieceRepository.delete(p);
-					}
 				}
 			}
 			this.playerRepository.delete(player);

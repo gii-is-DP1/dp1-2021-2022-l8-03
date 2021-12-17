@@ -34,6 +34,11 @@ public class RoundService {
 		roundRepository.save(round);
 	}
 	
+	@Transactional
+	public void deleteRound(Round round) throws DataAccessException {
+		roundRepository.delete(round);
+	}
+	
 	@Transactional(readOnly = true)
     public Collection<Round> findCreatedRounds() throws DataAccessException {
         return roundRepository.findCreatedRounds();

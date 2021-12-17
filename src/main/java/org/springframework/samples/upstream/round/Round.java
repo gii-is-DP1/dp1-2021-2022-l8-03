@@ -21,7 +21,7 @@ import org.springframework.samples.upstream.model.BaseEntity;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.score.Score;
-
+import org.springframework.samples.upstream.tile.Tile;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -73,6 +73,9 @@ public class Round extends BaseEntity {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round",orphanRemoval=true)
 	private Collection<Piece> pieces;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round",orphanRemoval=true)
+	private Collection<Tile> tiles;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round",orphanRemoval=true)
 	private Collection<Score> scores;
