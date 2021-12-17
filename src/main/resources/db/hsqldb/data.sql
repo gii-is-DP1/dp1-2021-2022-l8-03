@@ -61,8 +61,11 @@ INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES
 INSERT INTO acting_players(id, player, points,round_id) VALUES (1,0,5,1);
 
 INSERT INTO tile(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (1, 1, 1, 1, 0, 1, 1);
-INSERT INTO tile(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (2, 1, 2, 1, 0, 5, 1);
+INSERT INTO tile(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (2, 0, 2, 1, 0, 5, 1);
 INSERT INTO tile(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (3, 1, 3, 1, 0, 0, 1);
+INSERT INTO tile(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (4, 0, 0, 1, 0, 5, 1);
+INSERT INTO tile(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (5, 0, 1, 1, 0, 5, 1);
+INSERT INTO tile(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (6, 1, 1, 1, 0, 5, 1);
 
 
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id) VALUES (1, 2, false, 11, 1, 2);
