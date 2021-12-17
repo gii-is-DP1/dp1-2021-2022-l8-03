@@ -168,13 +168,25 @@ public class PieceService {
 		Integer rowDir = newRow - oldRow;
 		Boolean straightLine = false;
 		if(oldTile.getColumnIndex()==1) {
-			straightLine = (colDir == 0) || (colDir == 1 && rowDir == 1) || (colDir == 2 && rowDir == 1);
+			straightLine = straightLineColumn1(colDir, rowDir);
 		}else if(oldTile.getColumnIndex()==2) {
-			straightLine = (colDir == 0) || (colDir == 1 && rowDir == 0) || (colDir == -1 && rowDir == 0);
+			straightLine = straightLineColumn2(colDir, rowDir);
 		}else if(oldTile.getColumnIndex()==3) {
-			straightLine = (colDir == 0) || (colDir == -1 && rowDir == 1) || (colDir == -2 && rowDir == 1);
+			straightLine = straightLineColumn3(colDir, rowDir) ;
 		}
 		return ahead && straightLine;
+	}
+	
+	public Boolean straightLineColumn1(Integer colDir, Integer rowDir) {
+		return (colDir==0) || (colDir == 1 && rowDir == 1) || (colDir == 2 && rowDir == 1);
+	}
+	
+	public Boolean straightLineColumn2(Integer colDir, Integer rowDir) {
+		return (colDir == 0) || (colDir == 1 && rowDir == 0) || (colDir == -1 && rowDir == 0);
+	}
+	
+	public Boolean straightLineColumn3(Integer colDir, Integer rowDir) {
+		return (colDir == 0) || (colDir == -1 && rowDir == 1) || (colDir == -2 && rowDir == 1);
 	}
 	
 	public Boolean checkSwimPoints(Round round) {
