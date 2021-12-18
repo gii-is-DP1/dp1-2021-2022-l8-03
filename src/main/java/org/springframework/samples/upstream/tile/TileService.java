@@ -110,7 +110,7 @@ public class TileService {
 		}
 	}
 
-	private void createRandomTile(int row, int column, Round round) {
+	public void createRandomTile(int row, int column, Round round) {
 		Tile tile = new Tile();
 		tile.setPieces(new ArrayList<Piece>());
 		tile.setRound(round);
@@ -156,6 +156,14 @@ public class TileService {
 			seaTile.setRound(round);
 			this.tileService.saveTile(seaTile);
 		}
+	}
+	
+	public void createInitialTiles(Round round) {
+		this.tileService.createSeaTiles(round);
+		this.tileService.createRandomTile(2, 1, round);
+		this.tileService.createRandomTile(2, 3, round);
+		this.tileService.addNewRow(round);
+		this.tileService.addNewRow(round);
 	}
 	
 }
