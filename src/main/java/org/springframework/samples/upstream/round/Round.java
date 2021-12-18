@@ -3,7 +3,6 @@ package org.springframework.samples.upstream.round;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

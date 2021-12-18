@@ -31,6 +31,14 @@ public class ActingPlayer extends BaseEntity {
 	@NotNull
 	private Integer points;
 	
+	@Column(name = "firstPlayer")
+	@NotNull
+	private Integer firstPlayer;
+	
+	@Column(name = "turn")
+	@NotNull
+	private Integer turn;
+	
 	@OneToOne(optional = false,cascade=CascadeType.ALL)
 	@JoinColumn(name = "round_id")
 	private Round round;
