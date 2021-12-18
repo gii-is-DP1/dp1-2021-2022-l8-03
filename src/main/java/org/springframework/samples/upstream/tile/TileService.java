@@ -77,11 +77,6 @@ public class TileService {
 		return tileRepository.findTilesInRound(roundId);
 	}
 	
-	@Transactional(readOnly = true)
-	public List<Tile> findSeaTilesInRound(int roundId) throws DataAccessException {
-		return tileRepository.findSeaTilesInRound(roundId);
-	}
-	
 	public void saveTile(Tile tile) throws DataAccessException {
 		this.tileRepository.save(tile);
 	}
@@ -144,6 +139,8 @@ public class TileService {
 			tile.setRowIndex(13 + i);
 			tile.setSalmonEggs(i);
 			tileRepository.save(tile);
+		}
+	}
 
 	public void createSeaTiles(Round round) {
 		for(Integer i=1;i<5;i++) {
