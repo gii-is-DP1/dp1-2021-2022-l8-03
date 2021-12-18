@@ -77,7 +77,7 @@ public class RoundController {
 			round.setPlayers(players);
 			this.roundService.saveRound(round);
 			
-			this.tileService.createSeaTiles(round);
+			this.tileService.createInitialTiles(round);
 			
 			this.pieceService.createPlayerPieces(player,round);
 			
