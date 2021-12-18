@@ -1,12 +1,6 @@
 package org.springframework.samples.upstream.player;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,10 +12,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
 import org.springframework.core.style.ToStringCreator;
-import org.springframework.samples.upstream.actingPlayer.ActingPlayer;
 import org.springframework.samples.upstream.model.Person;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.round.Round;
@@ -48,13 +39,13 @@ public class Player extends Person {
 
 
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player",orphanRemoval=true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
 	private Collection<Piece> pieces;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player",orphanRemoval=true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
 	private Collection<Score> scores;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player",orphanRemoval=true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
     private Collection<Round> rounds;
 	
 	@ManyToOne(optional = true)

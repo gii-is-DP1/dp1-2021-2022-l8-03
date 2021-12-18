@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+
 public interface TileRepository extends CrudRepository<Tile, Integer>{
 
 	@Query("SELECT tile FROM Tile tile WHERE tile.id =:id")
@@ -33,4 +34,6 @@ public interface TileRepository extends CrudRepository<Tile, Integer>{
 	@Query("SELECT tile FROM Tile tile WHERE tile.tileType=7 AND tile.round.id=:round_id")
 	public List<Tile> findSpawnTilesInRound(@Param("round_id") int round_id);
 
+	@Query("SELECT tile FROM Tile tile WHERE tile.round.id=:round_id")
+	public List<Tile> findTilesInRound(@Param("round_id") int round_id);
 }

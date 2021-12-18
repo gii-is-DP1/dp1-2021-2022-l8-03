@@ -19,9 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 //PieceService
 @Service
 public class PieceService {
+	@Autowired
 	private PieceRepository pieceRepository;
+	
 	@Autowired
 	private ActingPlayerService actingPlayerService;
+	
 	@Autowired
 	private TileService tileService;
 	
@@ -40,6 +43,29 @@ public class PieceService {
 	@Transactional(readOnly = true)
 	public void deletePiece(Piece piece) throws DataAccessException {
 		pieceRepository.delete(piece);
+	}
+		
+	@Transactional(readOnly = true)
+	public List<Piece> findPiecesOfPlayer(int playerId) throws DataAccessException {
+		return this.pieceRepository.findPiecesOfPlayer(playerId);
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Piece> findPiecesInRound(int roundId) throws DataAccessException {
+		return this.pieceRepository.findPiecesInRound(roundId);
+	}
+	
+	public void createPlayerPieces(Player player,Round round) {
+		for(Integer e=0;e<4;e++) {
+			Piece piece=new Piece();
+			piece.setNumSalmon(2);
+			piece.setPlayer(player);
+			piece.setRound(round);
+			piece.setStuck(false);
+			List<Tile> seaTiles=this.tileService.findSeaTilesInRound(round.getId());
+			piece.setTile(seaTiles.get(e));
+			this.pieceRepository.save(piece);
+		}
 	}
 	
 	public void savePiece(Piece piece) throws DataAccessException {
@@ -181,13 +207,25 @@ public class PieceService {
 		Integer rowDir = newRow - oldRow;
 		Boolean straightLine = false;
 		if(oldTile.getColumnIndex()==1) {
-			straightLine = (colDir == 0) || (colDir == 1 && rowDir == 1) || (colDir == 2 && rowDir == 1);
+			straightLine = straightLineColumn1(colDir, rowDir);
 		}else if(oldTile.getColumnIndex()==2) {
-			straightLine = (colDir == 0) || (colDir == 1 && rowDir == 0) || (colDir == -1 && rowDir == 0);
+			straightLine = straightLineColumn2(colDir, rowDir);
 		}else if(oldTile.getColumnIndex()==3) {
-			straightLine = (colDir == 0) || (colDir == -1 && rowDir == 1) || (colDir == -2 && rowDir == 1);
+			straightLine = straightLineColumn3(colDir, rowDir) ;
 		}
 		return ahead && straightLine;
+	}
+	
+	public Boolean straightLineColumn1(Integer colDir, Integer rowDir) {
+		return (colDir==0) || (colDir == 1 && rowDir == 1) || (colDir == 2 && rowDir == 1);
+	}
+	
+	public Boolean straightLineColumn2(Integer colDir, Integer rowDir) {
+		return (colDir == 0) || (colDir == 1 && rowDir == 0) || (colDir == -1 && rowDir == 0);
+	}
+	
+	public Boolean straightLineColumn3(Integer colDir, Integer rowDir) {
+		return (colDir == 0) || (colDir == -1 && rowDir == 1) || (colDir == -2 && rowDir == 1);
 	}
 	
 	public Boolean checkSwimPoints(Round round) {

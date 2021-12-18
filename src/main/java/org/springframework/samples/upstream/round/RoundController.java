@@ -2,14 +2,19 @@ package org.springframework.samples.upstream.round;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.upstream.piece.Piece;
+import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.player.PlayerService;
+import org.springframework.samples.upstream.tile.Tile;
+import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -31,12 +36,16 @@ public class RoundController {
 	
 	private final RoundService roundService;
 	private PlayerService playerService;
+	private TileService tileService;
+	private PieceService pieceService;
 
 	
 	@Autowired
-	public RoundController(RoundService roundService, PlayerService playerService) {
+	public RoundController(RoundService roundService, PlayerService playerService,TileService tileService,PieceService pieceService) {
 		this.roundService = roundService;
 		this.playerService = playerService;
+		this.tileService = tileService;
+		this.pieceService=pieceService;
 	}
 	
 	@InitBinder
@@ -67,6 +76,11 @@ public class RoundController {
 			players.add(player);
 			round.setPlayers(players);
 			this.roundService.saveRound(round);
+			
+			this.tileService.createSeaTiles(round);
+			
+			this.pieceService.createPlayerPieces(player,round);
+			
 			player.setRound(round);
 			this.playerService.savePlayer(player);
 			return "redirect:/rounds/";
@@ -148,6 +162,17 @@ public class RoundController {
 			players.add(player);
 			round.setPlayers(players);
 			this.roundService.saveRound(round);
+			
+			for(Integer e=0;e<4;e++) {
+				Piece piece=new Piece();
+				piece.setNumSalmon(2);
+				piece.setPlayer(player);
+				piece.setRound(round);
+				piece.setStuck(false);
+				List<Tile> seaTiles=this.tileService.findSeaTilesInRound(round.getId());
+				piece.setTile(seaTiles.get(e));
+				this.pieceService.savePiece(piece);
+			}
 			return "redirect:/rounds/{roundId}";
 		}
 		else {
@@ -164,21 +189,26 @@ public class RoundController {
 		String currentUsername = currentUser.getUsername();
 		Player player=playerService.findPlayerByUsername(currentUsername);
 		Collection<Player> players=round.getPlayers();
+		Collection<Piece> pieces=round.getPieces();
 		if(round!=null && players.contains(player)) {
-//			if(player==round.getPlayer()) {
-//				this.roundService.
-//			}
-			player.setRound(null);
-			this.playerService.savePlayer(player);
-			players.remove(player);
-			round.setPlayers(players);
-			this.roundService.saveRound(round);
+			if(round.getPlayer()==player) {
+				player.setRound(null);
+				this.roundService.deleteRound(round);
+			}else {
+				player.setRound(null);
+				this.playerService.savePlayer(player);
+				players.remove(player);
+				
+				List<Piece> piecesPlayer=this.pieceService.findPiecesOfPlayer(player.getId());
+				pieces.removeAll(piecesPlayer);
+				
+				this.roundService.saveRound(round);
+			}
 			return "redirect:/rounds";
 		}
 		else {
 			return "redirect:/rounds/oups";
 		}
-		
 	}
 	
 	@GetMapping("/rounds/{roundId}")
