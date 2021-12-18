@@ -44,7 +44,7 @@ public class PieceService {
 	public void deletePiece(Piece piece) throws DataAccessException {
 		pieceRepository.delete(piece);
 	}
-		
+	
 	@Transactional(readOnly = true)
 	public List<Piece> findPiecesOfPlayer(int playerId) throws DataAccessException {
 		return this.pieceRepository.findPiecesOfPlayer(playerId);
