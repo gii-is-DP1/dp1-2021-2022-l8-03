@@ -77,7 +77,8 @@ public class PieceService {
 		if(checkUser(piece) && checkDistanceSwim(oldTile, newTile) && sameTile(oldTile, newTile)
 			&& checkCapacity(newTile, piece.getRound()) && checkDirectionSwim(oldTile, newTile)
 			&& checkSwimPoints(piece.getRound()) && checkCurrentWaterfall(oldTile, newTile)
-			&& checkNewWaterfall(oldTile,newTile) && checkStuck(piece) && checkSpawn(oldTile)) {	//MOVIMIENTO VÁLIDO	
+			&& checkNewWaterfall(oldTile,newTile) && checkCurrentBear(oldTile, newTile) 
+			&& checkNewBear(oldTile, newTile) && checkStuck(piece) && checkSpawn(oldTile)) {	//MOVIMIENTO VÁLIDO	
 			
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkRapids(piece, newTile);
@@ -216,15 +217,15 @@ public class PieceService {
 		return ahead && straightLine;
 	}
 	
-	public Boolean straightLineColumn1(Integer colDir, Integer rowDir) {
+	private Boolean straightLineColumn1(Integer colDir, Integer rowDir) {
 		return (colDir==0) || (colDir == 1 && rowDir == 1) || (colDir == 2 && rowDir == 1);
 	}
 	
-	public Boolean straightLineColumn2(Integer colDir, Integer rowDir) {
+	private Boolean straightLineColumn2(Integer colDir, Integer rowDir) {
 		return (colDir == 0) || (colDir == 1 && rowDir == 0) || (colDir == -1 && rowDir == 0);
 	}
 	
-	public Boolean straightLineColumn3(Integer colDir, Integer rowDir) {
+	private Boolean straightLineColumn3(Integer colDir, Integer rowDir) {
 		return (colDir == 0) || (colDir == -1 && rowDir == 1) || (colDir == -2 && rowDir == 1);
 	}
 	
@@ -239,47 +240,78 @@ public class PieceService {
 		Integer columnMovement = newTile.getColumnIndex() - oldTile.getColumnIndex();
 		if(type.equals(TileType.WATERFALL)) {
 			if(columnMovement == 0) { //MOVIMIENTO VERTICAL
-				return !(oldTile.getOrientation()==3 || oldTile.getOrientation()==4 || oldTile.getOrientation()==5);
-			}else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
-				if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 1
-					return !(oldTile.getOrientation()==2 || oldTile.getOrientation()==3 || oldTile.getOrientation()==4);
-				}else if(rowMovement == 0 && oldTile.getColumnIndex()==3) { //COLUMNA  3 -> 2
-					return !(oldTile.getOrientation()==1 || oldTile.getOrientation()==2 || oldTile.getOrientation()==3);
-				}else { //COLUMNA 3 -> 2 Y SUBE FILA
-					return !(oldTile.getOrientation()==2 || oldTile.getOrientation()==3 || oldTile.getOrientation()==4);
-				}
-			}else { //MOVIMIENTO DERECHA
-				if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 3
-					return !(oldTile.getOrientation()==4 || oldTile.getOrientation()==5 || oldTile.getOrientation()==6);
-				}else if(rowMovement == 0 && oldTile.getColumnIndex()==1) { //COLUMNA  1 -> 2
-					return !(oldTile.getOrientation()==1 || oldTile.getOrientation()==5 || oldTile.getOrientation()==6);
-				}else { //COLUMNA 1 -> 2 Y SUBE FILA
-					return !(oldTile.getOrientation()==4 || oldTile.getOrientation()==5 || oldTile.getOrientation()==6);
-				}				
+				return checkCurrentWaterfallVerticalMovement(oldTile);
+			} else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
+				return checkCurrentWaterfallLeftMovement(rowMovement, oldTile);
+			} else { //MOVIMIENTO DERECHA
+				return checkCurrentWaterfallRightMovement(rowMovement, oldTile);
 			}
-		}else if(type.equals(TileType.BEAR)) {
-			if(columnMovement == 0) { //MOVIMIENTO VERTICAL
-				return !(oldTile.getOrientation()==3 || oldTile.getOrientation()==4);
-			}else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
-				if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 1
-					return !(oldTile.getOrientation()==2 || oldTile.getOrientation()==3);
-				}else if(rowMovement == 0 && oldTile.getColumnIndex()==3) { //COLUMNA  3 -> 2
-					return !(oldTile.getOrientation()==1 || oldTile.getOrientation()==2);
-				}else { //COLUMNA 3 -> 2 Y SUBE FILA
-					return !(oldTile.getOrientation()==2 || oldTile.getOrientation()==3);
-				}
-			}else { //MOVIMIENTO DERECHA
-				if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 3
-					return !(oldTile.getOrientation()==4 || oldTile.getOrientation()==5);
-				}else if(rowMovement == 0 && oldTile.getColumnIndex()==1) { //COLUMNA  1 -> 2
-					return !(oldTile.getOrientation()==5 || oldTile.getOrientation()==6);
-				}else { //COLUMNA 1 -> 2 Y SUBE FILA
-					return !(oldTile.getOrientation()==4 || oldTile.getOrientation()==5);
-				}				
-			}
-		}else {
-			return true;
 		}
+		return true;
+	}
+	
+	private Boolean checkCurrentWaterfallVerticalMovement(Tile oldTile) {
+		return !(oldTile.getOrientation()==3 || oldTile.getOrientation()==4 || oldTile.getOrientation()==5);
+	}
+	
+	private Boolean checkCurrentWaterfallLeftMovement(Integer rowMovement, Tile oldTile) {
+		if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 1
+			return !(oldTile.getOrientation()==2 || oldTile.getOrientation()==3 || oldTile.getOrientation()==4);
+		} else if(rowMovement == 0 && oldTile.getColumnIndex()==3) { //COLUMNA  3 -> 2
+			return !(oldTile.getOrientation()==1 || oldTile.getOrientation()==2 || oldTile.getOrientation()==3);
+		} else { //COLUMNA 3 -> 2 Y SUBE FILA
+			return !(oldTile.getOrientation()==2 || oldTile.getOrientation()==3 || oldTile.getOrientation()==4);
+		}
+	}
+	
+	private Boolean checkCurrentWaterfallRightMovement(Integer rowMovement, Tile oldTile) {
+		if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 3
+			return !(oldTile.getOrientation()==4 || oldTile.getOrientation()==5 || oldTile.getOrientation()==6);
+		} else if(rowMovement == 0 && oldTile.getColumnIndex()==1) { //COLUMNA  1 -> 2
+			return !(oldTile.getOrientation()==1 || oldTile.getOrientation()==5 || oldTile.getOrientation()==6);
+		} else { //COLUMNA 1 -> 2 Y SUBE FILA
+			return !(oldTile.getOrientation()==4 || oldTile.getOrientation()==5 || oldTile.getOrientation()==6);
+		}		
+	}
+	
+	public Boolean checkCurrentBear(Tile oldTile, Tile newTile) {
+		TileType type = oldTile.getTileType();
+		Integer rowMovement = newTile.getRowIndex() - oldTile.getRowIndex();
+		Integer columnMovement = newTile.getColumnIndex() - oldTile.getColumnIndex();
+		if(type.equals(TileType.BEAR)) {
+			if(columnMovement == 0) { //MOVIMIENTO VERTICAL
+				return checkCurrentBearVerticalMovement(oldTile);
+			} else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
+				return checkCurrentBearLeftMovement(rowMovement, oldTile);
+			} else { //MOVIMIENTO DERECHA
+				return checkCurrentBearRightMovement(rowMovement, oldTile);
+			}
+		}
+		return true;
+	}
+	
+	private Boolean checkCurrentBearVerticalMovement(Tile oldTile) {
+		return !(oldTile.getOrientation()==3 || oldTile.getOrientation()==4);
+	}
+	
+	private Boolean checkCurrentBearLeftMovement(Integer rowMovement, Tile oldTile) {
+		if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 1
+			return !(oldTile.getOrientation()==2 || oldTile.getOrientation()==3);
+		} else if(rowMovement == 0 && oldTile.getColumnIndex()==3) { //COLUMNA  3 -> 2
+			return !(oldTile.getOrientation()==1 || oldTile.getOrientation()==2);
+		} else { //COLUMNA 3 -> 2 Y SUBE FILA
+			return !(oldTile.getOrientation()==2 || oldTile.getOrientation()==3);
+		}
+	}
+	
+	private Boolean checkCurrentBearRightMovement(Integer rowMovement, Tile oldTile) {
+		if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 3
+			return !(oldTile.getOrientation()==4 || oldTile.getOrientation()==5);
+		} else if(rowMovement == 0 && oldTile.getColumnIndex()==1) { //COLUMNA  1 -> 2
+			return !(oldTile.getOrientation()==5 || oldTile.getOrientation()==6);
+		} else { //COLUMNA 1 -> 2 Y SUBE FILA
+			return !(oldTile.getOrientation()==4 || oldTile.getOrientation()==5);
+		}		
 	}
 	
 	public Boolean checkNewWaterfall(Tile oldTile, Tile newTile) {
@@ -288,46 +320,77 @@ public class PieceService {
 		Integer columnMovement = newTile.getColumnIndex() - oldTile.getColumnIndex();
 		if(type.equals(TileType.WATERFALL)) {
 			if(columnMovement == 0) { //MOVIMIENTO VERTICAL
-				return !(newTile.getOrientation()==1 || newTile.getOrientation()==2 || newTile.getOrientation()==6);
-			}else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
-				if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 1
-					return !(newTile.getOrientation()==1 || newTile.getOrientation()==5 || newTile.getOrientation()==6);
-				}else if(rowMovement == 0 && oldTile.getColumnIndex()==3) { //COLUMNA  3 -> 2
-					return !(newTile.getOrientation()==4 || newTile.getOrientation()==5 || newTile.getOrientation()==6);
-				}else { //COLUMNA 3 -> 2 Y SUBE FILA
-					return !(newTile.getOrientation()==5 || newTile.getOrientation()==6 || newTile.getOrientation()==1);
-				}
-			}else { //MOVIMIENTO DERECHA
-				if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 3
-					return !(newTile.getOrientation()==1 || newTile.getOrientation()==2 || newTile.getOrientation()==3);
-				}else if(rowMovement == 0 && oldTile.getColumnIndex()==1) { //COLUMNA  1 -> 2
-					return !(newTile.getOrientation()==2 || newTile.getOrientation()==3 || newTile.getOrientation()==4);
-				}else { //COLUMNA 1 -> 2 Y SUBE FILA
-					return !(newTile.getOrientation()==1 || newTile.getOrientation()==2 || newTile.getOrientation()==3);
-				}				
+				return checkNewWaterfallVerticalMovement(newTile);
+			} else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
+				return checkNewWaterfallLeftMovement(rowMovement, oldTile, newTile);
+			} else { //MOVIMIENTO DERECHA
+				return checkNewWaterFallRightMovement(rowMovement, oldTile, newTile);				
 			}
-		}else if(type.equals(TileType.BEAR)) {
+		}
+		return true;
+	}
+	
+	private Boolean checkNewWaterfallVerticalMovement(Tile newTile) {
+		return !(newTile.getOrientation()==1 || newTile.getOrientation()==2 || newTile.getOrientation()==6);
+	}
+	
+	private Boolean checkNewWaterfallLeftMovement(Integer rowMovement, Tile oldTile, Tile newTile) {
+		if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 1
+			return !(newTile.getOrientation()==1 || newTile.getOrientation()==5 || newTile.getOrientation()==6);
+		} else if(rowMovement == 0 && oldTile.getColumnIndex()==3) { //COLUMNA  3 -> 2
+			return !(newTile.getOrientation()==4 || newTile.getOrientation()==5 || newTile.getOrientation()==6);
+		} else { //COLUMNA 3 -> 2 Y SUBE FILA
+			return !(newTile.getOrientation()==5 || newTile.getOrientation()==6 || newTile.getOrientation()==1);
+		}
+	}
+	
+	private Boolean checkNewWaterFallRightMovement(Integer rowMovement, Tile oldTile, Tile newTile) {
+		if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 3
+			return !(newTile.getOrientation()==1 || newTile.getOrientation()==2 || newTile.getOrientation()==3);
+		} else if(rowMovement == 0 && oldTile.getColumnIndex()==1) { //COLUMNA  1 -> 2
+			return !(newTile.getOrientation()==2 || newTile.getOrientation()==3 || newTile.getOrientation()==4);
+		} else { //COLUMNA 1 -> 2 Y SUBE FILA
+			return !(newTile.getOrientation()==1 || newTile.getOrientation()==2 || newTile.getOrientation()==3);
+		}
+	}
+	
+	public Boolean checkNewBear(Tile oldTile, Tile newTile) {
+		TileType type = newTile.getTileType();
+		Integer rowMovement = newTile.getRowIndex() - oldTile.getRowIndex();
+		Integer columnMovement = newTile.getColumnIndex() - oldTile.getColumnIndex();
+		if(type.equals(TileType.BEAR)) {
 			if(columnMovement == 0) { //MOVIMIENTO VERTICAL
-				return !(newTile.getOrientation()==1 || newTile.getOrientation()==6);
-			}else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
-				if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 1
-					return !(newTile.getOrientation()==5 || newTile.getOrientation()==6);
-				}else if(rowMovement == 0 && oldTile.getColumnIndex()==3) { //COLUMNA  3 -> 2
-					return !(newTile.getOrientation()==4 || newTile.getOrientation()==5);
-				}else { //COLUMNA 3 -> 2 Y SUBE FILA
-					return !(newTile.getOrientation()==5 || newTile.getOrientation()==6);
-				}
-			}else { //MOVIMIENTO DERECHA
-				if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 3
-					return !(newTile.getOrientation()==1 || newTile.getOrientation()==2);
-				}else if(rowMovement == 0 && oldTile.getColumnIndex()==1) { //COLUMNA  1 -> 2
-					return !(newTile.getOrientation()==2 || newTile.getOrientation()==3);
-				}else { //COLUMNA 1 -> 2 Y SUBE FILA
-					return !(newTile.getOrientation()==1 || newTile.getOrientation()==2);
-				}				
+				return checkNewBearVerticalMovement(newTile);
+			} else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
+				return checkNewBearLeftMovement(rowMovement, oldTile, newTile);
+			} else { //MOVIMIENTO DERECHA
+				return checkNewBearRightMovement(rowMovement, oldTile, newTile);				
 			}
-		}else {
-			return true;
+		}
+		return true;
+	}
+	
+	private Boolean checkNewBearVerticalMovement(Tile newTile) {
+		return !(newTile.getOrientation()==1 || newTile.getOrientation()==6);
+	}
+	
+	private Boolean checkNewBearLeftMovement(Integer rowMovement, Tile oldTile, Tile newTile) {
+		if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 1
+			return !(newTile.getOrientation()==5 || newTile.getOrientation()==6);
+		} else if(rowMovement == 0 && oldTile.getColumnIndex()==3) { //COLUMNA  3 -> 2
+			return !(newTile.getOrientation()==4 || newTile.getOrientation()==5);
+		} else { //COLUMNA 3 -> 2 Y SUBE FILA
+			return !(newTile.getOrientation()==5 || newTile.getOrientation()==6);
+		}
+	}
+	
+	private Boolean checkNewBearRightMovement(Integer rowMovement, Tile oldTile, Tile newTile) {
+		if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 3
+			return !(newTile.getOrientation()==1 || newTile.getOrientation()==2);
+		} else if(rowMovement == 0 && oldTile.getColumnIndex()==1) { //COLUMNA  1 -> 2
+			return !(newTile.getOrientation()==2 || newTile.getOrientation()==3);
+		} else { //COLUMNA 1 -> 2 Y SUBE FILA
+			return !(newTile.getOrientation()==1 || newTile.getOrientation()==2);
 		}
 	}
 	
