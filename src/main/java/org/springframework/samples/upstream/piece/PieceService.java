@@ -41,10 +41,9 @@ public class PieceService {
 	}
 	
 	@Transactional(readOnly = true)
-	public void delete(Piece p) throws DataAccessException {
-		this.pieceRepository.delete(p);
-	}
-	
+	public void deletePiece(Piece piece) throws DataAccessException {
+		pieceRepository.delete(piece);
+
 	@Transactional(readOnly = true)
 	public List<Piece> findPiecesOfPlayer(int playerId) throws DataAccessException {
 		return this.pieceRepository.findPiecesOfPlayer(playerId);
@@ -77,7 +76,7 @@ public class PieceService {
 		if(checkUser(piece) && checkDistanceSwim(oldTile, newTile) && sameTile(oldTile, newTile)
 			&& checkCapacity(newTile, piece.getRound()) && checkDirectionSwim(oldTile, newTile)
 			&& checkSwimPoints(piece.getRound()) && checkCurrentWaterfall(oldTile, newTile)
-			&& checkNewWaterfall(oldTile,newTile) && checkStuck(piece)) {	//MOVIMIENTO VÁLIDO	
+			&& checkNewWaterfall(oldTile,newTile) && checkStuck(piece) && checkSpawn(oldTile)) {	//MOVIMIENTO VÁLIDO	
 			
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkRapids(piece, newTile);
@@ -94,7 +93,7 @@ public class PieceService {
 	public void jump(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException {
 		if(checkUser(piece) && sameTile(oldTile, newTile) && checkDistanceJump(oldTile, newTile, piece.getRound()) 
 			&& checkCapacity(newTile, piece.getRound()) && checkDirectionJump(oldTile, newTile)
-			&& checkStuck(piece)) {
+			&& checkStuck(piece) && checkJumpPoints(oldTile, newTile, piece) && checkSpawn(oldTile)) {		//MOVIMIENTO VÁLIDO
 			
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkRapids(piece, newTile);
@@ -111,6 +110,13 @@ public class PieceService {
 		
 	}
 	
+	private boolean checkJumpPoints(Tile oldTile, Tile newTile, Piece piece) {
+		Round round = piece.getRound();
+		Integer movementPoints = piece.getRound().getActingPlayer().getPoints();
+		Integer neededPoints = countIntermediateTiles(oldTile, newTile, round);
+		return movementPoints >= neededPoints;
+	}
+
 	public Boolean checkUser(Piece piece) {
 		Round round = piece.getRound();
 		Integer actingPlayer = round.getActingPlayer().getPlayer();
@@ -133,13 +139,14 @@ public class PieceService {
 		Integer colDir = newTile.getColumnIndex() - oldTile.getColumnIndex();
 		Integer rowDir = newTile.getRowIndex() - oldTile.getRowIndex();
 		Integer numTiles = 2;
+		Integer roundId = round.getId();
 		if(oldTile.getColumnIndex()==1) {
 			if(colDir == 0) {
 				for(int i = 1; i < rowDir; i++) {
 					numTiles += 1;
 				}
 			}else {
-				Tile intermediateTile = this.tileService.findByPosition(row + 1, column + 1);
+				Tile intermediateTile = this.tileService.findByPosition(row + 1, column + 1, roundId);
 				if(!intermediateTile.equals(newTile)) {
 					numTiles += 1;
 				}
@@ -156,7 +163,7 @@ public class PieceService {
 					numTiles += 1;
 				}
 			}else {
-				Tile intermediateTile = this.tileService.findByPosition(row + 1, column - 1);
+				Tile intermediateTile = this.tileService.findByPosition(row + 1, column - 1, roundId);
 				if(!intermediateTile.equals(newTile)) {
 					numTiles += 1;
 				}
@@ -350,15 +357,20 @@ public class PieceService {
 		return piece;
 	}
 	
+	public Boolean checkSpawn(Tile oldTile) {
+		return !oldTile.getTileType().equals(TileType.SPAWN);
+	}
+	
 	public Piece checkIntermediateBear(Piece piece, Tile oldTile, Tile newTile) {
 		Integer row = oldTile.getRowIndex();
 		Integer column = oldTile.getColumnIndex();
 		Integer colDir = newTile.getColumnIndex() - oldTile.getColumnIndex();
 		Integer rowDir = newTile.getRowIndex() - oldTile.getRowIndex();
+		Integer roundId = piece.getRound().getId();
 		if(oldTile.getColumnIndex()==1) {
 			if(colDir == 0) {
 				for(int i = 1; i < rowDir; i++) {
-					Tile intermediateTile = this.tileService.findByPosition(row + i, column);
+					Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
 					if(intermediateTile.getTileType().equals(TileType.BEAR)) {
 						piece.setNumSalmon(piece.getNumSalmon() - 1);
 					}
@@ -367,7 +379,7 @@ public class PieceService {
 					}
 				}
 			}else {
-				Tile intermediateTile = this.tileService.findByPosition(row + 1, column + 1);
+				Tile intermediateTile = this.tileService.findByPosition(row + 1, column + 1, roundId);
 				if(intermediateTile.getTileType().equals(TileType.BEAR)) {
 					piece.setNumSalmon(piece.getNumSalmon() - 1);
 				}
@@ -375,7 +387,7 @@ public class PieceService {
 		}else if(oldTile.getColumnIndex()==2) {
 			if(colDir == 0) {
 				for(int i = 1; i < rowDir; i++) {
-					Tile intermediateTile = this.tileService.findByPosition(row + i, column);
+					Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
 					if(intermediateTile.getTileType().equals(TileType.BEAR)) {
 						piece.setNumSalmon(piece.getNumSalmon() - 1);
 					}
@@ -387,7 +399,7 @@ public class PieceService {
 		}else if(oldTile.getColumnIndex()==3) {
 			if(colDir == 0) {
 				for(int i = 1; i < rowDir; i++) {
-					Tile intermediateTile = this.tileService.findByPosition(row + i, column);
+					Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
 					if(intermediateTile.getTileType().equals(TileType.BEAR)) {
 						piece.setNumSalmon(piece.getNumSalmon() - 1);
 					}
@@ -396,7 +408,7 @@ public class PieceService {
 					}
 				}
 			}else {
-				Tile intermediateTile = this.tileService.findByPosition(row + 1, column - 1);
+				Tile intermediateTile = this.tileService.findByPosition(row + 1, column - 1, roundId);
 				if(intermediateTile.getTileType().equals(TileType.BEAR)) {
 					piece.setNumSalmon(piece.getNumSalmon() - 1);
 				}
@@ -405,19 +417,20 @@ public class PieceService {
 		return piece;
 	}
 	
-	public Integer countIntermediateTiles(Tile oldTile, Tile newTile) {
+	public Integer countIntermediateTiles(Tile oldTile, Tile newTile, Round round) {
 		Integer row = oldTile.getRowIndex();
 		Integer column = oldTile.getColumnIndex();
 		Integer colDir = newTile.getColumnIndex() - oldTile.getColumnIndex();
 		Integer rowDir = newTile.getRowIndex() - oldTile.getRowIndex();
 		Integer numTiles = 2;
+		Integer roundId = round.getId();
 		if(oldTile.getColumnIndex()==1) {
 			if(colDir == 0) {
 				for(int i = 1; i < rowDir; i++) {
 					numTiles += 1;
 				}
 			}else {
-				Tile intermediateTile = this.tileService.findByPosition(row + 1, column + 1);
+				Tile intermediateTile = this.tileService.findByPosition(row + 1, column + 1, roundId);
 				if(!intermediateTile.equals(newTile)) {
 					numTiles += 1;
 				}
@@ -434,7 +447,7 @@ public class PieceService {
 					numTiles += 1;
 				}
 			}else {
-				Tile intermediateTile = this.tileService.findByPosition(row + 1, column - 1);
+				Tile intermediateTile = this.tileService.findByPosition(row + 1, column - 1, roundId);
 				if(!intermediateTile.equals(newTile)) {
 					numTiles += 1;
 				}
@@ -446,16 +459,36 @@ public class PieceService {
 	public void substractMovementPointsSwim(Round round) {
 		ActingPlayer actingPlayer = round.getActingPlayer();
 		actingPlayer.setPoints(actingPlayer.getPoints()-1);
-		actingPlayerService.saveActingPlayer(actingPlayer);		
+		actingPlayerService.saveActingPlayer(actingPlayer);
+		if(actingPlayer.getPoints()==0) {
+			checkHeron(round);
+			actingPlayerService.changeTurn(actingPlayer);
+		}
 	}
 	
 	public void substractMovementPointsJump(Round round, Tile oldTile, Tile newTile) {
 		ActingPlayer actingPlayer = round.getActingPlayer();
-		Integer substraction = countIntermediateTiles(oldTile, newTile);
+		Integer substraction = countIntermediateTiles(oldTile, newTile, round);
 		actingPlayer.setPoints(actingPlayer.getPoints()-substraction);
 		actingPlayerService.saveActingPlayer(actingPlayer);
+		if(actingPlayer.getPoints()==0) {
+			checkHeron(round);
+			actingPlayerService.changeTurn(actingPlayer);
+		}
 	}
 	
+	private void checkHeron(Round round) {
+		List<Tile> heronTiles = tileService.findHeronTilesInRound(round.getId()); 
+		for(Tile tile : heronTiles) {
+			for(Piece piece : tile.getPieces()) {
+				if(checkUser(piece)) {
+					piece.setNumSalmon(piece.getNumSalmon()-1);
+					pieceRepository.save(piece);
+				}
+			}
+		}
+	}
+
 	public Piece checkWhirlpool(Piece piece, Tile newTile) {
 		Round round = piece.getRound();
 		if(newTile.getTileType().equals(TileType.ROCK) && round.getWhirlpools()) {
@@ -467,6 +500,7 @@ public class PieceService {
 	public Piece checkRapids(Piece piece, Tile newTile) {
 		Integer newRow = newTile.getRowIndex();
 		Integer newColumn = newTile.getColumnIndex();
+		Integer roundId = piece.getRound().getId();
 		if(newTile.getTileType().equals(TileType.RAPIDS)) {
 			if(newTile.getColumnIndex() == 1) {
 				if(newTile.getOrientation() == 1) {
@@ -508,7 +542,7 @@ public class PieceService {
 				}
 			}
 		}
-		newTile = this.tileService.findByPosition(newRow, newColumn);
+		newTile = this.tileService.findByPosition(newRow, newColumn, roundId);
 		piece.setTile(newTile);
 		return piece;
 	}

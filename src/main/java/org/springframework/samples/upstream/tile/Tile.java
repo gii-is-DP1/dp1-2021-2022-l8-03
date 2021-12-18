@@ -35,7 +35,7 @@ public class Tile extends BaseEntity {
 	@JoinColumn(name = "round_id")
 	private Round round;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "tile")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "tile", orphanRemoval = true)
 	private Collection<Piece> pieces;
 }
 

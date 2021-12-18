@@ -211,12 +211,6 @@ public class RoundController {
 		}
 	}
 	
-
-	/**
-	 * Custom handler for displaying an owner.
-	 * @param ownerId the ID of the owner to display
-	 * @return a ModelMap with the model attributes for the view
-	 */
 	@GetMapping("/rounds/{roundId}")
 	public ModelAndView showRound(@PathVariable("roundId") int roundId) {
 		ModelAndView mav = new ModelAndView("rounds/roundDetails");
