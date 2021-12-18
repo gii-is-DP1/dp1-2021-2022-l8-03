@@ -47,7 +47,6 @@ public class PieceController {
 	public String processUpdatePieceForm(@Valid @ModelAttribute MovementTypeWrapper movementTypeWrapper,
 			BindingResult result, @PathVariable("pieceId") int pieceId, ModelMap model) {
 		Piece piece = movementTypeWrapper.getPiece();
-		Integer roundId = piece.getRound().getId();
 		Boolean movementType = movementTypeWrapper.getMovementType();
 		if(result.hasErrors()) {
 			return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
@@ -56,6 +55,7 @@ public class PieceController {
 			Integer newRow =  piece.getTile().getRowIndex();
 			Integer newColumn = piece.getTile().getColumnIndex();
 			Piece pieceToUpdate = this.pieceService.findPieceById(pieceId);
+			Integer roundId = pieceToUpdate.getRound().getId();
 			Tile newTile = this.tileService.findByPosition(newRow, newColumn, roundId);
 			if(movementType) {
 				this.pieceService.jump(pieceToUpdate, pieceToUpdate.getTile(), newTile);
