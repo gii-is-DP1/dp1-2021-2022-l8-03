@@ -1,7 +1,5 @@
 package org.springframework.samples.upstream.tile;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;

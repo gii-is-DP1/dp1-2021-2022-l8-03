@@ -3,7 +3,6 @@ package org.springframework.samples.upstream.actingPlayer;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.samples.upstream.piece.Piece;
 
 public interface ActingPlayerRepository extends CrudRepository<ActingPlayer, Integer>{
 	

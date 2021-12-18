@@ -35,5 +35,4 @@ public interface TileRepository extends CrudRepository<Tile, Integer>{
 
 	@Query("SELECT tile FROM Tile tile WHERE tile.round.id=:round_id")
 	public List<Tile> findTilesInRound(@Param("round_id") int round_id);
-
 }
