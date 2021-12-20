@@ -432,50 +432,65 @@ public class PieceService {
 		Integer rowDir = newTile.getRowIndex() - oldTile.getRowIndex();
 		Integer roundId = piece.getRound().getId();
 		if(oldTile.getColumnIndex()==1) {
-			if(colDir == 0) {
-				for(int i = 1; i < rowDir; i++) {
-					Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
-					if(intermediateTile.getTileType().equals(TileType.BEAR)) {
-						piece.setNumSalmon(piece.getNumSalmon() - 1);
-					}
-					if(piece.getNumSalmon() < 1) {
-						break;
-					}
-				}
-			}else {
-				Tile intermediateTile = this.tileService.findByPosition(row + 1, column + 1, roundId);
-				if(intermediateTile.getTileType().equals(TileType.BEAR)) {
-					piece.setNumSalmon(piece.getNumSalmon() - 1);
-				}
-			}
+			piece = checkIntermediateBearColumn1(colDir, rowDir, piece, row, column, roundId);
 		}else if(oldTile.getColumnIndex()==2) {
-			if(colDir == 0) {
-				for(int i = 1; i < rowDir; i++) {
-					Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
-					if(intermediateTile.getTileType().equals(TileType.BEAR)) {
-						piece.setNumSalmon(piece.getNumSalmon() - 1);
-					}
-					if(piece.getNumSalmon() < 1) {
-						break;
-					}
-				}
-			}
+			piece = checkIntermediateBearColumn2(colDir, rowDir, piece, row, column, roundId);
 		}else if(oldTile.getColumnIndex()==3) {
-			if(colDir == 0) {
-				for(int i = 1; i < rowDir; i++) {
-					Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
-					if(intermediateTile.getTileType().equals(TileType.BEAR)) {
-						piece.setNumSalmon(piece.getNumSalmon() - 1);
-					}
-					if(piece.getNumSalmon() < 1) {
-						break;
-					}
-				}
-			}else {
-				Tile intermediateTile = this.tileService.findByPosition(row + 1, column - 1, roundId);
+			piece = checkIntermediateBearColumn3(colDir, rowDir, piece, row, column, roundId);
+		}
+		return piece;
+	}
+	
+	private Piece checkIntermediateBearColumn1(Integer colDir, Integer rowDir, Piece piece, Integer row, Integer column, Integer roundId) {
+		if(colDir == 0) {
+			for(int i = 1; i < rowDir; i++) {
+				Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
 				if(intermediateTile.getTileType().equals(TileType.BEAR)) {
 					piece.setNumSalmon(piece.getNumSalmon() - 1);
 				}
+				if(piece.getNumSalmon() < 1) {
+					break;
+				}
+			}
+		}else {
+			Tile intermediateTile = this.tileService.findByPosition(row + 1, column + 1, roundId);
+			if(intermediateTile.getTileType().equals(TileType.BEAR)) {
+				piece.setNumSalmon(piece.getNumSalmon() - 1);
+			}
+		}
+		return piece;
+	}
+	
+	private Piece checkIntermediateBearColumn2(Integer colDir, Integer rowDir, Piece piece, Integer row, Integer column, Integer roundId) {
+		if(colDir == 0) {
+			for(int i = 1; i < rowDir; i++) {
+				Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
+				if(intermediateTile.getTileType().equals(TileType.BEAR)) {
+					piece.setNumSalmon(piece.getNumSalmon() - 1);
+				}
+				if(piece.getNumSalmon() < 1) {
+					break;
+				}
+			}
+		}
+		return piece;
+	}
+	
+	private Piece checkIntermediateBearColumn3(Integer colDir, Integer rowDir, Piece piece, Integer row, Integer column, Integer roundId) {
+		if(colDir == 0) {
+			for(int i = 1; i < rowDir; i++) {
+				Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
+				if(intermediateTile.getTileType().equals(TileType.BEAR)) {
+					piece.setNumSalmon(piece.getNumSalmon() - 1);
+				}
+				if(piece.getNumSalmon() < 1) {
+					break;
+				}
+			}
+		}else {
+			Tile intermediateTile = this.tileService.findByPosition(row + 1, column - 1, roundId);
+			if(intermediateTile.getTileType().equals(TileType.BEAR)) {
+				piece.setNumSalmon(piece.getNumSalmon() - 1);
 			}
 		}
 		return piece;
@@ -489,32 +504,47 @@ public class PieceService {
 		Integer numTiles = 2;
 		Integer roundId = round.getId();
 		if(oldTile.getColumnIndex()==1) {
-			if(colDir == 0) {
-				for(int i = 1; i < rowDir; i++) {
-					numTiles += 1;
-				}
-			}else {
-				Tile intermediateTile = this.tileService.findByPosition(row + 1, column + 1, roundId);
-				if(!intermediateTile.equals(newTile)) {
-					numTiles += 1;
-				}
-			}
+			numTiles = countIntermediateTilesColumn1(colDir, rowDir, numTiles, row, column, roundId, newTile);
 		} else if(oldTile.getColumnIndex()==2) {
-			if(colDir == 0) {
-				for(int i = 1; i < rowDir; i++) {
-					numTiles += 1;
-				}
-			}
+			numTiles = countIntermediateTilesColumn2(colDir, rowDir, numTiles);
 		} else if(oldTile.getColumnIndex()==3) {
-			if(colDir == 0) {
-				for(int i = 1; i < rowDir; i++) {
-					numTiles += 1;
-				}
-			}else {
-				Tile intermediateTile = this.tileService.findByPosition(row + 1, column - 1, roundId);
-				if(!intermediateTile.equals(newTile)) {
-					numTiles += 1;
-				}
+			numTiles = countIntermediateTilesColumn3(colDir, rowDir, numTiles, row, column, roundId, newTile);
+		}
+		return numTiles;
+	}
+	
+	private Integer countIntermediateTilesColumn1(Integer colDir, Integer rowDir, Integer numTiles, Integer row, Integer column, Integer roundId, Tile newTile) {
+		if(colDir == 0) {
+			for(int i = 1; i < rowDir; i++) {
+				numTiles += 1;
+			}
+		}else {
+			Tile intermediateTile = this.tileService.findByPosition(row + 1, column + 1, roundId);
+			if(!intermediateTile.equals(newTile)) {
+				numTiles += 1;
+			}
+		}
+		return numTiles;
+	}
+	
+	private Integer countIntermediateTilesColumn2(Integer colDir, Integer rowDir, Integer numTiles) {
+		if(colDir == 0) {
+			for(int i = 1; i < rowDir; i++) {
+				numTiles += 1;
+			}
+		}
+		return numTiles;
+	}
+	
+	private Integer countIntermediateTilesColumn3(Integer colDir, Integer rowDir, Integer numTiles, Integer row, Integer column, Integer roundId, Tile newTile) {
+		if(colDir == 0) {
+			for(int i = 1; i < rowDir; i++) {
+				numTiles += 1;
+			}
+		}else {
+			Tile intermediateTile = this.tileService.findByPosition(row + 1, column - 1, roundId);
+			if(!intermediateTile.equals(newTile)) {
+				numTiles += 1;
 			}
 		}
 		return numTiles;
@@ -567,48 +597,60 @@ public class PieceService {
 		Integer roundId = piece.getRound().getId();
 		if(newTile.getTileType().equals(TileType.RAPIDS)) {
 			if(newTile.getColumnIndex() == 1) {
-				if(newTile.getOrientation() == 1) {
-					newRow = newRow + 1;
-				}else if(newTile.getOrientation() == 2) {
-					newRow = newRow + 1;
-					newColumn = newColumn + 1;
-				}else if(newTile.getOrientation() == 3) {
-					newColumn = newColumn + 1;
-				}else if(newTile.getOrientation() == 4) {
-					newRow = newRow - 1;
-				}
+				checkRapidsColumn1(newTile, newRow, newColumn);
 			}else if(newTile.getColumnIndex() == 2) {
-				if(newTile.getOrientation() == 1) {
-					newRow = newRow + 1;
-				}else if(newTile.getOrientation() == 2) {
-					newColumn = newColumn + 1;
-				}else if(newTile.getOrientation() == 3) {
-					newRow = newRow - 1;
-					newColumn = newColumn + 1;
-				}else if(newTile.getOrientation() == 4) {
-					newRow = newRow - 1;
-				}else if(newTile.getOrientation() == 5) {
-					newRow = newRow - 1;
-					newColumn = newColumn - 1;
-				}else if(newTile.getOrientation() == 6) {
-					newColumn = newColumn - 1;
-				}
+				checkRapidsColumn2(newTile, newRow, newColumn);
 			}else {
-				if(newTile.getOrientation() == 1) {
-					newRow = newRow + 1;
-				}else if(newTile.getOrientation() == 4) {
-					newRow = newRow - 1;
-				}else if(newTile.getOrientation() == 5) {
-					newColumn = newColumn - 1;
-				}else if(newTile.getOrientation() == 6) {
-					newRow = newRow + 1;
-					newColumn = newColumn - 1;
-				}
+				checkRapidsColumn3(newTile, newRow, newColumn);
 			}
 		}
 		newTile = this.tileService.findByPosition(newRow, newColumn, roundId);
 		piece.setTile(newTile);
 		return piece;
+	}
+	
+	private void checkRapidsColumn1(Tile newTile, Integer newRow, Integer newColumn) {
+		if(newTile.getOrientation() == 1) {
+			newRow = newRow + 1;
+		}else if(newTile.getOrientation() == 2) {
+			newRow = newRow + 1;
+			newColumn = newColumn + 1;
+		}else if(newTile.getOrientation() == 3) {
+			newColumn = newColumn + 1;
+		}else if(newTile.getOrientation() == 4) {
+			newRow = newRow - 1;
+		}
+	}
+	
+	private void checkRapidsColumn2(Tile newTile, Integer newRow, Integer newColumn) {
+		if(newTile.getOrientation() == 1) {
+			newRow = newRow + 1;
+		}else if(newTile.getOrientation() == 2) {
+			newColumn = newColumn + 1;
+		}else if(newTile.getOrientation() == 3) {
+			newRow = newRow - 1;
+			newColumn = newColumn + 1;
+		}else if(newTile.getOrientation() == 4) {
+			newRow = newRow - 1;
+		}else if(newTile.getOrientation() == 5) {
+			newRow = newRow - 1;
+			newColumn = newColumn - 1;
+		}else if(newTile.getOrientation() == 6) {
+			newColumn = newColumn - 1;
+		}
+	}
+	
+	private void checkRapidsColumn3(Tile newTile, Integer newRow, Integer newColumn) {
+		if(newTile.getOrientation() == 1) {
+			newRow = newRow + 1;
+		}else if(newTile.getOrientation() == 4) {
+			newRow = newRow - 1;
+		}else if(newTile.getOrientation() == 5) {
+			newColumn = newColumn - 1;
+		}else if(newTile.getOrientation() == 6) {
+			newRow = newRow + 1;
+			newColumn = newColumn - 1;
+		}
 	}
 	
 	public String getCurrentUsername() {
