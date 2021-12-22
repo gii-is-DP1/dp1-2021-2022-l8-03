@@ -36,9 +36,6 @@ public class Player extends Person {
 	@Email
 	private String email;
 	
-
-
-	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
 	private Collection<Piece> pieces;
 	
@@ -80,6 +77,10 @@ public class Player extends Person {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public Collection<Piece> getPieces(){
+		return pieces;
 	}
 
 

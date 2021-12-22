@@ -9,6 +9,7 @@ import org.springframework.samples.upstream.actingPlayer.ActingPlayer;
 import org.springframework.samples.upstream.actingPlayer.ActingPlayerService;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.round.Round;
+import org.springframework.samples.upstream.round.RoundState;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.samples.upstream.tile.TileType;
@@ -75,7 +76,7 @@ public class PieceService {
 	}	
 	
 	public void swim(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException {
-		if(checkUser(piece) && checkDistanceSwim(oldTile, newTile) && sameTile(oldTile, newTile)
+		if(checkUser(piece) && checkRoundState(piece.getRound()) && checkDistanceSwim(oldTile, newTile) && sameTile(oldTile, newTile)
 			&& checkCapacity(newTile, piece.getRound()) && checkDirectionSwim(oldTile, newTile)
 			&& checkSwimPoints(piece.getRound()) && checkCurrentWaterfall(oldTile, newTile)
 			&& checkNewWaterfall(oldTile,newTile) && checkCurrentBear(oldTile, newTile) 
@@ -94,9 +95,10 @@ public class PieceService {
 	}
 	
 	public void jump(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException {
-		if(checkUser(piece) && sameTile(oldTile, newTile) && checkDistanceJump(oldTile, newTile, piece.getRound()) 
-			&& checkCapacity(newTile, piece.getRound()) && checkDirectionJump(oldTile, newTile)
-			&& checkStuck(piece) && checkJumpPoints(oldTile, newTile, piece) && checkSpawn(oldTile)) {		//MOVIMIENTO VÁLIDO
+		if(checkUser(piece) && checkRoundState(piece.getRound()) && sameTile(oldTile, newTile) 
+			&& checkDistanceJump(oldTile, newTile, piece.getRound()) && checkCapacity(newTile, piece.getRound()) 
+			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece) && checkJumpPoints(oldTile, newTile, piece) 
+			&& checkSpawn(oldTile)) {		//MOVIMIENTO VÁLIDO
 			
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkRapids(piece, newTile);
@@ -118,6 +120,10 @@ public class PieceService {
 		Integer movementPoints = piece.getRound().getActingPlayer().getPoints();
 		Integer neededPoints = countIntermediateTiles(oldTile, newTile, round);
 		return movementPoints >= neededPoints;
+	}
+	
+	private Boolean checkRoundState(Round round) {
+		return round.getRound_state().equals(RoundState.IN_COURSE);
 	}
 
 	public Boolean checkUser(Piece piece) {
@@ -583,7 +589,11 @@ public class PieceService {
 		actingPlayerService.saveActingPlayer(actingPlayer);
 		if(actingPlayer.getPoints()==0) {
 			checkHeron(round);
-			actingPlayerService.changeTurn(actingPlayer);
+			if(round.getNum_players() > 2) {
+				actingPlayerService.changeTurn(actingPlayer);
+			}else {
+				actingPlayerService.changeTurnTwoPlayers(actingPlayer);
+			}
 		}
 	}
 	
