@@ -36,6 +36,11 @@ public class TileService {
 	}
 	
 	@Transactional(readOnly = true)
+	public Tile findTileBySalmonEggs(int salmoneggs, int round_id) throws DataAccessException {
+		return tileRepository.findTileBySalmonEggs(salmoneggs, round_id);
+	}
+	
+	@Transactional(readOnly = true)
 	public Tile findByPosition(int row, int column, int round) throws DataAccessException {
 		return tileRepository.findByPosition(row, column, round);
 	}
