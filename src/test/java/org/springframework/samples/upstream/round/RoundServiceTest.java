@@ -72,4 +72,32 @@ public class RoundServiceTest {
 
 	}
 	
+	@Test
+	void shouldDeleteRound() {
+		Round round=new Round();
+			round.setPlayer(this.playerService.findPlayerByUsername("mandommag"));
+			round.setWhirlpools(true);
+			round.setRapids(true);
+			round.setNum_players(3);
+		this.roundService.saveRound(round);
+		Collection<Round> roundsStart = this.roundService.findAll();
+		this.roundService.deleteRound(round);
+		Collection<Round> roundsEnd= this.roundService.findAll();
+		assertThat(roundsEnd.size()).isEqualTo(roundsStart.size()-1);
+	}
+	
+//	@Test
+//	void shouldNotDeleteRound() {
+//		Round round=new Round();
+//			round.setPlayer(this.playerService.findPlayerByUsername("mandommag"));
+//			round.setWhirlpools(true);
+//			round.setRapids(true);
+//			round.setNum_players(3);
+//		this.roundService.saveRound(round);
+//		Collection<Round> roundsStart = this.roundService.findAll();
+//		this.roundService.deleteRound(round);
+//		Collection<Round> roundsEnd= this.roundService.findAll();
+//		assertThat(roundsEnd.size()).isEqualTo(roundsStart.size()-1);
+//	}
+	
 }
