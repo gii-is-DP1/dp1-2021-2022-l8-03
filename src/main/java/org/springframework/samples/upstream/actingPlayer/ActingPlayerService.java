@@ -1,10 +1,19 @@
 package org.springframework.samples.upstream.actingPlayer;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.upstream.piece.Piece;
+import org.springframework.samples.upstream.piece.PieceRepository;
 import org.springframework.samples.upstream.round.Round;
+import org.springframework.samples.upstream.round.RoundService;
+import org.springframework.samples.upstream.round.RoundState;
+import org.springframework.samples.upstream.score.ScoreService;
+import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
+import org.springframework.samples.upstream.tile.TileType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,12 +21,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class ActingPlayerService {
 	
 	private ActingPlayerRepository actingPlayerRepository;
+	private PieceRepository pieceRepository;
 	private TileService tileService;
+	private RoundService roundService;
+	private ScoreService scoreService;
 	
 	@Autowired
-	public ActingPlayerService(ActingPlayerRepository actingPlayerRepository, TileService tileService) {
+	public ActingPlayerService(ActingPlayerRepository actingPlayerRepository, PieceRepository pieceRepository, 
+			TileService tileService, RoundService roundService, ScoreService scoreService) {
 		this.actingPlayerRepository = actingPlayerRepository;
+		this.pieceRepository = pieceRepository;
 		this.tileService = tileService;
+		this.roundService = roundService;
+		this.scoreService = scoreService;
 	}
 	
 	@Transactional(readOnly = true)
@@ -65,6 +81,76 @@ public class ActingPlayerService {
 		}else if(newTurn == 9) {
 			tileService.addSpawnTiles(round);
 		}
-		//Falta final de partida y puntuación
+		advanceSpawnTilePieces(round);
+		if(checkPiecesInSpawnTiles(round)) {
+			endTheGame(round);
+		}
+	}
+	
+	public void changeTurnTwoPlayers(ActingPlayer actingPlayer) {
+		Round round = actingPlayer.getRound();
+		Integer currentPlayer = actingPlayer.getPlayer();
+		Integer newPlayer = currentPlayer + 1;
+		Integer firstPlayer = actingPlayer.getFirstPlayer();
+		Integer turn = actingPlayer.getTurn();
+		Integer newTurn = turn + 1;
+		ActingPlayer newActingPlayer = actingPlayer;
+		if(newPlayer == 1) {
+			newActingPlayer.setPoints(5);
+		}else if(newPlayer == 2) {
+			newPlayer = 0;
+			newActingPlayer.setPoints(4);
+		}
+		newActingPlayer.setPlayer(newPlayer);
+		newActingPlayer.setFirstPlayer(firstPlayer);
+		newActingPlayer.setTurn(newTurn);
+		actingPlayerRepository.save(newActingPlayer);
+		if(newTurn == 3) {
+			tileService.removeStartingTiles(round.getId());
+		}else if(newTurn > 3) {
+			tileService.removeLowestTiles(round.getId());
+		}
+		if(newTurn < 9) {
+			tileService.addNewRow(round);
+		}else if(newTurn == 9) {
+			tileService.addSpawnTiles(round);
+		}
+		advanceSpawnTilePieces(round);
+		if(checkPiecesInSpawnTiles(round)) {
+			endTheGame(round);
+		}
+	}
+	
+	public void advanceSpawnTilePieces(Round round) {
+		List<Tile> spawnTiles = this.tileService.findSpawnTilesInRound(round.getId());
+		for(Tile spawnTile : spawnTiles) {
+			List<Piece> pieces = (List) spawnTile.getPieces();
+			for(Piece piece : pieces) {
+				Integer salmonEggs = piece.getTile().getSalmonEggs();
+				if(salmonEggs < 5) {
+					Tile newTile = this.tileService.findTileBySalmonEggs(salmonEggs + 1, round.getId());
+					piece.setTile(newTile);
+					this.pieceRepository.save(piece);
+				}
+			}
+		}
+	}
+	
+	public Boolean checkPiecesInSpawnTiles(Round round) {
+		Boolean flag = true;
+		List<Piece> pieces = (List) round.getPieces();
+		for(Piece piece : pieces) {
+			if(!piece.getTile().getTileType().equals(TileType.SPAWN)) {
+				flag = false;
+			}
+		}
+		return flag;
+	}
+	
+	public void endTheGame(Round round) {
+		round.setRound_state(RoundState.FINISHED);
+		round.setMatch_end(new java.util.Date());
+		this.roundService.saveRound(round);
+		this.scoreService.setPlayerScores(round);
 	}
 }

@@ -77,4 +77,6 @@ INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_ty
 INSERT INTO pieces(id, num_salmon, stuck, player_id, round_id, tile_id) VALUES (1, 2, false, 11, 1, 2);
 INSERT INTO pieces(id, num_salmon, stuck, player_id, round_id, tile_id) VALUES (2, 2, false, 14, 1, 1);
 
-INSERT INTO scores(id, value, player_id, round_id) VALUES (1, 10, 1, 1);
+
+INSERT INTO scores(id, value, player_id, round_id) VALUES (1, 0, 11, 1);
+INSERT INTO scores(id, value, player_id, round_id) VALUES (2, 0, 14, 1);

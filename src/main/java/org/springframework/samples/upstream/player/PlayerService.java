@@ -25,6 +25,7 @@ import org.springframework.samples.upstream.actingPlayer.ActingPlayerRepository;
 import org.springframework.samples.upstream.piece.PieceRepository;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
+import org.springframework.samples.upstream.round.RoundState;
 import org.springframework.samples.upstream.tile.TileRepository;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
@@ -127,8 +128,10 @@ public class PlayerService {
 		if(checkAdmin()) {
 			if(!rounds.isEmpty()) {
 				for(Round r:rounds) {
-					for(Player p:r.getPlayers()) {
-						p.setRound(null);
+					if(r.getRound_state()!=RoundState.FINISHED) {
+						for(Player p:r.getPlayers()) {
+							p.setRound(null);
+						}
 					}
 				}
 			}
