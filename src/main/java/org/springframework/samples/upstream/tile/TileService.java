@@ -44,7 +44,6 @@ public class TileService {
 	@Transactional(readOnly = true)
 	public Tile findByPosition(int row, int column, int round_id) throws DataAccessException {
 		return tileRepository.findByPosition(row, column, round_id);
-
 	}
 	
 	@Transactional(readOnly = true)
