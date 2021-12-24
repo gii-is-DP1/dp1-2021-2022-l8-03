@@ -121,7 +121,7 @@ public class PlayerService {
 			//creating authorities
 			authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");		
 	}	
-	
+	//
 	@Transactional
 	public void delete(Player player) throws DataAccessException {
 		Collection<Round> rounds=this.roundRepository.findRoundByPlayerId(player.getId());
