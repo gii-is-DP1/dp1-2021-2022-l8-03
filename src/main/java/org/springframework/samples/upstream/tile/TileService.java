@@ -36,13 +36,13 @@ public class TileService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Tile findByPosition(int row, int column, int round_id) throws DataAccessException {
-		return tileRepository.findByPosition(row, column, round_id);
+	public Tile findByPosition(int row, int column, int roundId) throws DataAccessException {
+		return tileRepository.findByPosition(row, column, roundId);
 	}
 	
 	@Transactional(readOnly = true)
-	public List<Tile> findByRow(int row, int round) throws DataAccessException {
-		return tileRepository.findByRow(row, round);
+	public List<Tile> findByRow(int row, int roundId) throws DataAccessException {
+		return tileRepository.findByRow(row, roundId);
 	}
 	
 	@Transactional(readOnly = true)
@@ -75,27 +75,28 @@ public class TileService {
 		return tileRepository.findTilesInRound(roundId);
 	}
 	
+	@Transactional
 	public void saveTile(Tile tile) throws DataAccessException {
 		this.tileRepository.save(tile);
 	}
 	
-	public void removeStartingTiles(Integer round) {
-		List<Tile> startingTiles = tileService.findSeaTilesInRound(round);
+	public void removeStartingTiles(Integer roundId) {
+		List<Tile> startingTiles = tileService.findSeaTilesInRound(roundId);
 		for(Tile tile : startingTiles) {
 			this.tileService.deleteTile(tile);
 		}
 	}
 	
-	public void removeLowestTiles(Integer round) {
-		Integer lowestRow = tileService.findLowestRow(round);
+	public void removeLowestTiles(Integer roundId) {
+		Integer lowestRow = tileService.findLowestRow(roundId);
 		for(int i=1;i<4;i++) {
 			if(i==2) {
-				Tile tile = tileService.findByPosition(lowestRow+1, i, round);
+				Tile tile = tileService.findByPosition(lowestRow+1, i, roundId);
 				if(!tile.getTileType().equals(TileType.SPAWN)) {
 					tileService.deleteTile(tile);
 				}
 			}else {
-				Tile tile = tileService.findByPosition(lowestRow, i, round);
+				Tile tile = tileService.findByPosition(lowestRow, i, roundId);
 				if(!tile.getTileType().equals(TileType.SPAWN)) {
 					tileService.deleteTile(tile);
 				}
