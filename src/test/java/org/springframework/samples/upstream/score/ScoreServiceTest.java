@@ -19,20 +19,21 @@ public class ScoreServiceTest {
 	
 	@Test
 	void shouldFindByPlayer() {
-		Score score = scoreService.findByPlayer(11, 1);
+		Score score = scoreService.findByPlayerAndRound(11, 1);
 		assertThat(score.getValue()).isEqualTo(0);
 	}
 	
 	@Test
 	void shouldNotFindByPlayer() {
-		Score score = scoreService.findByPlayer(11, 2);
+		Score score = scoreService.findByPlayerAndRound(11, 2);
 		assertThat(score).isEqualTo(null);
 	}
 	
 	@Test
 	void shouldSetPlayerScores() {
 		scoreService.setPlayerScores(roundService.findRoundById(1));
-		Score score = scoreService.findByPlayer(11, 1);
+		Score score = scoreService.findByPlayerAndRound(11, 1);
 		assertThat(score.getValue()).isEqualTo(2);
 	}
+	
 }

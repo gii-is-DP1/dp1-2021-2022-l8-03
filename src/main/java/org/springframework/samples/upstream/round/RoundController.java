@@ -13,6 +13,8 @@ import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.player.PlayerService;
+import org.springframework.samples.upstream.score.Score;
+import org.springframework.samples.upstream.score.ScoreService;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.security.core.Authentication;
@@ -38,14 +40,16 @@ public class RoundController {
 	private PlayerService playerService;
 	private TileService tileService;
 	private PieceService pieceService;
+	private ScoreService scoreService;
 
 	
 	@Autowired
-	public RoundController(RoundService roundService, PlayerService playerService,TileService tileService,PieceService pieceService) {
+	public RoundController(RoundService roundService, PlayerService playerService,TileService tileService,PieceService pieceService,ScoreService scoreService) {
 		this.roundService = roundService;
 		this.playerService = playerService;
 		this.tileService = tileService;
 		this.pieceService=pieceService;
+		this.scoreService=scoreService;
 	}
 	
 	@InitBinder
@@ -83,6 +87,13 @@ public class RoundController {
 			
 			player.setRound(round);
 			this.playerService.savePlayer(player);
+			
+			Score score=new Score();
+			score.setPlayer(player);
+			score.setRound(round);
+			score.setValue(0);
+			this.scoreService.saveScore(score);
+			
 			return "redirect:/rounds/";
 		}
 	}
@@ -162,6 +173,11 @@ public class RoundController {
 			players.add(player);
 			round.setPlayers(players);
 			this.roundService.saveRound(round);
+			Score score=new Score();
+			score.setPlayer(player);
+			score.setRound(round);
+			score.setValue(0);
+			this.scoreService.saveScore(score);
 			
 			for(Integer e=0;e<4;e++) {
 				Piece piece=new Piece();
@@ -192,9 +208,11 @@ public class RoundController {
 		Collection<Piece> pieces=round.getPieces();
 		if(round!=null && players.contains(player)) {
 			if(round.getPlayer()==player) {
+				this.scoreService.deleteScore(this.scoreService.findByPlayerAndRound(player.getId(), roundId));
 				player.setRound(null);
 				this.roundService.deleteRound(round);
 			}else {
+				this.scoreService.deleteScore(this.scoreService.findByPlayerAndRound(player.getId(), roundId));
 				player.setRound(null);
 				this.playerService.savePlayer(player);
 				players.remove(player);

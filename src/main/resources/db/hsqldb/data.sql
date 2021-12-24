@@ -80,4 +80,3 @@ INSERT INTO pieces(id, num_salmon, stuck, player_id, round_id, tile_id) VALUES (
 
 INSERT INTO scores(id, value, player_id, round_id) VALUES (1, 0, 11, 1);
 INSERT INTO scores(id, value, player_id, round_id) VALUES (2, 0, 14, 1);
-
