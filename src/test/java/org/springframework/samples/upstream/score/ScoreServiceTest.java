@@ -35,5 +35,5 @@ public class ScoreServiceTest {
 		Score score = scoreService.findByPlayerAndRound(11, 1);
 		assertThat(score.getValue()).isEqualTo(2);
 	}
-	//
+	
 }
