@@ -164,6 +164,8 @@ public class PlayerController {
 		}
 	}
 	
+	//ESTE METODO TIENE QUE ESTAR RESTRINGIDO PARA PLAYERS Y DEBE MANDAR A UNA PAGINA DE ERROR
+	
 	@GetMapping(value = "/players/delete/{playerId}")
 	public String deletePlayer(@PathVariable("playerId") int playerId, ModelMap model) {
 		String view = "/players/playersList";

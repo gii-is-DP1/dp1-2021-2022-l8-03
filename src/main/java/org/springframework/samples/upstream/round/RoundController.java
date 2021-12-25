@@ -124,7 +124,7 @@ public class RoundController {
     }
 
     @GetMapping(value = "/rounds/finished")
-    public String processFindfinished(ModelMap model) {
+    public String processFindFinished(ModelMap model) {
     	Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
 			return "exception";
@@ -142,7 +142,7 @@ public class RoundController {
 		Round round = this.roundService.findRoundById(roundId);
 		model.addAttribute(round);
 		return VIEWS_ROUND_CREATE_OR_UPDATE_FORM;
-	}
+	} 
 
 	@PostMapping(value = "/rounds/{roundId}/edit")
 	public String processUpdateRoundForm(@Valid Round round, BindingResult result,Player player,
@@ -153,14 +153,15 @@ public class RoundController {
 		}
 		else {
 			Round roundToUpdate=this.roundService.findRoundById(roundId);
-			BeanUtils.copyProperties(round, roundToUpdate,"id","player");
+			round.setId(roundToUpdate.getId());
+			round.setPlayer(roundToUpdate.getPlayer());
 			this.roundService.saveRound(round);
 			return "redirect:/rounds";
 		}
 	}
 	
 	@GetMapping(value = "/rounds/join/{roundId}")
-	public String joinRound(@PathVariable("roundId") int roundId, ModelMap model) {
+	public String joinRound(@PathVariable("roundId") int roundId) {
 		Round round=this.roundService.findRoundById(roundId);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User currentUser = (User)authentication.getPrincipal();
@@ -168,7 +169,7 @@ public class RoundController {
 		Player player=playerService.findPlayerByUsername(currentUsername);
 		if(round!=null && round.getPlayers().size()<round.getNum_players()) {
 			player.setRound(round);
-			this.playerService.savePlayer(player);
+			this.playerService.savePlayer(player); 
 			Collection<Player> players=round.getPlayers();
 			players.add(player);
 			round.setPlayers(players);
