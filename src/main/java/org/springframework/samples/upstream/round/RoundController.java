@@ -9,6 +9,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.upstream.board.SalmonBoard;
+import org.springframework.samples.upstream.board.SalmonBoardService;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
@@ -41,15 +43,16 @@ public class RoundController {
 	private TileService tileService;
 	private PieceService pieceService;
 	private ScoreService scoreService;
-
+	private SalmonBoardService salmonBoardService;
 	
 	@Autowired
-	public RoundController(RoundService roundService, PlayerService playerService,TileService tileService,PieceService pieceService,ScoreService scoreService) {
+	public RoundController(RoundService roundService, PlayerService playerService,TileService tileService,PieceService pieceService,ScoreService scoreService, SalmonBoardService salmonBoardService) {
 		this.roundService = roundService;
 		this.playerService = playerService;
 		this.tileService = tileService;
 		this.pieceService=pieceService;
 		this.scoreService=scoreService;
+		this.salmonBoardService = salmonBoardService;
 	}
 	
 	@InitBinder
@@ -74,8 +77,8 @@ public class RoundController {
 			return VIEWS_ROUND_CREATE_OR_UPDATE_FORM;
 		}
 		else {
-			round.setPlayer(player);
 			round.setRound_state(RoundState.CREATED);
+			round.setPlayer(player);
 			Collection<Player> players=new ArrayList<Player>();
 			players.add(player);
 			round.setPlayers(players);
@@ -230,11 +233,13 @@ public class RoundController {
 		}
 	}
 	
-	@GetMapping("/rounds/{roundId}")
-	public ModelAndView showRound(@PathVariable("roundId") int roundId) {
+	  @GetMapping({"/rounds/{roundId}"})
+	  public ModelAndView showRound(@PathVariable("roundId") int roundId) {
+//		model.put("salmonBoard",boardService.findById(1).get());
 		ModelAndView mav = new ModelAndView("rounds/roundDetails");
-		mav.addObject(this.roundService.findRoundById(roundId));
+		mav.addObject(this.salmonBoardService.findById(1).get());
+		//mav.addObject(this.roundService.findRoundById(roundId));
 		return mav;
-	}
+	  }
 	
 }
