@@ -57,6 +57,8 @@ INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (11, 'Carlos', 'Delgado', 'ejemplo@gmail.com', 'cardelbec', 1);
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (14, 'Manuel', 'López', 'ejemplo@gmail.com','manlopalm', 1);
 
+INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (2, 0, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13, 1);
+INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (3, 0, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13, 2);
 
 INSERT INTO acting_players(id, player, points, first_player,turn,round_id) VALUES (1,0,5,0,1,1);
 
