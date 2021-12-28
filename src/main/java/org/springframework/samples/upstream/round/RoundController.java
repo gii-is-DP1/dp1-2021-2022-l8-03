@@ -74,8 +74,8 @@ public class RoundController {
 			return VIEWS_ROUND_CREATE_OR_UPDATE_FORM;
 		}
 		else {
-			round.setPlayer(player);
 			round.setRound_state(RoundState.CREATED);
+			round.setPlayer(player);
 			Collection<Player> players=new ArrayList<Player>();
 			players.add(player);
 			round.setPlayers(players);
@@ -86,6 +86,12 @@ public class RoundController {
 			this.pieceService.createPlayerPieces(player,round);
 			
 			player.setRound(round);
+			Collection<Round> playerRounds=player.getRounds();
+			if(playerRounds==null) {
+				playerRounds=new ArrayList<Round>();
+			}
+			playerRounds.add(round);
+			player.setRounds(playerRounds);
 			this.playerService.savePlayer(player);
 			
 			Score score=new Score();
@@ -169,6 +175,12 @@ public class RoundController {
 		Player player=playerService.findPlayerByUsername(currentUsername);
 		if(round!=null && round.getPlayers().size()<round.getNum_players()) {
 			player.setRound(round);
+			Collection<Round> playerRounds=player.getRounds();
+			if(playerRounds==null) {
+				playerRounds=new ArrayList<Round>();
+			}
+			playerRounds.add(round);
+			player.setRounds(playerRounds);
 			this.playerService.savePlayer(player); 
 			Collection<Player> players=round.getPlayers();
 			players.add(player);
@@ -180,16 +192,8 @@ public class RoundController {
 			score.setValue(0);
 			this.scoreService.saveScore(score);
 			
-			for(Integer e=0;e<4;e++) {
-				Piece piece=new Piece();
-				piece.setNumSalmon(2);
-				piece.setPlayer(player);
-				piece.setRound(round);
-				piece.setStuck(false);
-				List<Tile> seaTiles=this.tileService.findSeaTilesInRound(round.getId());
-				piece.setTile(seaTiles.get(e));
-				this.pieceService.savePiece(piece);
-			}
+			this.pieceService.createPlayerPieces(player, round);
+			
 			return "redirect:/rounds/{roundId}";
 		}
 		else {
@@ -215,10 +219,13 @@ public class RoundController {
 			}else {
 				this.scoreService.deleteScore(this.scoreService.findByPlayerAndRound(player.getId(), roundId));
 				player.setRound(null);
+				Collection<Round> playerRounds=player.getRounds();
+				playerRounds.remove(round);
+				player.setRounds(playerRounds);
 				this.playerService.savePlayer(player);
 				players.remove(player);
 				
-				List<Piece> piecesPlayer=this.pieceService.findPiecesOfPlayer(player.getId());
+				List<Piece> piecesPlayer=new ArrayList<Piece>(player.getPieces());
 				pieces.removeAll(piecesPlayer);
 				
 				this.roundService.saveRound(round);

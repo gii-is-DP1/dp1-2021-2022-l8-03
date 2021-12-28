@@ -1,5 +1,7 @@
 package org.springframework.samples.upstream.piece;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,9 @@ import org.springframework.data.util.Pair;
 import org.springframework.samples.upstream.actingPlayer.ActingPlayer;
 import org.springframework.samples.upstream.actingPlayer.ActingPlayerService;
 import org.springframework.samples.upstream.player.Player;
+import org.springframework.samples.upstream.player.PlayerService;
 import org.springframework.samples.upstream.round.Round;
+import org.springframework.samples.upstream.round.RoundService;
 import org.springframework.samples.upstream.round.RoundState;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
@@ -31,10 +35,18 @@ public class PieceService {
 	private TileService tileService;
 	
 	@Autowired
-	public PieceService(PieceRepository pieceRepo, ActingPlayerService actingPlayerService, TileService tileService) {
+	private RoundService roundService;
+	
+	@Autowired
+	private PlayerService playerService;
+	
+	@Autowired
+	public PieceService(PieceRepository pieceRepo, ActingPlayerService actingPlayerService, TileService tileService,RoundService roundService,PlayerService playerService) {
 		this.pieceRepository = pieceRepo;
 		this.actingPlayerService = actingPlayerService;
 		this.tileService = tileService;
+		this.roundService=roundService;
+		this.playerService=playerService;
 	}
 	
 	@Transactional(readOnly = true)
@@ -58,16 +70,37 @@ public class PieceService {
 	}
 	
 	public void createPlayerPieces(Player player,Round round) {
+		Collection<Piece> roundPieces=round.getPieces();
+		if(roundPieces==null) {
+			roundPieces=new ArrayList<Piece>();
+		}
+		Collection<Piece> playerPieces=player.getPieces();
+		if(playerPieces==null) {
+			playerPieces=new ArrayList<Piece>();
+		}
+		List<Tile> seaTiles=this.tileService.findSeaTilesInRound(round.getId());
 		for(Integer e=0;e<4;e++) {
+			Tile tile=seaTiles.get(e);
+			if(tile.getPieces()==null) {
+				tile.setPieces(new ArrayList<Piece>());
+			}
+			Collection<Piece> tilePieces=tile.getPieces();
 			Piece piece=new Piece();
 			piece.setNumSalmon(2);
 			piece.setPlayer(player);
+			playerPieces.add(piece);
 			piece.setRound(round);
 			piece.setStuck(false);
-			List<Tile> seaTiles=this.tileService.findSeaTilesInRound(round.getId());
-			piece.setTile(seaTiles.get(e));
+			tilePieces.add(piece);
+			piece.setTile(tile);
+			this.tileService.saveTile(tile);
 			this.pieceRepository.save(piece);
+			roundPieces.add(piece);
 		}
+		round.setPieces(roundPieces);
+		roundService.saveRound(round);
+		player.setPieces(playerPieces);
+		playerService.savePlayer(player);
 	}
 	
 	public void savePiece(Piece piece) throws DataAccessException {
@@ -697,5 +730,10 @@ public class PieceService {
 		User currentUser = (User)authentication.getPrincipal();
 		String currentUsername = currentUser.getUsername();
 		return currentUsername;
+	}
+
+	public void save(Piece piece) {
+		this.pieceRepository.save(piece);
+		
 	}
 }

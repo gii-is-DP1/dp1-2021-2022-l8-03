@@ -25,11 +25,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.upstream.configuration.SecurityConfiguration;
+import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.player.PlayerService;
 import org.springframework.samples.upstream.score.ScoreService;
+import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
+import org.springframework.samples.upstream.tile.TileType;
 import org.springframework.samples.upstream.user.User;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,6 +66,8 @@ public class RoundControllerTest {
 	private Round round;
 	private Player george;
 	private User userGeorge;
+	private Tile tile;
+	private Piece piece;
 	
 	@BeforeEach
 	void setup() {
@@ -72,14 +77,18 @@ public class RoundControllerTest {
 		george.setFirstName("George");
 		george.setLastName("Franklin");
 		george.setEmail("ejemplo@gmail.com");
+		george.setRound(this.roundService.findRoundById(TEST_ROUND_ID));
 		userGeorge.setUsername("player1");
 		userGeorge.setPassword("0wn3r");
 		george.setUser(userGeorge);
 		given(this.playerService.findPlayerById(TEST_PLAYER_ID)).willReturn(george);
+		given(this.playerService.findPlayerByUsername("player1")).willReturn(george);
 		when(this.playerService.checkAdminAndInitiatedUser("player1")).thenReturn(true);
-		when(this.playerService.checkAdmin()).thenReturn(true);
+		
+		
 		
 		Collection<Player> players=new ArrayList<Player>();
+		players.add(george);
 		round=new Round();
 		round.setId(TEST_ROUND_ID);
 		round.setNum_players(3);
@@ -88,7 +97,41 @@ public class RoundControllerTest {
 		round.setRapids(true);
 		round.setWhirlpools(true);
 		round.setRound_state(RoundState.CREATED);
+		tileService.createInitialTiles(round);
+		pieceService.createPlayerPieces(george, round);
 		given(this.roundService.findRoundById(TEST_ROUND_ID)).willReturn(round);
+		
+		
+		tile=new Tile();
+		tile.setId(1);
+		tile.setColumnIndex(1);
+		tile.setOrientation(0);
+		tile.setRound(round);
+		tile.setRowIndex(1);
+		tile.setSalmonEggs(0);
+		tile.setTileType(TileType.SEA);
+		
+		piece=new Piece();
+		piece.setId(1);
+		piece.setNumSalmon(2);
+		piece.setPlayer(george);
+		piece.setRound(round);
+		piece.setStuck(false);
+		
+		Collection<Piece> pieces=new ArrayList<Piece>();
+		Collection<Round> rounds=new ArrayList<Round>();
+		Collection<Tile> tiles=new ArrayList<Tile>();
+		
+		tiles.add(tile);
+		rounds.add(round);
+		pieces.add(piece);
+		
+		piece.setTile(tile);
+		tile.setPieces(pieces);
+		round.setPieces(pieces);
+		round.setTiles(tiles);
+		george.setPieces(pieces);
+		george.setRounds(rounds);
 	}
 	
 	@WithMockUser(value = "spring")
@@ -100,11 +143,16 @@ public class RoundControllerTest {
 	
 	//Habría que buscar la forma de pasarle un player para asi poder cubrir el método completo
 	
-	@WithMockUser(value = "spring")
+	@WithMockUser(username="player1",value = "spring")
 	@Test
 	void testProcessCreationFormSuccess() throws Exception {
-		mockMvc.perform(post("/rounds/new").with(csrf()).param("whirlpools", "true").param("rapids", "true")
-				.param("num_players", "3").param("round_state","CREATED")).andExpect(status().is2xxSuccessful());
+		mockMvc.perform(post("/rounds/new").with(csrf())
+				.param("whirlpools", "true")
+				.param("rapids", "true")
+				.param("num_players", "3")
+				.param("round_state","CREATED"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/rounds/"));
 	}
 	
 	@WithMockUser(value = "spring")
@@ -136,11 +184,25 @@ public class RoundControllerTest {
 	
 	@WithMockUser(value = "spring")
 	@Test
+	void testProcessFindInCourseNoAdmin() throws Exception {
+		mockMvc.perform(get("/rounds/inCourse"))
+				.andExpect(status().is2xxSuccessful());
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
 	void testProcessFindFinished() throws Exception {
 		when(this.playerService.checkAdmin()).thenReturn(true);
 		mockMvc.perform(get("/rounds/finished")).andExpect(status().isOk()).andExpect(model().attributeExists("rounds"))
 				.andExpect(model().attributeExists("esFinished"))
 				.andExpect(view().name("rounds/roundList"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessFindFinishedNoAdmin() throws Exception {
+		mockMvc.perform(get("/rounds/finished"))
+				.andExpect(status().is2xxSuccessful());
 	}
 	
 	@WithMockUser(value = "spring")
@@ -182,14 +244,57 @@ public class RoundControllerTest {
 				.andExpect(view().name("rounds/createOrUpdateRoundForm"));
 	}
 	
-	//Habría que buscar la forma de pasarle un player para asi poder cubrir el método completo
+
 	
-	@WithMockUser(value = "spring")
+	@WithMockUser(username="player1",value = "spring")
 	@Test
 	void testJoinRoundSuccess() throws Exception{
 		mockMvc.perform(get("/rounds/join/{roundId}",TEST_ROUND_ID))
-		.andExpect(status().isOk());
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/rounds/{roundId}"));
 	}
+	
+	@WithMockUser(username="player1",value = "spring")
+	@Test
+	void testJoinRoundHasErrors() throws Exception{
+		mockMvc.perform(get("/rounds/join/{roundId}",99))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/rounds/oups"));
+	}
+	
+	@WithMockUser(username="player1",value = "spring")
+	@Test
+	void testCreatorLeaveRoundSuccess() throws Exception{
+		mockMvc.perform(get("/rounds/leave/{roundId}",TEST_ROUND_ID))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/rounds"));
+	}
+	
+	@WithMockUser(username="player1",value = "spring")
+	@Test
+	void testLeaveRoundSuccess() throws Exception{
+		round.setPlayer(null);
+		mockMvc.perform(get("/rounds/leave/{roundId}",TEST_ROUND_ID))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/rounds"));
+	}
+	
+	@WithMockUser(username="player1",value = "spring")
+	@Test
+	void testLeaveRoundHasErrors() throws Exception{
+		round.setPlayers(new ArrayList<Player>());
+		mockMvc.perform(get("/rounds/leave/{roundId}",TEST_ROUND_ID))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/rounds/oups"));
+	}
+	
+//	@WithMockUser(username="player1",value = "spring")
+//	@Test
+//	void testLeaveRoundHasErrors() throws Exception{
+//		mockMvc.perform(get("/rounds/join/{roundId}",99))
+//		.andExpect(status().is3xxRedirection())
+//		.andExpect(view().name("redirect:/rounds/oups"));
+//	}
 	
 	
 	
