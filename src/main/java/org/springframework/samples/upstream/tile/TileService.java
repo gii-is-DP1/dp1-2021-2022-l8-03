@@ -1,6 +1,7 @@
 package org.springframework.samples.upstream.tile;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -9,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.samples.upstream.piece.Piece;
 
 import org.springframework.samples.upstream.round.Round;
+import org.springframework.samples.upstream.round.RoundRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +18,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class TileService {
 	@Autowired
 	private TileRepository tileRepository;
+	
+	@Autowired
+	private RoundRepository roundRepository;
 
 	@Autowired
 	private TileService tileService;
 
 	@Autowired
-	public TileService(TileRepository tileRepository) {
+	public TileService(TileRepository tileRepository,RoundRepository roundRepository) {
 		this.tileRepository = tileRepository;
+		this.roundRepository= roundRepository;
 	}	
 	
 	@Transactional(readOnly = true)
@@ -118,6 +124,7 @@ public class TileService {
 	}
 
 	public void createRandomTile(int row, int column, Round round) {
+		Collection<Tile> roundTiles=round.getTiles();
 		Tile tile = new Tile();
 		tile.setPieces(new ArrayList<Piece>());
 		tile.setRound(round);
@@ -131,9 +138,13 @@ public class TileService {
 			tile.setTileType(TileType.values()[ThreadLocalRandom.current().nextInt(0, 6)]);			
 		}
 		tileRepository.save(tile);
+		roundTiles.add(tile);
+		round.setTiles(roundTiles);
+		roundRepository.save(round);
 	}
 
 	public void addSpawnTiles(Round round) {
+		Collection<Tile> roundTiles=round.getTiles();
 		for(int i = 1; i < 6; i++) {
 			Tile tile = new Tile();
 			tile.setOrientation(1);
@@ -144,10 +155,14 @@ public class TileService {
 			tile.setRowIndex(13 + i);
 			tile.setSalmonEggs(i);
 			tileRepository.save(tile);
+			roundTiles.add(tile);
 		}
+		round.setTiles(roundTiles);
+		roundRepository.save(round);
 	}
 
 	public void createSeaTiles(Round round) {
+		Collection<Tile> roundTiles=round.getTiles();
 		for(Integer i=1;i<5;i++) {
 			Tile seaTile=new Tile();
 			seaTile.setOrientation(0);
@@ -162,10 +177,17 @@ public class TileService {
 			seaTile.setTileType(TileType.SEA);
 			seaTile.setRound(round);
 			this.tileService.saveTile(seaTile);
+			roundTiles.add(seaTile);
 		}
+		round.setTiles(roundTiles);
+		roundRepository.save(round);
 	}
 	
 	public void createInitialTiles(Round round) {
+		if(round.getTiles()==null) {
+			round.setTiles(new ArrayList<Tile>());
+			this.roundRepository.save(round);
+		}
 		this.tileService.createSeaTiles(round);
 		this.tileService.createRandomTile(2, 1, round);
 		this.tileService.createRandomTile(2, 3, round);

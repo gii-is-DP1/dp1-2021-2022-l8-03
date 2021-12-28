@@ -51,7 +51,6 @@ public class Round extends BaseEntity {
 	private Integer num_players;
 	
 	@Column(name = "round_state")
-	@NotNull
 	private RoundState round_state;
 	
 	@ManyToOne(optional = true)

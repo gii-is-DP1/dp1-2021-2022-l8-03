@@ -19,6 +19,9 @@ import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.score.Score;
 import org.springframework.samples.upstream.user.User;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Simple JavaBean domain object representing an player.
  *
@@ -28,6 +31,8 @@ import org.springframework.samples.upstream.user.User;
  * @author Michael Isvy
  */
 @Entity
+@Getter
+@Setter
 @Table(name = "players")
 public class Player extends Person {
 
@@ -55,33 +60,33 @@ public class Player extends Person {
 	private User user;
 	//
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-	public Round getRound() {
-		return round;
-	}
-	
-	public void setRound(Round round) {
-		this.round = round;
-	}
-	
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	public Collection<Piece> getPieces(){
-		return pieces;
-	}
+//	public User getUser() {
+//		return user;
+//	}
+//
+//	public void setUser(User user) {
+//		this.user = user;
+//	}
+//	
+//	public Round getRound() {
+//		return round;
+//	}
+//	
+//	public void setRound(Round round) {
+//		this.round = round;
+//	}
+//	
+//	public String getEmail() {
+//		return email;
+//	}
+//
+//	public void setEmail(String email) {
+//		this.email = email;
+//	}
+//	
+//	public Collection<Piece> getPieces(){
+//		return pieces;
+//	}
 
 
 	@Override
