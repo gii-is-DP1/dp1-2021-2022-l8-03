@@ -9,6 +9,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.upstream.board.SalmonBoard;
+import org.springframework.samples.upstream.board.SalmonBoardService;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
@@ -41,15 +43,16 @@ public class RoundController {
 	private TileService tileService;
 	private PieceService pieceService;
 	private ScoreService scoreService;
-
+	private SalmonBoardService salmonBoardService;
 	
 	@Autowired
-	public RoundController(RoundService roundService, PlayerService playerService,TileService tileService,PieceService pieceService,ScoreService scoreService) {
+	public RoundController(RoundService roundService, PlayerService playerService,TileService tileService,PieceService pieceService,ScoreService scoreService, SalmonBoardService salmonBoardService) {
 		this.roundService = roundService;
 		this.playerService = playerService;
 		this.tileService = tileService;
 		this.pieceService=pieceService;
 		this.scoreService=scoreService;
+		this.salmonBoardService = salmonBoardService;
 	}
 	
 	@InitBinder
@@ -74,8 +77,8 @@ public class RoundController {
 			return VIEWS_ROUND_CREATE_OR_UPDATE_FORM;
 		}
 		else {
-			round.setPlayer(player);
 			round.setRound_state(RoundState.CREATED);
+			round.setPlayer(player);
 			Collection<Player> players=new ArrayList<Player>();
 			players.add(player);
 			round.setPlayers(players);
@@ -124,7 +127,7 @@ public class RoundController {
     }
 
     @GetMapping(value = "/rounds/finished")
-    public String processFindfinished(ModelMap model) {
+    public String processFindFinished(ModelMap model) {
     	Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
 			return "exception";
@@ -142,7 +145,7 @@ public class RoundController {
 		Round round = this.roundService.findRoundById(roundId);
 		model.addAttribute(round);
 		return VIEWS_ROUND_CREATE_OR_UPDATE_FORM;
-	}
+	} 
 
 	@PostMapping(value = "/rounds/{roundId}/edit")
 	public String processUpdateRoundForm(@Valid Round round, BindingResult result,Player player,
@@ -153,14 +156,15 @@ public class RoundController {
 		}
 		else {
 			Round roundToUpdate=this.roundService.findRoundById(roundId);
-			BeanUtils.copyProperties(round, roundToUpdate,"id","player");
+			round.setId(roundToUpdate.getId());
+			round.setPlayer(roundToUpdate.getPlayer());
 			this.roundService.saveRound(round);
 			return "redirect:/rounds";
 		}
 	}
 	
 	@GetMapping(value = "/rounds/join/{roundId}")
-	public String joinRound(@PathVariable("roundId") int roundId, ModelMap model) {
+	public String joinRound(@PathVariable("roundId") int roundId) {
 		Round round=this.roundService.findRoundById(roundId);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User currentUser = (User)authentication.getPrincipal();
@@ -168,7 +172,7 @@ public class RoundController {
 		Player player=playerService.findPlayerByUsername(currentUsername);
 		if(round!=null && round.getPlayers().size()<round.getNum_players()) {
 			player.setRound(round);
-			this.playerService.savePlayer(player);
+			this.playerService.savePlayer(player); 
 			Collection<Player> players=round.getPlayers();
 			players.add(player);
 			round.setPlayers(players);
@@ -229,11 +233,13 @@ public class RoundController {
 		}
 	}
 	
-	@GetMapping("/rounds/{roundId}")
-	public ModelAndView showRound(@PathVariable("roundId") int roundId) {
+	  @GetMapping({"/rounds/{roundId}"})
+	  public ModelAndView showRound(@PathVariable("roundId") int roundId) {
+//		model.put("salmonBoard",boardService.findById(1).get());
 		ModelAndView mav = new ModelAndView("rounds/roundDetails");
-		mav.addObject(this.roundService.findRoundById(roundId));
+		mav.addObject(this.salmonBoardService.findById(1).get());
+		//mav.addObject(this.roundService.findRoundById(roundId));
 		return mav;
-	}
+	  }
 	
 }

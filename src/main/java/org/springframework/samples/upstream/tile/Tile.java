@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.samples.upstream.board.SalmonBoard;
 import org.springframework.samples.upstream.model.BaseEntity;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.round.Round;
@@ -37,6 +38,15 @@ public class Tile extends BaseEntity {
 	@NotNull
 	private Integer columnIndex;
 	
+	//Provisional
+    public Integer getPositionXInPixels(Integer size) {
+    	return (rowIndex)*size;
+    }
+    
+    public Integer getPositionYInPixels(Integer size) {
+    	return (columnIndex)*size;
+    }
+	//--------------
 	@Column(name = "orientation")
 	@NotNull
 	private Integer orientation;
