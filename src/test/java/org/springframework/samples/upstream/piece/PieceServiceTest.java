@@ -25,8 +25,8 @@ public class PieceServiceTest {
 
     @Test
     void shouldFindPieceById() {
-    	Piece piece = this.pieceService.findPieceById(1);
-    	assertThat(piece.getPlayer().getUser().getUsername()).isEqualTo("cardelbec");
+    	Piece piece = this.pieceService.findPieceById(2);
+    	assertThat(piece.getPlayer().getUser().getUsername()).isEqualTo("player5");
     }
     
     @Test
@@ -37,11 +37,11 @@ public class PieceServiceTest {
     
     @Test
     @Transactional
-    @WithMockUser(username = "cardelbec")
+    @WithMockUser(username = "player5")
     void shouldSwim() {
-    	Piece piece = this.pieceService.findPieceById(1);
+    	Piece piece = this.pieceService.findPieceById(2);
     	Tile oldTile = piece.getTile();
-    	Tile newTile = this.tileService.findTileById(3);
+    	Tile newTile = this.tileService.findTileById(16);
     	newTile.setTileType(TileType.WATER);
     	
     	this.pieceService.swim(piece, oldTile, newTile);
@@ -49,22 +49,35 @@ public class PieceServiceTest {
     
     @Test
     @Transactional
-    @WithMockUser(username = "manlopalm")
-    void shouldNotSwimDifferentUser() {
-    	Piece piece = this.pieceService.findPieceById(1);
+    @WithMockUser(username = "player5")
+    void shouldJump() {
+    	Piece piece = this.pieceService.findPieceById(2);
     	Tile oldTile = piece.getTile();
-    	Tile newTile = this.tileService.findTileById(3);
+    	Tile newTile = this.tileService.findTileById(17);
+    	newTile.setTileType(TileType.WATER);
+    	
+    	this.pieceService.jump(piece, oldTile, newTile);
+    }
+    
+    
+    @Test
+    @Transactional
+    @WithMockUser(username = "player6")
+    void shouldNotSwimDifferentUser() {
+    	Piece piece = this.pieceService.findPieceById(2);
+    	Tile oldTile = piece.getTile();
+    	Tile newTile = this.tileService.findTileById(16);
     	
     	this.pieceService.swim(piece, oldTile, newTile);
     }
     
     @Test
     @Transactional
-    @WithMockUser(username = "cardelbec")
+    @WithMockUser(username = "player5")
     void shouldNotSwimNextBear() {
-    	Piece piece = this.pieceService.findPieceById(1);
+    	Piece piece = this.pieceService.findPieceById(2);
     	Tile oldTile = piece.getTile();
-    	Tile newTile = this.tileService.findTileById(3);
+    	Tile newTile = this.tileService.findTileById(16);
     	
     	this.pieceService.swim(piece, oldTile, newTile);
     }
