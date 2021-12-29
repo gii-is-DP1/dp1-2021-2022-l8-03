@@ -24,6 +24,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.samples.upstream.board.SalmonBoardService;
 import org.springframework.samples.upstream.configuration.SecurityConfiguration;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
@@ -62,6 +63,9 @@ public class RoundControllerTest {
 	
 	@MockBean
 	private ScoreService scoreService;
+	
+	@MockBean
+	private SalmonBoardService salmonBoardService;
 	
 	private Round round;
 	private Player george;
@@ -137,7 +141,9 @@ public class RoundControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitCreationForm() throws Exception {
-		mockMvc.perform(get("/rounds/new")).andExpect(status().isOk()).andExpect(model().attributeExists("round"))
+		mockMvc.perform(get("/rounds/new"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("round"))
 				.andExpect(view().name("rounds/createOrUpdateRoundForm"));
 	}
 	
@@ -146,7 +152,8 @@ public class RoundControllerTest {
 	@WithMockUser(username="player1",value = "spring")
 	@Test
 	void testProcessCreationFormSuccess() throws Exception {
-		mockMvc.perform(post("/rounds/new").with(csrf())
+		mockMvc.perform(post("/rounds/new")
+				.with(csrf())
 				.param("whirlpools", "true")
 				.param("rapids", "true")
 				.param("num_players", "3")
@@ -158,7 +165,11 @@ public class RoundControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessCreationFormHasErrors() throws Exception {
-		mockMvc.perform(post("/rounds/new").with(csrf()).param("whirlpools", "true").param("rapids", "true").param("round_state","CREATED"))
+		mockMvc.perform(post("/rounds/new")
+				.with(csrf())
+				.param("whirlpools", "true")
+				.param("rapids", "true")
+				.param("round_state","CREATED"))
 				.andExpect(status().isOk()).andExpect(model().attributeHasErrors("round"))
 				.andExpect(model().attributeHasFieldErrors("round", "num_players"))
 				.andExpect(view().name("rounds/createOrUpdateRoundForm"));
@@ -167,7 +178,9 @@ public class RoundControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindForm() throws Exception {
-		mockMvc.perform(get("/rounds")).andExpect(status().isOk()).andExpect(model().attributeExists("rounds"))
+		mockMvc.perform(get("/rounds"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("rounds"))
 				.andExpect(model().attributeExists("esFinished"))
 				.andExpect(view().name("rounds/roundList"));
 	}
@@ -177,7 +190,9 @@ public class RoundControllerTest {
 	@Test
 	void testProcessFindInCourse() throws Exception {
 		when(this.playerService.checkAdmin()).thenReturn(true);
-		mockMvc.perform(get("/rounds/inCourse")).andExpect(status().isOk()).andExpect(model().attributeExists("rounds"))
+		mockMvc.perform(get("/rounds/inCourse"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("rounds"))
 				.andExpect(model().attributeExists("esFinished"))
 				.andExpect(view().name("rounds/roundList"));
 	}
@@ -193,7 +208,9 @@ public class RoundControllerTest {
 	@Test
 	void testProcessFindFinished() throws Exception {
 		when(this.playerService.checkAdmin()).thenReturn(true);
-		mockMvc.perform(get("/rounds/finished")).andExpect(status().isOk()).andExpect(model().attributeExists("rounds"))
+		mockMvc.perform(get("/rounds/finished"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("rounds"))
 				.andExpect(model().attributeExists("esFinished"))
 				.andExpect(view().name("rounds/roundList"));
 	}
@@ -208,7 +225,8 @@ public class RoundControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitUpdateRoundForm() throws Exception {
-		mockMvc.perform(get("/rounds/{roundId}/edit", TEST_ROUND_ID)).andExpect(status().isOk())
+		mockMvc.perform(get("/rounds/{roundId}/edit", TEST_ROUND_ID))
+				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("round"))
 				.andExpect(model().attribute("round", hasProperty("rapids", is(true))))
 				.andExpect(model().attribute("round", hasProperty("whirlpools", is(true))))
@@ -250,24 +268,24 @@ public class RoundControllerTest {
 	@Test
 	void testJoinRoundSuccess() throws Exception{
 		mockMvc.perform(get("/rounds/join/{roundId}",TEST_ROUND_ID))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/rounds/{roundId}"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/rounds/{roundId}"));
 	}
 	
 	@WithMockUser(username="player1",value = "spring")
 	@Test
 	void testJoinRoundHasErrors() throws Exception{
 		mockMvc.perform(get("/rounds/join/{roundId}",99))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/rounds/oups"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/rounds/oups"));
 	}
 	
 	@WithMockUser(username="player1",value = "spring")
 	@Test
 	void testCreatorLeaveRoundSuccess() throws Exception{
 		mockMvc.perform(get("/rounds/leave/{roundId}",TEST_ROUND_ID))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/rounds"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/rounds"));
 	}
 	
 	@WithMockUser(username="player1",value = "spring")
@@ -275,8 +293,8 @@ public class RoundControllerTest {
 	void testLeaveRoundSuccess() throws Exception{
 		round.setPlayer(null);
 		mockMvc.perform(get("/rounds/leave/{roundId}",TEST_ROUND_ID))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/rounds"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/rounds"));
 	}
 	
 	@WithMockUser(username="player1",value = "spring")
@@ -284,8 +302,8 @@ public class RoundControllerTest {
 	void testLeaveRoundHasErrors() throws Exception{
 		round.setPlayers(new ArrayList<Player>());
 		mockMvc.perform(get("/rounds/leave/{roundId}",TEST_ROUND_ID))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/rounds/oups"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/rounds/oups"));
 	}
 	
 //	@WithMockUser(username="player1",value = "spring")

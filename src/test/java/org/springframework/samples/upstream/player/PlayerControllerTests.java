@@ -11,6 +11,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.samples.upstream.user.User;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +24,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.samples.upstream.configuration.SecurityConfiguration;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
@@ -32,6 +39,7 @@ import org.springframework.test.web.servlet.MockMvc;
 public class PlayerControllerTests {
 	
 	private static final int TEST_PLAYER_ID = 1;
+	private static final int TEST_PLAYER_ID2 = 2;
 	
 	@Autowired
 	private PlayerController playerController;
@@ -49,7 +57,13 @@ public class PlayerControllerTests {
 	private MockMvc mockMvc;
 	
 	private Player george;
+	private Player george2;
 	private User userGeorge;
+	private User userGeorge2;
+	private Pageable pageable;
+	private Page<Player> page;
+	private Page<Player> pageEmpty;
+	private Page<Player> pageWithTwoElements;
 	
 	@BeforeEach
 	void setup() {
@@ -64,46 +78,129 @@ public class PlayerControllerTests {
 		george.setUser(userGeorge);
 		given(this.playerService.findPlayerById(TEST_PLAYER_ID)).willReturn(george);
 		when(this.playerService.checkAdminAndInitiatedUser("player1")).thenReturn(true);
-		when(this.playerService.checkAdmin()).thenReturn(true);
+		
+		george2 = new Player();
+		userGeorge2 = new User();
+		george2.setId(TEST_PLAYER_ID2);
+		george2.setFirstName("George2");
+		george2.setLastName("Franklin2");
+		george2.setEmail("ejemplo2@gmail.com");
+		userGeorge2.setUsername("player2");
+		userGeorge2.setPassword("0wn3r2");
+		george2.setUser(userGeorge2);
+		given(this.playerService.findPlayerById(TEST_PLAYER_ID2)).willReturn(george2);
+		when(this.playerService.checkAdminAndInitiatedUser("player2")).thenReturn(true);
+		
+		pageable=PageRequest.of(0, 20);
+		
+		page=new PageImpl<Player>(List.of(george),pageable,0);
+		pageEmpty=new PageImpl<Player>(new ArrayList<Player>(),pageable,0);
+		pageWithTwoElements=new PageImpl<Player>(List.of(george,george2),pageable,0);
+
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitCreationForm() throws Exception {
-		mockMvc.perform(get("/players/new")).andExpect(status().isOk()).andExpect(model().attributeExists("player"))
+		mockMvc.perform(get("/players/new"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("player"))
 				.andExpect(view().name("players/createOrUpdatePlayerForm"));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessCreationFormSuccess() throws Exception {
-		mockMvc.perform(post("/players/new").param("firstName", "Juan").param("lastName", "Diaz").with(csrf())
-				.param("email", "test@gmail.com")).andExpect(status().is3xxRedirection());
+		mockMvc.perform(post("/players/new")
+				.param("firstName", "Juan")
+				.param("lastName", "Diaz")
+				.with(csrf())
+				.param("email", "test@gmail.com"))
+				.andExpect(status().is3xxRedirection());
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessCreationFormHasErrors() throws Exception {
-		mockMvc.perform(post("/players/new").with(csrf()).param("firstName", "Juan").param("lastName", "Diaz"))
-				.andExpect(status().isOk()).andExpect(model().attributeHasErrors("player"))
+		mockMvc.perform(post("/players/new")
+				.with(csrf())
+				.param("firstName", "Juan")
+				.param("lastName", "Diaz"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeHasErrors("player"))
 				.andExpect(model().attributeHasFieldErrors("player", "email"))
 				.andExpect(view().name("players/createOrUpdatePlayerForm"));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
-	void testInitFindForm() throws Exception {
-		mockMvc.perform(get("/players/find")).andExpect(status().isOk()).andExpect(model().attributeExists("player"))
+	void testInitFindFormSuccess() throws Exception {
+		when(this.playerService.checkAdmin()).thenReturn(true);
+		mockMvc.perform(get("/players/find"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("player"))
 				.andExpect(view().name("players/findPlayers"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testInitFindFormHasErrors() throws Exception {
+		mockMvc.perform(get("/players/find"))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(view().name("exception"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessFindFormNoAdmin() throws Exception {
+		mockMvc.perform(get("/players"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessFindFormOneElement() throws Exception {
+		when(this.playerService.checkAdmin()).thenReturn(true);
+		given(this.playerService.findAllPageable(pageable)).willReturn(page);
+		mockMvc.perform(get("/players"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/players/" + TEST_PLAYER_ID));
 	}
 	
 	@Disabled
 	@WithMockUser(value = "spring")
 	@Test
-	void testProcessFindFormSuccess() throws Exception {
-		given(this.playerService.findPlayerByLastName("")).willReturn(Lists.newArrayList(george, new Player()));
-		mockMvc.perform(get("/players")).andExpect(status().isOk()).andExpect(view().name("players/playersList"));
+	void testProcessFindFormWithLastname() throws Exception {
+		when(this.playerService.checkAdmin()).thenReturn(true);
+		given(this.playerService.findAllPageable(pageable)).willReturn(page);
+		mockMvc.perform(get("/players"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/players/" + TEST_PLAYER_ID));
 	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessFindFormEmptyPage() throws Exception {
+		when(this.playerService.checkAdmin()).thenReturn(true);
+		given(this.playerService.findAllPageable(pageable)).willReturn(pageEmpty);
+		mockMvc.perform(get("/players"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("players/findPlayers"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessFindFormMoreThanOneElement() throws Exception {
+		when(this.playerService.checkAdmin()).thenReturn(true);
+		given(this.playerService.findAllPageable(pageable)).willReturn(pageWithTwoElements);
+		mockMvc.perform(get("/players"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("esPrimera"))
+				.andExpect(model().attributeExists("esUltima"))
+				.andExpect(view().name("players/playersList"));
+	}
+	
 	
 	@Disabled
 	@WithMockUser(value = "spring")
