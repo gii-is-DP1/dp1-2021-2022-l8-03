@@ -18,9 +18,6 @@ public class TileService {
 	private TileRepository tileRepository;
 
 	@Autowired
-	private TileService tileService;
-
-	@Autowired
 	public TileService(TileRepository tileRepository) {
 		this.tileRepository = tileRepository;
 	}	
@@ -85,33 +82,33 @@ public class TileService {
 	}
 	
 	public void removeStartingTiles(Integer round) {
-		List<Tile> startingTiles = tileService.findSeaTilesInRound(round);
+		List<Tile> startingTiles = findSeaTilesInRound(round);
 		for(Tile tile : startingTiles) {
-			this.tileService.deleteTile(tile);
+			deleteTile(tile);
 		}
 	}
 	
 	public void removeLowestTiles(Integer round) {
-		Integer lowestRow = tileService.findLowestRow(round);
+		Integer lowestRow = findLowestRow(round);
 		for(int i=1;i<4;i++) {
 			if(i==2) {
-				Tile tile = tileService.findByPosition(lowestRow+1, i, round);
+				Tile tile = findByPosition(lowestRow+1, i, round);
 				if(!tile.getTileType().equals(TileType.SPAWN)) {
-					tileService.deleteTile(tile);
+					deleteTile(tile);
 				}
 			}else {
-				Tile tile = tileService.findByPosition(lowestRow, i, round);
+				Tile tile = findByPosition(lowestRow, i, round);
 				if(!tile.getTileType().equals(TileType.SPAWN)) {
-					tileService.deleteTile(tile);
+					deleteTile(tile);
 				}
 			}
 		}
 	}
 
 	public void addNewRow(Round round) {
-		Integer highestRow = tileService.findHighestRow(round.getId());
+		Integer highestRow = findHighestRow(round.getId());
 		for(int i=1;i<4;i++) {
-			tileService.createRandomTile(highestRow + 1, i, round);		
+			createRandomTile(highestRow + 1, i, round);		
 		}
 	}
 
@@ -159,16 +156,16 @@ public class TileService {
 			seaTile.setSalmonEggs(0);
 			seaTile.setTileType(TileType.SEA);
 			seaTile.setRound(round);
-			this.tileService.saveTile(seaTile);
+			saveTile(seaTile);
 		}
 	}
 	
 	public void createInitialTiles(Round round) {
-		this.tileService.createSeaTiles(round);
-		this.tileService.createRandomTile(2, 1, round);
-		this.tileService.createRandomTile(2, 3, round);
-		this.tileService.addNewRow(round);
-		this.tileService.addNewRow(round);
+		createSeaTiles(round);
+		createRandomTile(2, 1, round);
+		createRandomTile(2, 3, round);
+		addNewRow(round);
+		addNewRow(round);
 	}
 	
 }

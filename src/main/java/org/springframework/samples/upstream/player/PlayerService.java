@@ -21,11 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.samples.upstream.actingPlayer.ActingPlayerRepository;
-import org.springframework.samples.upstream.piece.PieceRepository;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
-import org.springframework.samples.upstream.tile.TileRepository;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
 import org.springframework.security.core.Authentication;
@@ -45,13 +42,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlayerService {
 
 	private PlayerRepository playerRepository;
-	private ActingPlayerRepository actingPlayerRepository;	
 	private RoundRepository roundRepository;
-	private TileRepository tileRepository;
-	private PieceRepository pieceRepository;
-		
-		
-	
+					
 	@Autowired
 	private UserService userService;
 	
@@ -59,12 +51,9 @@ public class PlayerService {
 	private AuthoritiesService authoritiesService;
 
 	@Autowired
-	public PlayerService(PlayerRepository playerRepository,RoundRepository roundRepository, ActingPlayerRepository actingPlayerRepository,TileRepository tileRepository,PieceRepository pieceRepository) {
+	public PlayerService(PlayerRepository playerRepository,RoundRepository roundRepository) {
 		this.playerRepository = playerRepository;
 		this.roundRepository = roundRepository;
-		this.actingPlayerRepository=actingPlayerRepository;
-		this.tileRepository=tileRepository;
-		this.pieceRepository=pieceRepository;
 	}	
 
 	@Transactional(readOnly = true)
