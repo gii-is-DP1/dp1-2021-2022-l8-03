@@ -26,6 +26,8 @@ import org.springframework.samples.upstream.piece.PieceRepository;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
 import org.springframework.samples.upstream.round.RoundState;
+import org.springframework.samples.upstream.salmonBoard.SalmonBoard;
+import org.springframework.samples.upstream.salmonBoard.SalmonBoardRepository;
 import org.springframework.samples.upstream.tile.TileRepository;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
@@ -50,6 +52,7 @@ public class PlayerService {
 	private RoundRepository roundRepository;
 	private TileRepository tileRepository;
 	private PieceRepository pieceRepository;
+	private SalmonBoardRepository salmonboardRepository;
 		
 		
 	
@@ -60,12 +63,13 @@ public class PlayerService {
 	private AuthoritiesService authoritiesService;
 
 	@Autowired
-	public PlayerService(PlayerRepository playerRepository,RoundRepository roundRepository, ActingPlayerRepository actingPlayerRepository,TileRepository tileRepository,PieceRepository pieceRepository) {
+	public PlayerService(PlayerRepository playerRepository,RoundRepository roundRepository, ActingPlayerRepository actingPlayerRepository,TileRepository tileRepository,PieceRepository pieceRepository,SalmonBoardRepository salmonboardRepository) {
 		this.playerRepository = playerRepository;
 		this.roundRepository = roundRepository;
 		this.actingPlayerRepository=actingPlayerRepository;
 		this.tileRepository=tileRepository;
 		this.pieceRepository=pieceRepository;
+		this.salmonboardRepository=salmonboardRepository;
 	}	
 
 	@Transactional(readOnly = true)
@@ -128,6 +132,9 @@ public class PlayerService {
 		if(checkAdmin()) {
 			if(!rounds.isEmpty()) {
 				for(Round r:rounds) {
+					if(this.salmonboardRepository.findBoardInRound(r.getId())!=null) {
+						this.salmonboardRepository.delete(this.salmonboardRepository.findBoardInRound(r.getId()));
+					}
 					if(r.getRound_state()!=RoundState.FINISHED) {
 						for(Player p:r.getPlayers()) {
 							p.setRound(null);

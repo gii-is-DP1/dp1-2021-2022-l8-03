@@ -77,7 +77,7 @@ INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_ty
 
 
 
-INSERT INTO salmon_board(id,background,height,width,round) VALUES (1,'/resources/images/back_pattern.jpg',800,800,1);
+INSERT INTO salmonboards(id,background,height,width,round) VALUES (1,'/resources/images/back_pattern.jpg',800,800,1);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color,type) VALUES (1, 1, false, 11, 1, 2,'BLACK','HORSE');
 --INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id) VALUES (2, 2, false, 14, 1, 1);
 

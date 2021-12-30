@@ -1,4 +1,4 @@
-package org.springframework.samples.upstream.board;
+package org.springframework.samples.upstream.salmonBoard;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.upstream.piece.PieceService;

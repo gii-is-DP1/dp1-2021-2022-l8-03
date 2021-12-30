@@ -1,11 +1,13 @@
-package org.springframework.samples.upstream.board;
+package org.springframework.samples.upstream.salmonBoard;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.Positive;
 
 import org.springframework.samples.upstream.model.BaseEntity;
@@ -13,14 +15,12 @@ import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.tile.Tile;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Table(name="salmonboards")
 public class SalmonBoard extends BaseEntity{
 	String background;
     @Positive
