@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -43,6 +45,8 @@ public class Round extends BaseEntity {
 	private Boolean whirlpools;
 	
 	@Column(name = "num_players")
+	@Min(2)
+	@Max(5)
 	@NotNull
 	private Integer num_players;
 	
@@ -81,5 +85,7 @@ public class Round extends BaseEntity {
 
 	@OneToMany(mappedBy = "round")
     private Collection<Player> players;
+	
+	
 
 }

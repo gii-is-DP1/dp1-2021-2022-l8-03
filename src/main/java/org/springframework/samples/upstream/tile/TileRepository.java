@@ -12,8 +12,8 @@ public interface TileRepository extends CrudRepository<Tile, Integer>{
 	@Query("SELECT tile FROM Tile tile WHERE tile.id =:id")
 	public Tile findById(@Param("id") int id);
 	
-	@Query("SELECT tile FROM Tile tile WHERE tile.rowIndex=:row AND tile.columnIndex=:column AND tile.round.id=:round")
-	public Tile findByPosition(@Param("row") int row, @Param("column") int column, @Param("round") int round);
+	@Query("SELECT tile FROM Tile tile WHERE tile.rowIndex=:row AND tile.columnIndex=:column AND tile.round.id=:round_id")
+	public Tile findByPosition(@Param("row") int row, @Param("column") int column, @Param("round_id") int round_id);
 	
 	@Query("SELECT tile FROM Tile tile WHERE tile.rowIndex=:row AND tile.round.id=:round")
 	public List<Tile> findByRow(@Param("row") int row, @Param("round") int round);

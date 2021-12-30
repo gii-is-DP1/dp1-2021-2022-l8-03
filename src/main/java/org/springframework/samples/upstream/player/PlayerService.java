@@ -23,6 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
+import org.springframework.samples.upstream.round.RoundState;
+import org.springframework.samples.upstream.salmonBoard.SalmonBoardRepository;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
 import org.springframework.security.core.Authentication;
@@ -43,7 +45,10 @@ public class PlayerService {
 
 	private PlayerRepository playerRepository;
 	private RoundRepository roundRepository;
-					
+	private SalmonBoardRepository salmonboardRepository;
+		
+		
+
 	@Autowired
 	private UserService userService;
 	
@@ -51,9 +56,10 @@ public class PlayerService {
 	private AuthoritiesService authoritiesService;
 
 	@Autowired
-	public PlayerService(PlayerRepository playerRepository,RoundRepository roundRepository) {
+	public PlayerService(PlayerRepository playerRepository,RoundRepository roundRepository,SalmonBoardRepository salmonboardRepository) {
 		this.playerRepository = playerRepository;
 		this.roundRepository = roundRepository;
+		this.salmonboardRepository=salmonboardRepository;
 	}	
 
 	@Transactional(readOnly = true)
@@ -116,8 +122,13 @@ public class PlayerService {
 		if(checkAdmin()) {
 			if(!rounds.isEmpty()) {
 				for(Round r:rounds) {
-					for(Player p:r.getPlayers()) {
-						p.setRound(null);
+					if(this.salmonboardRepository.findBoardInRound(r.getId())!=null) {
+						this.salmonboardRepository.delete(this.salmonboardRepository.findBoardInRound(r.getId()));
+					}
+					if(r.getRound_state()!=RoundState.FINISHED) {
+						for(Player p:r.getPlayers()) {
+							p.setRound(null);
+						}
 					}
 				}
 			}

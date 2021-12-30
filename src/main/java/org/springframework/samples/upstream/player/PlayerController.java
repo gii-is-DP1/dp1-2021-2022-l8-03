@@ -86,7 +86,7 @@ public class PlayerController {
 	public String initFindForm(Map<String, Object> model) {
 		Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
-			return "exception";
+			return "redirect:/";
 		}
 		model.put("player", new Player());
 		return "players/findPlayers";
@@ -96,7 +96,7 @@ public class PlayerController {
 	public String processFindForm(Player player, BindingResult result, Map<String, Object> model,Pageable pageable) {
 		Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
-			return "exception";
+			return "redirect:/";
 		}
 		// allow parameterless GET request for /players to return all records
 		if (player.getLastName() == null) {
@@ -140,7 +140,7 @@ public class PlayerController {
 		String username = player.getUser().getUsername();
 		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
 		if(permission) {
-			return "exception";
+			return "redirect:/";
 		} else {
 			model.addAttribute(player);
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
@@ -163,6 +163,8 @@ public class PlayerController {
 			
 		}
 	}
+	
+	//ESTE METODO TIENE QUE ESTAR RESTRINGIDO PARA PLAYERS Y DEBE MANDAR A UNA PAGINA DE ERROR
 	
 	@GetMapping(value = "/players/delete/{playerId}")
 	public String deletePlayer(@PathVariable("playerId") int playerId, ModelMap model) {
