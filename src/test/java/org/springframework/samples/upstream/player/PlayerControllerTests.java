@@ -3,7 +3,7 @@ package org.springframework.samples.upstream.player;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.when;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.samples.upstream.user.User;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -30,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.upstream.configuration.SecurityConfiguration;
 import org.springframework.samples.upstream.user.AuthoritiesService;
+import org.springframework.samples.upstream.user.User;
 import org.springframework.samples.upstream.user.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -40,9 +40,6 @@ public class PlayerControllerTests {
 	
 	private static final int TEST_PLAYER_ID = 1;
 	private static final int TEST_PLAYER_ID2 = 2;
-	
-	@Autowired
-	private PlayerController playerController;
 	
 	@MockBean
 	private PlayerService playerService;
@@ -77,7 +74,7 @@ public class PlayerControllerTests {
 		userGeorge.setPassword("0wn3r");
 		george.setUser(userGeorge);
 		given(this.playerService.findPlayerById(TEST_PLAYER_ID)).willReturn(george);
-		when(this.playerService.checkAdminAndInitiatedUser("player1")).thenReturn(true);
+		given(this.playerService.findPlayerByUsername("player1")).willReturn(george);
 		
 		george2 = new Player();
 		userGeorge2 = new User();
@@ -173,7 +170,6 @@ public class PlayerControllerTests {
 	@Test
 	void testProcessFindFormWithLastname() throws Exception {
 		when(this.playerService.checkAdmin()).thenReturn(true);
-		given(this.playerService.findAllPageable(pageable)).willReturn(page);
 		mockMvc.perform(get("/players"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/players/" + TEST_PLAYER_ID));
@@ -200,8 +196,7 @@ public class PlayerControllerTests {
 				.andExpect(model().attributeExists("esUltima"))
 				.andExpect(view().name("players/playersList"));
 	}
-	
-	
+		
 	@Disabled
 	@WithMockUser(value = "spring")
 	@Test
@@ -211,26 +206,24 @@ public class PlayerControllerTests {
 				.andExpect(view().name("redirect:/players/" + TEST_PLAYER_ID));
 	}
 	
-	@Disabled
-	@WithMockUser(value = "spring")
-	@Test
-	void testProcessFindFormNoPlayersFound() throws Exception {
-		mockMvc.perform(get("/players").param("lastName", "Unknown Surname")).andExpect(status().isOk())
-				.andExpect(model().attributeHasFieldErrors("player", "lastName"))
-				.andExpect(model().attributeHasFieldErrorCode("player", "lastName", "notFound"))
-				.andExpect(view().name("players/findPlayers"));
-	}
-	
-	
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitUpdatePlayerForm() throws Exception {
+		when(this.playerService.checkAdminAndInitiatedUser("player1")).thenReturn(true);
 		mockMvc.perform(get("/players/{playerId}/edit", TEST_PLAYER_ID)).andExpect(status().isOk())
 				.andExpect(model().attributeExists("player"))
 				.andExpect(model().attribute("player", hasProperty("lastName", is("Franklin"))))
 				.andExpect(model().attribute("player", hasProperty("firstName", is("George"))))
 				.andExpect(model().attribute("player", hasProperty("email", is("ejemplo@gmail.com"))))
 				.andExpect(view().name("players/createOrUpdatePlayerForm"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testInitUpdatePlayerFormNoPermission() throws Exception {
+		mockMvc.perform(get("/players/{playerId}/edit", TEST_PLAYER_ID))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
 	}
 	
 	@WithMockUser(value = "spring")
@@ -254,8 +247,25 @@ public class PlayerControllerTests {
 	
 	@WithMockUser(value = "spring")
 	@Test
+	void testDeletePlayerSuccess() throws Exception {
+		mockMvc.perform(get("/players/delete/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk())
+				.andExpect(view().name("/players/playersList"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testDeletePlayerNotFound() throws Exception {
+		mockMvc.perform(get("/players/delete/{playerId}", 99))
+				.andExpect(status().isOk())
+				.andExpect(view().name("/players/playersList"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
 	void testShowPlayer() throws Exception {
-		mockMvc.perform(get("/players/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk())
+		when(this.playerService.checkAdminAndInitiatedUser("player1")).thenReturn(true);
+		mockMvc.perform(get("/players/{playerId}", TEST_PLAYER_ID))
+				.andExpect(status().isOk())
 				.andExpect(model().attribute("player", hasProperty("lastName", is("Franklin"))))
 				.andExpect(model().attribute("player", hasProperty("firstName", is("George"))))
 				.andExpect(model().attribute("player", hasProperty("email", is("ejemplo@gmail.com"))))
@@ -264,9 +274,19 @@ public class PlayerControllerTests {
 	
 	@WithMockUser(value = "spring")
 	@Test
-	void testDeletePlayer() throws Exception {
-		mockMvc.perform(get("/players/delete/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk())
-				.andExpect(view().name("/players/playersList"));
+	void testShowPlayerNoPermission() throws Exception {
+		mockMvc.perform(get("/players/{playerId}", TEST_PLAYER_ID))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
 	}
+	
+	@WithMockUser(value = "spring",username="player1")
+	@Test
+	void testShowPlayerDetails() throws Exception {
+		mockMvc.perform(get("/players/playerDetails"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/players/" + TEST_PLAYER_ID));
+	}
+	
 
 }

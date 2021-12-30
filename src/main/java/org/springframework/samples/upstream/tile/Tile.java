@@ -14,10 +14,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.springframework.samples.upstream.board.SalmonBoard;
 import org.springframework.samples.upstream.model.BaseEntity;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.round.Round;
+import org.springframework.samples.upstream.salmonBoard.SalmonBoard;
 
 import javax.validation.constraints.NotNull;
 
