@@ -89,12 +89,6 @@ public class RoundController {
 			this.pieceService.createPlayerPieces(player,round);
 			
 			player.setRound(round);
-			Collection<Round> playerRounds=player.getRounds();
-			if(playerRounds==null) {
-				playerRounds=new ArrayList<Round>();
-			}
-			playerRounds.add(round);
-			player.setRounds(playerRounds);
 			this.playerService.savePlayer(player);
 			
 			Score score=new Score();

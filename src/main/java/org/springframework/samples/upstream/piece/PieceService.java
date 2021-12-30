@@ -88,14 +88,13 @@ public class PieceService {
 			Piece piece=new Piece();
 			piece.setNumSalmon(2);
 			piece.setPlayer(player);
-			playerPieces.add(piece);
 			piece.setRound(round);
 			piece.setStuck(false);
 			tilePieces.add(piece);
 			piece.setTile(tile);
-			this.tileService.saveTile(tile);
 			this.pieceRepository.save(piece);
 			roundPieces.add(piece);
+			playerPieces.add(piece);
 		}
 		round.setPieces(roundPieces);
 		roundService.saveRound(round);
