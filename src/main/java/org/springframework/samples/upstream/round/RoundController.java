@@ -9,12 +9,12 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.upstream.board.SalmonBoard;
-import org.springframework.samples.upstream.board.SalmonBoardService;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.player.PlayerService;
+import org.springframework.samples.upstream.salmonBoard.SalmonBoard;
+import org.springframework.samples.upstream.salmonBoard.SalmonBoardService;
 import org.springframework.samples.upstream.score.Score;
 import org.springframework.samples.upstream.score.ScoreService;
 import org.springframework.samples.upstream.tile.Tile;
@@ -89,12 +89,6 @@ public class RoundController {
 			this.pieceService.createPlayerPieces(player,round);
 			
 			player.setRound(round);
-			Collection<Round> playerRounds=player.getRounds();
-			if(playerRounds==null) {
-				playerRounds=new ArrayList<Round>();
-			}
-			playerRounds.add(round);
-			player.setRounds(playerRounds);
 			this.playerService.savePlayer(player);
 			
 			Score score=new Score();

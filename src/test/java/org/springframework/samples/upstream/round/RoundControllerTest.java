@@ -3,7 +3,6 @@ package org.springframework.samples.upstream.round;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.when;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,10 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,13 +26,13 @@ import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.player.PlayerService;
+import org.springframework.samples.upstream.salmonBoard.SalmonBoardService;
 import org.springframework.samples.upstream.score.ScoreService;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.samples.upstream.tile.TileType;
 import org.springframework.samples.upstream.user.User;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -62,6 +59,9 @@ public class RoundControllerTest {
 	
 	@MockBean
 	private ScoreService scoreService;
+	
+	@MockBean
+	private SalmonBoardService salmonBoardService;
 	
 	private Round round;
 	private Player george;
@@ -137,7 +137,9 @@ public class RoundControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitCreationForm() throws Exception {
-		mockMvc.perform(get("/rounds/new")).andExpect(status().isOk()).andExpect(model().attributeExists("round"))
+		mockMvc.perform(get("/rounds/new"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("round"))
 				.andExpect(view().name("rounds/createOrUpdateRoundForm"));
 	}
 	
@@ -146,7 +148,8 @@ public class RoundControllerTest {
 	@WithMockUser(username="player1",value = "spring")
 	@Test
 	void testProcessCreationFormSuccess() throws Exception {
-		mockMvc.perform(post("/rounds/new").with(csrf())
+		mockMvc.perform(post("/rounds/new")
+				.with(csrf())
 				.param("whirlpools", "true")
 				.param("rapids", "true")
 				.param("num_players", "3")
@@ -158,7 +161,11 @@ public class RoundControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessCreationFormHasErrors() throws Exception {
-		mockMvc.perform(post("/rounds/new").with(csrf()).param("whirlpools", "true").param("rapids", "true").param("round_state","CREATED"))
+		mockMvc.perform(post("/rounds/new")
+				.with(csrf())
+				.param("whirlpools", "true")
+				.param("rapids", "true")
+				.param("round_state","CREATED"))
 				.andExpect(status().isOk()).andExpect(model().attributeHasErrors("round"))
 				.andExpect(model().attributeHasFieldErrors("round", "num_players"))
 				.andExpect(view().name("rounds/createOrUpdateRoundForm"));
@@ -167,7 +174,9 @@ public class RoundControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindForm() throws Exception {
-		mockMvc.perform(get("/rounds")).andExpect(status().isOk()).andExpect(model().attributeExists("rounds"))
+		mockMvc.perform(get("/rounds"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("rounds"))
 				.andExpect(model().attributeExists("esFinished"))
 				.andExpect(view().name("rounds/roundList"));
 	}
@@ -177,7 +186,9 @@ public class RoundControllerTest {
 	@Test
 	void testProcessFindInCourse() throws Exception {
 		when(this.playerService.checkAdmin()).thenReturn(true);
-		mockMvc.perform(get("/rounds/inCourse")).andExpect(status().isOk()).andExpect(model().attributeExists("rounds"))
+		mockMvc.perform(get("/rounds/inCourse"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("rounds"))
 				.andExpect(model().attributeExists("esFinished"))
 				.andExpect(view().name("rounds/roundList"));
 	}
@@ -193,7 +204,9 @@ public class RoundControllerTest {
 	@Test
 	void testProcessFindFinished() throws Exception {
 		when(this.playerService.checkAdmin()).thenReturn(true);
-		mockMvc.perform(get("/rounds/finished")).andExpect(status().isOk()).andExpect(model().attributeExists("rounds"))
+		mockMvc.perform(get("/rounds/finished"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("rounds"))
 				.andExpect(model().attributeExists("esFinished"))
 				.andExpect(view().name("rounds/roundList"));
 	}
@@ -208,7 +221,8 @@ public class RoundControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitUpdateRoundForm() throws Exception {
-		mockMvc.perform(get("/rounds/{roundId}/edit", TEST_ROUND_ID)).andExpect(status().isOk())
+		mockMvc.perform(get("/rounds/{roundId}/edit", TEST_ROUND_ID))
+				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("round"))
 				.andExpect(model().attribute("round", hasProperty("rapids", is(true))))
 				.andExpect(model().attribute("round", hasProperty("whirlpools", is(true))))
@@ -250,24 +264,24 @@ public class RoundControllerTest {
 	@Test
 	void testJoinRoundSuccess() throws Exception{
 		mockMvc.perform(get("/rounds/join/{roundId}",TEST_ROUND_ID))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/rounds/{roundId}"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/rounds/{roundId}"));
 	}
 	
 	@WithMockUser(username="player1",value = "spring")
 	@Test
 	void testJoinRoundHasErrors() throws Exception{
 		mockMvc.perform(get("/rounds/join/{roundId}",99))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/rounds/oups"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/rounds/oups"));
 	}
 	
 	@WithMockUser(username="player1",value = "spring")
 	@Test
 	void testCreatorLeaveRoundSuccess() throws Exception{
 		mockMvc.perform(get("/rounds/leave/{roundId}",TEST_ROUND_ID))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/rounds"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/rounds"));
 	}
 	
 	@WithMockUser(username="player1",value = "spring")
@@ -275,8 +289,8 @@ public class RoundControllerTest {
 	void testLeaveRoundSuccess() throws Exception{
 		round.setPlayer(null);
 		mockMvc.perform(get("/rounds/leave/{roundId}",TEST_ROUND_ID))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/rounds"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/rounds"));
 	}
 	
 	@WithMockUser(username="player1",value = "spring")
@@ -284,8 +298,8 @@ public class RoundControllerTest {
 	void testLeaveRoundHasErrors() throws Exception{
 		round.setPlayers(new ArrayList<Player>());
 		mockMvc.perform(get("/rounds/leave/{roundId}",TEST_ROUND_ID))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/rounds/oups"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/rounds/oups"));
 	}
 	
 //	@WithMockUser(username="player1",value = "spring")
