@@ -2,6 +2,7 @@ package org.springframework.samples.upstream.piece;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -71,6 +72,18 @@ public class PieceServiceTest {
     	this.pieceService.swim(piece, oldTile, newTile);
     }
     
+    @Disabled
+    @Test
+    @Transactional
+    @WithMockUser(username = "player5")
+    void shouldNotSwimCurrentBear() {
+    	Piece piece = this.pieceService.findPieceById(4);
+    	Tile oldTile = piece.getTile();
+    	Tile newTile = this.tileService.findTileById(22);
+    	
+    	this.pieceService.swim(piece, oldTile, newTile);
+    }
+    
     @Test
     @Transactional
     @WithMockUser(username = "player5")
@@ -78,6 +91,28 @@ public class PieceServiceTest {
     	Piece piece = this.pieceService.findPieceById(2);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(16);
+    	
+    	this.pieceService.swim(piece, oldTile, newTile);
+    }
+    
+    @Test
+    @Transactional
+    @WithMockUser(username = "player5")
+    void shouldNotSwimCurrentWaterfall() {
+    	Piece piece = this.pieceService.findPieceById(3);
+    	Tile oldTile = piece.getTile();
+    	Tile newTile = this.tileService.findTileById(22);
+    	
+    	this.pieceService.swim(piece, oldTile, newTile);
+    }
+    
+    @Test
+    @Transactional
+    @WithMockUser(username = "player5")
+    void shouldCheckEagle() {
+    	Piece piece = this.pieceService.findPieceById(2);
+    	Tile oldTile = piece.getTile();
+    	Tile newTile = this.tileService.findTileById(17);
     	
     	this.pieceService.swim(piece, oldTile, newTile);
     }
