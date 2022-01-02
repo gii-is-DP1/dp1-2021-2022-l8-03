@@ -38,7 +38,7 @@ public class ScoreServiceTest {
 	void shouldSetPlayerScores() {
 		scoreService.setPlayerScores(roundService.findRoundById(1));
 		Score score = scoreService.findByPlayerAndRound(11, 1);
-		assertThat(score.getValue()).isEqualTo(0);
+		assertThat(score.getValue()).isEqualTo(1);
 	}
 	
 	@Test
