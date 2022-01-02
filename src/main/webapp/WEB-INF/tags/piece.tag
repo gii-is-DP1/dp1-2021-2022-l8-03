@@ -3,10 +3,9 @@
  <%@ attribute name="piece" required="true" rtexprvalue="true" type="org.springframework.samples.upstream.piece.Piece"
  description="Piece to be rendered" %>
  <script>
- function loadPiece(){
-	 var canvas = document.getElementById("canvas");
-	 var ctx = canvas.getContext("2d");
-	 var image = document.getElementById('${piece.type}-${piece.color}');
-	 ctx.drawImage(image,${piece.getPositionXInPixels(size)},${piece.getPositionYInPixels(size)},${size},${size});
- }
+ var canvas = document.getElementById("canvas");
+ var ctx = canvas.getContext("2d");
+ var image = document.getElementById('SALMON-${piece.color}-${piece.numSalmon}');
+ image.globalCompositeOperation ="destination-over";
+ ctx.drawImage(image,${piece.getPositionYInPixels(size)},${piece.getPositionXInPixels(size)},38,38);
  </script>

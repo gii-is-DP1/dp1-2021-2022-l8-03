@@ -92,7 +92,12 @@ public class PieceService {
 			piece.setStuck(false);
 			tilePieces.add(piece);
 			piece.setTile(tile);
+			
+			List<Player> players = new ArrayList<Player>(round.getPlayers());
+			piece.setColor(Color.values()[players.indexOf(player)]);
+			
 			this.pieceRepository.save(piece);
+			
 			roundPieces.add(piece);
 			playerPieces.add(piece);
 		}
