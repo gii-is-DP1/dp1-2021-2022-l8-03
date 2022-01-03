@@ -19,11 +19,15 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.envers.Audited;
+
 /**
  * Simple JavaBean domain object representing an person.
  *
  * @author Ken Krebs
  */
+
+@Audited
 @MappedSuperclass
 public class Person extends BaseEntity {
 

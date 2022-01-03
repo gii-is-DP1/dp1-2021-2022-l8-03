@@ -23,9 +23,6 @@ public class TileService {
 	private RoundRepository roundRepository;
 
 	@Autowired
-	private TileService tileService;
-
-	@Autowired
 	public TileService(TileRepository tileRepository,RoundRepository roundRepository) {
 		this.tileRepository = tileRepository;
 		this.roundRepository= roundRepository;
@@ -93,33 +90,34 @@ public class TileService {
 	}
 	
 	public void removeStartingTiles(Integer roundId) {
-		List<Tile> startingTiles = tileService.findSeaTilesInRound(roundId);
+		List<Tile> startingTiles = findSeaTilesInRound(roundId);
 		for(Tile tile : startingTiles) {
-			this.tileService.deleteTile(tile);
+			deleteTile(tile);
 		}
 	}
 	
+
 	public void removeLowestTiles(Integer roundId) {
-		Integer lowestRow = tileService.findLowestRow(roundId);
+		Integer lowestRow = findLowestRow(roundId);
 		for(int i=1;i<4;i++) {
 			if(i==2) {
-				Tile tile = tileService.findByPosition(lowestRow+1, i, roundId);
+				Tile tile = findByPosition(lowestRow+1, i, roundId);
 				if(!tile.getTileType().equals(TileType.SPAWN)) {
-					tileService.deleteTile(tile);
+					deleteTile(tile);
 				}
 			}else {
-				Tile tile = tileService.findByPosition(lowestRow, i, roundId);
+				Tile tile = findByPosition(lowestRow, i, roundId);
 				if(!tile.getTileType().equals(TileType.SPAWN)) {
-					tileService.deleteTile(tile);
+					deleteTile(tile);
 				}
 			}
 		}
 	}
 
 	public void addNewRow(Round round) {
-		Integer highestRow = tileService.findHighestRow(round.getId());
+		Integer highestRow = findHighestRow(round.getId());
 		for(int i=1;i<4;i++) {
-			tileService.createRandomTile(highestRow + 1, i, round);		
+			createRandomTile(highestRow + 1, i, round);		
 		}
 	}
 
@@ -176,23 +174,23 @@ public class TileService {
 			seaTile.setSalmonEggs(0);
 			seaTile.setTileType(TileType.SEA);
 			seaTile.setRound(round);
-			this.tileService.saveTile(seaTile);
-			roundTiles.add(seaTile);
+			saveTile(seaTile);
+
 		}
 		round.setTiles(roundTiles);
 		roundRepository.save(round);
 	}
 	
 	public void createInitialTiles(Round round) {
+		createSeaTiles(round);
+		createRandomTile(2, 1, round);
+		createRandomTile(2, 3, round);
+		addNewRow(round);
+		addNewRow(round);
+
 		if(round.getTiles()==null) {
 			round.setTiles(new ArrayList<Tile>());
 			this.roundRepository.save(round);
 		}
-		this.tileService.createSeaTiles(round);
-		this.tileService.createRandomTile(2, 1, round);
-		this.tileService.createRandomTile(2, 3, round);
-		this.tileService.addNewRow(round);
-		this.tileService.addNewRow(round);
-	}
-	
+	}	
 }
