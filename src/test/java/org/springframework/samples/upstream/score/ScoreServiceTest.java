@@ -1,7 +1,6 @@
 package org.springframework.samples.upstream.score;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -33,7 +32,7 @@ public class ScoreServiceTest {
 	void shouldSetPlayerScores() {
 		scoreService.setPlayerScores(roundService.findRoundById(1));
 		Score score = scoreService.findByPlayerAndRound(11, 1);
-		assertThat(score.getValue()).isEqualTo(2);
+		assertThat(score.getValue()).isEqualTo(1);
 	}
 	
 }

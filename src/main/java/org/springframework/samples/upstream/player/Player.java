@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.samples.upstream.model.Person;
 import org.springframework.samples.upstream.piece.Piece;
@@ -30,6 +32,8 @@ import lombok.Setter;
  * @author Sam Brannen
  * @author Michael Isvy
  */
+
+@Audited
 @Entity
 @Getter
 @Setter
@@ -42,57 +46,30 @@ public class Player extends Person {
 	private String email;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
+	@NotAudited
 	private Collection<Piece> pieces;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
+	@NotAudited
 	private Collection<Score> scores;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
+	@NotAudited
     private Collection<Round> rounds;
 	
 	@ManyToOne(optional = true)
+	@NotAudited
     @JoinColumn(name = "round_id")
     private Round round;
-
-	//
+	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")
 	private User user;
-	//
-
-//	public User getUser() {
-//		return user;
-//	}
-//
-//	public void setUser(User user) {
-//		this.user = user;
-//	}
-//	
-//	public Round getRound() {
-//		return round;
-//	}
-//	
-//	public void setRound(Round round) {
-//		this.round = round;
-//	}
-//	
-//	public String getEmail() {
-//		return email;
-//	}
-//
-//	public void setEmail(String email) {
-//		this.email = email;
-//	}
-//	
-//	public Collection<Piece> getPieces(){
-//		return pieces;
-//	}
-
+	
 
 	@Override
 	public String toString() {
 		return new ToStringCreator(this)
-
 				.append("id", this.getId()).append("new", this.isNew()).append("lastName", this.getLastName())
 				.append("firstName", this.getFirstName()).append("email", this.email).toString();
 	}

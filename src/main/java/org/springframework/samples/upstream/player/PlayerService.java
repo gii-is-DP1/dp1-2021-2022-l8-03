@@ -47,8 +47,6 @@ public class PlayerService {
 	private RoundRepository roundRepository;
 	private SalmonBoardRepository salmonboardRepository;
 		
-		
-
 	@Autowired
 	private UserService userService;
 	
@@ -81,10 +79,15 @@ public class PlayerService {
 	public Player findPlayerByUsername(String username) throws DataAccessException {
 		return playerRepository.findByUsername(username);
 	}
+	
+	@Transactional(readOnly = true)
+	public Collection<Object> auditByUsername(String username) throws DataAccessException {
+		return playerRepository.auditByUsername(username);
+	}
 
 	@Transactional
 	public void savePlayer(Player player) throws DataAccessException {
-		String username = player.getUser().getUsername();
+		String username = findPlayerById(player.getId()).getUser().getUsername();
 		if(checkAdminAndInitiatedUser(username)) {
 			//creating player
 			playerRepository.save(player);		
@@ -92,8 +95,7 @@ public class PlayerService {
 			userService.saveUser(player.getUser());
 			//creating authorities
 			authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");
-		}
-		
+		}		
 	}	
 	
 	@Transactional(readOnly = true)

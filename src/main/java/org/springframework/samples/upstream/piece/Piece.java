@@ -4,11 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.validator.constraints.Range;
 import org.springframework.samples.upstream.model.BaseEntity;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.round.Round;
-import org.springframework.samples.upstream.salmonBoard.SalmonBoard;
 import org.springframework.samples.upstream.tile.Tile;
 import lombok.Getter;
 import lombok.Setter;
