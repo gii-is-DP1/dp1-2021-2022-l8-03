@@ -2,8 +2,6 @@ package org.springframework.samples.upstream.piece;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-import org.junit.jupiter.api.Disabled;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -42,6 +40,28 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
+    void shouldNotJumpPointsNeeded() {
+    	Piece piece = this.pieceService.findPieceById(2);
+    	Tile oldTile = piece.getTile();
+    	Tile newTile = this.tileService.findTileById(35);
+    	
+    	this.pieceService.jump(piece, oldTile, newTile);
+    }
+    
+    @Test
+    @Transactional
+    @WithMockUser(username = "player5")
+    void shouldNotMoveSameTile() {
+    	Piece piece = this.pieceService.findPieceById(2);
+    	Tile oldTile = piece.getTile();
+    	Tile newTile = piece.getTile();
+    	
+    	this.pieceService.swim(piece, oldTile, newTile);
+    }
+    
+    @Test
+    @Transactional
+    @WithMockUser(username = "player5")
     void shouldSwim() {
     	Piece piece = this.pieceService.findPieceById(2);
     	Tile oldTile = piece.getTile();
@@ -75,14 +95,13 @@ public class PieceServiceTest {
     	this.pieceService.swim(piece, oldTile, newTile);
     }
     
-    @Disabled
     @Test
     @Transactional
     @WithMockUser(username = "player5")
     void shouldNotSwimCurrentBear() {
     	Piece piece = this.pieceService.findPieceById(4);
     	Tile oldTile = piece.getTile();
-    	Tile newTile = this.tileService.findTileById(22);
+    	Tile newTile = this.tileService.findTileById(24);
     	
     	this.pieceService.swim(piece, oldTile, newTile);
     }
@@ -101,10 +120,32 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotSwimCurrentWaterfall() {
+    void shouldNotSwimCurrentWaterfallVertical() {
     	Piece piece = this.pieceService.findPieceById(3);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(22);
+    	
+    	this.pieceService.swim(piece, oldTile, newTile);
+    }
+    
+    @Test
+    @Transactional
+    @WithMockUser(username = "player5")
+    void shouldNotSwimCurrentWaterfallRight() {
+    	Piece piece = this.pieceService.findPieceById(5);
+    	Tile oldTile = piece.getTile();
+    	Tile newTile = this.tileService.findTileById(26);
+    	
+    	this.pieceService.swim(piece, oldTile, newTile);
+    }
+    
+    @Test
+    @Transactional
+    @WithMockUser(username = "player5")
+    void shouldNotSwimNewWaterfall() {
+    	Piece piece = this.pieceService.findPieceById(8);
+    	Tile oldTile = piece.getTile();
+    	Tile newTile = this.tileService.findTileById(36);
     	
     	this.pieceService.swim(piece, oldTile, newTile);
     }
@@ -120,9 +161,44 @@ public class PieceServiceTest {
     	this.pieceService.swim(piece, oldTile, newTile);
     }
     
+    @Test
+    @Transactional
+    @WithMockUser(username = "player5")
+    void shouldCheckRapids() {
+    	Piece piece = this.pieceService.findPieceById(6);
+    	Tile oldTile = piece.getTile();
+    	Tile newTile = this.tileService.findTileById(29);
+    	
+    	this.pieceService.swim(piece, oldTile, newTile);
+    }
+    
+    @Test
+    @Transactional
+    @WithMockUser(username = "player5")
+    void shouldCheckBear() {
+    	Piece piece = this.pieceService.findPieceById(9);
+    	Tile oldTile = piece.getTile();
+    	Tile newTile = this.tileService.findTileById(35);
+    	
+    	this.pieceService.jump(piece, oldTile, newTile);
+    	
+    }
+    
+    @Test
     void shouldFindPiecesOfPlayer() {
     	List<Piece> pieces = this.pieceService.findPiecesOfPlayer(11);
     	assertThat(pieces.size()).isEqualTo(1);
+    }
+    
+    @Test
+    void shouldDeletePiece() {
+    	Piece pieceToDelete = this.pieceService.findPieceById(6);
+    	assertThat(pieceToDelete).isNotEqualTo(null);
+    	
+    	this.pieceService.deletePiece(pieceToDelete);
+    	
+    	Piece deletedPiece = this.pieceService.findPieceById(6);
+    	assertThat(deletedPiece).isEqualTo(null);
     }
     
     @Test
