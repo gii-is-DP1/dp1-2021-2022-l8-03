@@ -97,7 +97,7 @@ public class RoundController {
 			score.setValue(0);
 			this.scoreService.saveScore(score);
 			
-			return "redirect:/rounds";
+			return "redirect:/rounds/"+round.getId();
 		}
 	}
 	
@@ -164,7 +164,7 @@ public class RoundController {
 	}
 	
 	@GetMapping(value = "/rounds/join/{roundId}")
-	public ModelAndView joinRound(@PathVariable("roundId") int roundId) {
+	public String joinRound(@PathVariable("roundId") int roundId) {
 		Round round=this.roundService.findRoundById(roundId);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User currentUser = (User)authentication.getPrincipal();
@@ -191,15 +191,10 @@ public class RoundController {
 			
 			this.pieceService.createPlayerPieces(player, round);
 			
-			ModelAndView mav = new ModelAndView("rounds/roundWaitingRoom");
-			mav.addObject(round);
-			Boolean permission = !(this.playerService.findPlayerByUsername(currentUsername).getId()==round.getPlayer().getId());
-			mav.addObject("permission", !permission);
-			return mav;
+			return "redirect:/rounds/"+round.getId();
 		}
 		else {
-			ModelAndView exception = new ModelAndView("exception");
-			return exception;
+			return "exception";
 		}
 		
 	}
@@ -239,13 +234,43 @@ public class RoundController {
 		}
 	}
 	
-	  @GetMapping({"/rounds/{roundId}"})
-	  public ModelAndView showRound(@PathVariable("roundId") int roundId) {
-//		model.put("salmonBoard",boardService.findById(1).get());
-		ModelAndView mav = new ModelAndView("rounds/roundDetails");
-		mav.addObject(this.salmonBoardService.findById(1).get());
+	@GetMapping({"/rounds/start/{roundId}"})
+	public String startRound(@PathVariable("roundId") int roundId) {
+		Round round = this.roundService.findRoundById(roundId);
+		round.setRound_state(RoundState.IN_COURSE);
+		this.roundService.saveRound(round);
+		return  "redirect:/rounds/"+roundId;
+	}
+	
+	@GetMapping({"/rounds/{roundId}"})
+	public ModelAndView showRound(@PathVariable("roundId") int roundId) {
+		Round round = this.roundService.findRoundById(roundId);
+		if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.CREATED)) {
+			ModelAndView mav = new ModelAndView("rounds/roundWaitingRoom");
+			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Player creator = round.getPlayer();
+			User currentUser = (User)authentication.getPrincipal();
+			String currentUsername = currentUser.getUsername();
+			Player player=playerService.findPlayerByUsername(currentUsername);
+			
+			Boolean permission = !(player==creator);
+			mav.addObject("permission", !permission);
+			mav.addObject("round", round);
+			return mav;
+		}
+		else {
+			SalmonBoard board = new SalmonBoard();
+			board.setRound(round);
+			this.salmonBoardService.saveBoard(board);
+			
+			ModelAndView mav = new ModelAndView("rounds/roundDetails");
+			mav.addObject(board);
+			return mav;
+		}
+		
 		//mav.addObject(this.roundService.findRoundById(roundId));
-		return mav;
+		
 	  }
 	
 }
