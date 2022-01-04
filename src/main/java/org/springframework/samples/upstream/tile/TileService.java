@@ -123,6 +123,9 @@ public class TileService {
 
 	public void createRandomTile(int row, int column, Round round) {
 		Collection<Tile> roundTiles=round.getTiles();
+		if(roundTiles==null) {
+			roundTiles = new ArrayList<Tile>();
+		}
 		Tile tile = new Tile();
 		tile.setPieces(new ArrayList<Piece>());
 		tile.setRound(round);
