@@ -216,11 +216,6 @@ public class TileServiceTests {
 		assertThat(this.tileService.findSeaTilesInRound(1).size()).isEqualTo(0);
 	}
 	
-//	@Test
-//	void shouldNotRemoveStartingTiles() {
-//		this.tileService.removeStartingTiles(99);
-//		assertThat(this.tileService.findSeaTilesInRound(1).size()).isEqualTo(0);
-//	}
 	
 	@Test
 	void shouldLowestTiles() {
@@ -230,11 +225,6 @@ public class TileServiceTests {
 		assertThat(this.tileService.findByRow(lowerRow, 1).size()).isEqualTo(0);
 	}
 	
-//	@Test
-//	void shouldNotRemoveLowestTiles() {
-//		this.tileService.removeStartingTiles(99);
-//		assertThat(this.tileService.findSeaTilesInRound(1).size()).isEqualTo(0);
-//	}
 	
 	@Test
 	void shouldAddRow() {

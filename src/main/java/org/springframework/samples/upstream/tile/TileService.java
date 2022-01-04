@@ -176,11 +176,11 @@ public class TileService {
 		for(Integer i=1;i<5;i++) {
 			Tile seaTile=new Tile();
 			seaTile.setOrientation(i);
-			if(i==2) {
-				seaTile.setOrientation(1);
+			if(i==3) {
+				seaTile.setOrientation(4);
 			}
 			if(i==4) {
-				seaTile.setOrientation(2);
+				seaTile.setOrientation(3);
 				seaTile.setColumnIndex(2);
 				seaTile.setRowIndex(2);
 			}else {

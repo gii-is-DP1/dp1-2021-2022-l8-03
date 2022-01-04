@@ -51,6 +51,7 @@ public class PieceController {
 			BindingResult result, @PathVariable("pieceId") int pieceId, ModelMap model) {
 		Piece piece = movementTypeWrapper.getPiece();
 		Boolean movementType = movementTypeWrapper.getMovementType();
+		Round round=piece.getRound();
 		if(result.hasErrors()) {
 			return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
 		}
@@ -65,7 +66,7 @@ public class PieceController {
 			}else {
 				this.pieceService.swim(pieceToUpdate, pieceToUpdate.getTile(), newTile);
 			}
-			return "redirect:/rounds";
+			return "redirect:/rounds/"+round.getId();
 		}
 	}
 }
