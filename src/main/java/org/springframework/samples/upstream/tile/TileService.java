@@ -129,11 +129,20 @@ public class TileService {
 		tile.setColumnIndex(column);
 		tile.setRowIndex(row);
 		tile.setSalmonEggs(0);
-		tile.setOrientation(ThreadLocalRandom.current().nextInt(1, 7));
 		if(round.getRapids()) {
 			tile.setTileType(TileType.values()[ThreadLocalRandom.current().nextInt(0, 7)]);
 		}else {
 			tile.setTileType(TileType.values()[ThreadLocalRandom.current().nextInt(0, 6)]);			
+		}
+		TileType type = tile.getTileType();
+		if(type.equals(TileType.BEAR)) {
+			tile.setOrientation(ThreadLocalRandom.current().nextInt(0, 2));
+		}
+		else if(type.equals(TileType.EAGLE)||type.equals(TileType.HERON)||type.equals(TileType.WATER)||type.equals(TileType.ROCK)){
+			tile.setOrientation(0);
+		}
+		else {
+			tile.setOrientation(ThreadLocalRandom.current().nextInt(0, 3));
 		}
 		tileRepository.save(tile);
 		roundTiles.add(tile);
@@ -145,7 +154,7 @@ public class TileService {
 		Collection<Tile> roundTiles=round.getTiles();
 		for(int i = 1; i < 6; i++) {
 			Tile tile = new Tile();
-			tile.setOrientation(1);
+			tile.setOrientation(i-1);
 			tile.setRound(round);
 			tile.setColumnIndex(2);
 			tile.setPieces(new ArrayList<Piece>());
@@ -163,8 +172,12 @@ public class TileService {
 		Collection<Tile> roundTiles=round.getTiles();
 		for(Integer i=1;i<5;i++) {
 			Tile seaTile=new Tile();
-			seaTile.setOrientation(0);
+			seaTile.setOrientation(i);
+			if(i==2) {
+				seaTile.setOrientation(1);
+			}
 			if(i==4) {
+				seaTile.setOrientation(2);
 				seaTile.setColumnIndex(2);
 				seaTile.setRowIndex(2);
 			}else {

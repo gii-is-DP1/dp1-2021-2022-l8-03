@@ -10,17 +10,16 @@
     <p>	
     <h2><c:out value="${now}"/></h2>
 
-<h2><fmt:message/>Aquí empieza</h2>
     <div class="row">
         <div class="col-md-12">
             <game:board salmonBoard="${salmonBoard}"/>
-            <c:forEach items="${salmonBoard.round.pieces}" var="piece">
-            	<game:piece size="100" piece="${piece}"/>
-            </c:forEach>
-            <c:forEach items="${salmonBoard.round.tiles}" var="tile">
-            	<game:tile size="100" tile="${tile}"/>
+             <c:forEach items="${salmonBoard.round.tiles}" var="tile">
+            	<game:tile size="130" tile="${tile}"/>
             </c:forEach> 
+            <c:forEach items="${salmonBoard.round.pieces}" var="piece">
+            	<game:piece size="130" piece="${piece}"/>
+            </c:forEach>
+
         </div>
     </div>
-    <h2><fmt:message/>Aquí termina</h2>
 </game:layout>

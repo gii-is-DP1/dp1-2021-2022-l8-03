@@ -1,5 +1,8 @@
 package org.springframework.samples.upstream.piece;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,15 +34,50 @@ public class Piece extends BaseEntity{
 	private Tile tile;
 	
 	//Provisional
-	String type;
-    String color;
+    Color color;
     
     public Integer getPositionXInPixels(Integer size) {
-    	return tile.getRowIndex()*size;
+    	List<Piece> pieces = new ArrayList<Piece>(tile.getPieces());
+    	Integer position = tile.getPositionXInPixels(size);
+    	Piece p = this;
+    	if(pieces.indexOf(p)==0) {
+    		position+=10;
+    	}
+    	else if(pieces.indexOf(p)==1) {
+    		position+=10;
+    	}
+    	else if(pieces.indexOf(p)==2) {
+    		position+=50;
+    	}
+    	else if(pieces.indexOf(p)==3) {
+    		position+=50;
+    	}
+    	else {
+    		position+=75;
+    	}
+    	return position;
     }
     
     public Integer getPositionYInPixels(Integer size) {
-    	return tile.getColumnIndex()*size;
+    	List<Piece> pieces = new ArrayList<Piece>(tile.getPieces());
+    	Piece p = this;
+    	Integer position = tile.getPositionYInPixels(size);
+    	if(pieces.indexOf(p)==0) {
+    		position+=26;
+    	}
+    	else if(pieces.indexOf(p)==1) {
+    		position+=68;
+    	}
+    	else if(pieces.indexOf(p)==2) {
+    		position+=8;
+    	}
+    	else if(pieces.indexOf(p)==3) {
+    		position+=86;
+    	}
+    	else {
+    		position+=47;
+    	}
+    	return position;
     }
     //---------------------
 }

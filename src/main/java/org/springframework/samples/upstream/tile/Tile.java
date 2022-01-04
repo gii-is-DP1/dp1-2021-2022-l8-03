@@ -40,11 +40,24 @@ public class Tile extends BaseEntity {
 	
 	//Provisional
     public Integer getPositionXInPixels(Integer size) {
-    	return (rowIndex)*size;
+    	if(columnIndex==1 || columnIndex==3) {
+    		return (rowIndex)*(-size)+1400-(size/2);
+    	}
+    	else {
+    		return (rowIndex)*(-size)+1400;
+    	}
     }
     
     public Integer getPositionYInPixels(Integer size) {
-    	return (columnIndex)*size;
+    	if(columnIndex==3) {
+    		return (columnIndex)*(size)+250-(size/4);
+    	}
+    	else if(columnIndex==1) {
+    		return (columnIndex)*(size)+250+(size/4);
+    	}
+    	else{
+    		return (columnIndex)*size+250;
+    	}
     }
 	//--------------
 	@Column(name = "orientation")

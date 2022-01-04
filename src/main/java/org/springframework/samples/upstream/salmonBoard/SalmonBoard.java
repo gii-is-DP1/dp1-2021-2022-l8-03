@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -28,14 +29,14 @@ public class SalmonBoard extends BaseEntity{
     @Positive
     int height;
    
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "round")
 	private Round round;
 
     public SalmonBoard(){
         this.background="/resources/images/back_pattern.jpg"; //fondo del tablero
-        this.width=800;
-        this.height=800;
+        this.width=1160;
+        this.height=1500;
     }
     
     public List<Piece> getPieces(){
