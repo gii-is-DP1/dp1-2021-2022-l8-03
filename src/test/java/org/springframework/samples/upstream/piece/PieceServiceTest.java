@@ -27,7 +27,7 @@ public class PieceServiceTest {
 
     @Test
     void shouldFindPieceById() {
-    	Piece piece = this.pieceService.findPieceById(2);
+    	Piece piece = this.pieceService.findPieceById(22);
     	assertThat(piece.getPlayer().getUser().getUsername()).isEqualTo("player5");
     }
     
@@ -41,7 +41,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldNotJumpPointsNeeded() {
-    	Piece piece = this.pieceService.findPieceById(2);
+    	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(35);
     	
@@ -52,7 +52,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldNotMoveSameTile() {
-    	Piece piece = this.pieceService.findPieceById(2);
+    	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = piece.getTile();
     	
@@ -63,7 +63,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldSwim() {
-    	Piece piece = this.pieceService.findPieceById(2);
+    	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(16);
     	newTile.setTileType(TileType.WATER);
@@ -75,7 +75,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldJump() {
-    	Piece piece = this.pieceService.findPieceById(2);
+    	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(17);
     	newTile.setTileType(TileType.WATER);
@@ -88,7 +88,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player6")
     void shouldNotSwimDifferentUser() {
-    	Piece piece = this.pieceService.findPieceById(2);
+    	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(16);
     	
@@ -99,7 +99,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldNotSwimCurrentBear() {
-    	Piece piece = this.pieceService.findPieceById(4);
+    	Piece piece = this.pieceService.findPieceById(24);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(24);
     	
@@ -110,9 +110,9 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldNotSwimNextBear() {
-    	Piece piece = this.pieceService.findPieceById(2);
+    	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
-    	Tile newTile = this.tileService.findTileById(16);
+    	Tile newTile = this.tileService.findTileById(18);
     	
     	this.pieceService.swim(piece, oldTile, newTile);
     }
@@ -121,7 +121,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldNotSwimCurrentWaterfallVertical() {
-    	Piece piece = this.pieceService.findPieceById(3);
+    	Piece piece = this.pieceService.findPieceById(23);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(22);
     	
@@ -132,7 +132,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldNotSwimCurrentWaterfallRight() {
-    	Piece piece = this.pieceService.findPieceById(5);
+    	Piece piece = this.pieceService.findPieceById(25);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(26);
     	
@@ -143,7 +143,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldNotSwimNewWaterfall() {
-    	Piece piece = this.pieceService.findPieceById(8);
+    	Piece piece = this.pieceService.findPieceById(28);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(36);
     	
@@ -154,7 +154,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldCheckEagle() {
-    	Piece piece = this.pieceService.findPieceById(2);
+    	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(17);
     	
@@ -165,7 +165,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldCheckRapids() {
-    	Piece piece = this.pieceService.findPieceById(6);
+    	Piece piece = this.pieceService.findPieceById(26);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(29);
     	
@@ -176,7 +176,7 @@ public class PieceServiceTest {
     @Transactional
     @WithMockUser(username = "player5")
     void shouldCheckBear() {
-    	Piece piece = this.pieceService.findPieceById(9);
+    	Piece piece = this.pieceService.findPieceById(29);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(35);
     	
@@ -187,7 +187,7 @@ public class PieceServiceTest {
     @Test
     void shouldFindPiecesOfPlayer() {
     	List<Piece> pieces = this.pieceService.findPiecesOfPlayer(11);
-    	assertThat(pieces.size()).isEqualTo(1);
+    	assertThat(pieces.size()).isEqualTo(8);
     }
     
     @Test
@@ -204,7 +204,7 @@ public class PieceServiceTest {
     @Test
     void shouldFindPiecesInRound() {
     	List<Piece> pieces = this.pieceService.findPiecesInRound(1);
-    	assertThat(pieces.size()).isEqualTo(1);
+    	assertThat(pieces.size()).isEqualTo(20);
     }
 
 }
