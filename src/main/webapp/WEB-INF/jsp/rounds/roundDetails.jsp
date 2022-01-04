@@ -10,8 +10,36 @@
     <p>	
     <h2><c:out value="${now}"/></h2>
 
+	<div class="row" id="piecesPlayer">
+		<table id="pieces" class="table table-striped">
+        <thead>
+        <tr>
+            <th>Piece</th>
+            <th>Row</th>
+            <th>Column</th>
+        </tr>
+        </thead>
+	        <tbody>
+
+		        <c:forEach items="${player.pieces}" var="piece" varStatus="status">
+		            <tr>
+		                <td>
+		                    <c:out value= "${status.count}"/>
+		                </td>
+		                <td>
+		                    <c:out value="${piece.tile.rowIndex}"/>
+		                </td>
+		                <td>
+		                    <c:out value="${piece.tile.columnIndex}"/>
+		                </td>
+		            </tr>
+		        </c:forEach>
+	        </tbody>
+    	</table>
+	</div>
+
     <div class="row">
-        <div class="col-md-12">
+		<div class="col-md-12">
             <game:board salmonBoard="${salmonBoard}"/>
              <c:forEach items="${salmonBoard.round.tiles}" var="tile">
             	<game:tile size="130" tile="${tile}"/>
@@ -19,7 +47,6 @@
             <c:forEach items="${salmonBoard.round.pieces}" var="piece">
             	<game:piece size="130" piece="${piece}"/>
             </c:forEach>
-
-        </div>
+		</div>
     </div>
 </game:layout>

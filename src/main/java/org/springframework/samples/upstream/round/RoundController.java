@@ -245,14 +245,18 @@ public class RoundController {
 	@GetMapping({"/rounds/{roundId}"})
 	public ModelAndView showRound(@PathVariable("roundId") int roundId) {
 		Round round = this.roundService.findRoundById(roundId);
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		String currentUsername = currentUser.getUsername();
+		Player player=playerService.findPlayerByUsername(currentUsername);
+		
 		if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.CREATED)) {
 			ModelAndView mav = new ModelAndView("rounds/roundWaitingRoom");
 			
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			
 			Player creator = round.getPlayer();
-			User currentUser = (User)authentication.getPrincipal();
-			String currentUsername = currentUser.getUsername();
-			Player player=playerService.findPlayerByUsername(currentUsername);
+
 			
 			Boolean permission = !(player==creator);
 			mav.addObject("permission", !permission);
@@ -265,6 +269,7 @@ public class RoundController {
 			this.salmonBoardService.saveBoard(board);
 			
 			ModelAndView mav = new ModelAndView("rounds/roundDetails");
+			mav.addObject(player);
 			mav.addObject(board);
 			return mav;
 		}
