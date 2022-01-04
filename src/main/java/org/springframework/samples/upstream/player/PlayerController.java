@@ -161,6 +161,7 @@ public class PlayerController {
 		else {
 			Player oldPlayer = this.playerService.findPlayerById(playerId);
 			player.setId(playerId);
+			player.getUser().setUsername(oldPlayer.getUser().getUsername());
 			player.setPieces(oldPlayer.getPieces());
 			player.setRound(oldPlayer.getRound());
 			player.setScores(oldPlayer.getScores());
