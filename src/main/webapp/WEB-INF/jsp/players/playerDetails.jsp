@@ -20,6 +20,10 @@
             <th>Email</th>
             <td><c:out value="${player.email}"/></td>
         </tr>
+        <tr>
+            <th>Username</th>
+            <td><c:out value="${player.user.username}"/></td>
+        </tr>
     </table>
 	
 		<c:if test = "${permission}">
@@ -28,8 +32,12 @@
     	</spring:url>
     	<a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Edit Player</a>
 		</c:if>
-
-    
-
+		
+		<c:if test = "${admin}">
+		<spring:url value="{playerId}/audit" var="auditUrl">
+        	<spring:param name="playerId" value="${player.id}"/>
+    	</spring:url>
+    	<a href="${fn:escapeXml(auditUrl)}" class="btn btn-default">Audit Data</a>
+		</c:if>
 
 </petclinic:layout>

@@ -134,8 +134,7 @@ public class PieceService {
 	public void jump(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException {
 		if(checkUser(piece) && checkRoundState(piece.getRound()) && sameTile(oldTile, newTile) 
 			&& checkDistanceJump(oldTile, newTile, piece.getRound()) && checkCapacity(newTile, piece.getRound()) 
-			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece) && checkJumpPoints(oldTile, newTile, piece) 
-			&& checkSpawn(oldTile)) {		//MOVIMIENTO VÁLIDO
+			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece)  && checkSpawn(oldTile)) {		//MOVIMIENTO VÁLIDO
 			
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkRapids(piece, newTile);
@@ -150,13 +149,6 @@ public class PieceService {
 			}
 		}
 		
-	}
-	
-	private boolean checkJumpPoints(Tile oldTile, Tile newTile, Piece piece) {
-		Round round = piece.getRound();
-		Integer movementPoints = piece.getRound().getActingPlayer().getPoints();
-		Integer neededPoints = countIntermediateTiles(oldTile, newTile, round);
-		return movementPoints >= neededPoints;
 	}
 	
 	private Boolean checkRoundState(Round round) {

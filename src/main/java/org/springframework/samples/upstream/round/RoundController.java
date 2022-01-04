@@ -97,7 +97,7 @@ public class RoundController {
 			score.setValue(0);
 			this.scoreService.saveScore(score);
 			
-			return "redirect:/rounds/";
+			return "redirect:/rounds";
 		}
 	}
 	
@@ -164,7 +164,7 @@ public class RoundController {
 	}
 	
 	@GetMapping(value = "/rounds/join/{roundId}")
-	public String joinRound(@PathVariable("roundId") int roundId) {
+	public ModelAndView joinRound(@PathVariable("roundId") int roundId) {
 		Round round=this.roundService.findRoundById(roundId);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User currentUser = (User)authentication.getPrincipal();
@@ -191,10 +191,15 @@ public class RoundController {
 			
 			this.pieceService.createPlayerPieces(player, round);
 			
-			return "redirect:/rounds/{roundId}";
+			ModelAndView mav = new ModelAndView("rounds/roundWaitingRoom");
+			mav.addObject(round);
+			Boolean permission = !(this.playerService.findPlayerByUsername(currentUsername).getId()==round.getPlayer().getId());
+			mav.addObject("permission", !permission);
+			return mav;
 		}
 		else {
-			return "redirect:/rounds/oups";
+			ModelAndView exception = new ModelAndView("exception");
+			return exception;
 		}
 		
 	}

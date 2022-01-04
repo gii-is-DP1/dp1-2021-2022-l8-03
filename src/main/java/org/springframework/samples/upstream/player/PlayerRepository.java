@@ -31,40 +31,20 @@ import org.springframework.data.repository.query.Param;
  * @since 15.1.2013
  */
 public interface PlayerRepository extends CrudRepository<Player, Integer> {
-
-	/**
-	 * Save an <code>Player</code> to the data store, either inserting or updating it.
-	 * @param player the <code>Player</code> to save
-	 * @see BaseEntity#isNew
-	 */
-	//void save(Player player) throws DataAccessException;
-
-	/**
-	 * Retrieve <code>Player</code>s from the data store by last name, returning all players
-	 * whose last name <i>starts</i> with the given name.
-	 * @param lastName Value to search for
-	 * @return a <code>Collection</code> of matching <code>Player</code>s (or an empty
-	 * <code>Collection</code> if none found)
-	 */	
 	@Query("SELECT DISTINCT player FROM Player player WHERE player.lastName LIKE :lastName%")
 	public Collection<Player> findByLastName(@Param("lastName") String lastName);
 	
 	@Query("SELECT DISTINCT player FROM Player player WHERE player.lastName LIKE :lastName%")
     public Page<Player> findByLastNamePageable(@Param("lastName") String lastName, Pageable pageable);
 	
+	@Query(value="SELECT * FROM Players_aud WHERE username=:username", nativeQuery=true)
+	public Collection<Object> auditByUsername(@Param("username") String username);
+	
 	@Query("SELECT DISTINCT player FROM Player player")
     public Page<Player> findAllPageable(Pageable pageable);
 	
 	public Collection<Player> findAll() throws DataAccessException;
 	
-	
-
-	/**
-	 * Retrieve an <code>Player</code> from the data store by id.
-	 * @param id the id to search for
-	 * @return the <code>Player</code> if found
-	 * @throws org.springframework.dao.DataRetrievalFailureException if not found
-	 */	
 	@Query("SELECT player FROM Player player WHERE player.id =:id")
 	public Player findById(@Param("id") int id);
 	

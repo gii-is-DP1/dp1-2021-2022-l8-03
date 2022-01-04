@@ -21,14 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.samples.upstream.actingPlayer.ActingPlayerRepository;
-import org.springframework.samples.upstream.piece.PieceRepository;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
 import org.springframework.samples.upstream.round.RoundState;
-import org.springframework.samples.upstream.salmonBoard.SalmonBoard;
 import org.springframework.samples.upstream.salmonBoard.SalmonBoardRepository;
-import org.springframework.samples.upstream.tile.TileRepository;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.UserService;
 import org.springframework.security.core.Authentication;
@@ -48,14 +44,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlayerService {
 
 	private PlayerRepository playerRepository;
-	private ActingPlayerRepository actingPlayerRepository;	
 	private RoundRepository roundRepository;
-	private TileRepository tileRepository;
-	private PieceRepository pieceRepository;
 	private SalmonBoardRepository salmonboardRepository;
 		
-		
-	
 	@Autowired
 	private UserService userService;
 	
@@ -63,12 +54,9 @@ public class PlayerService {
 	private AuthoritiesService authoritiesService;
 
 	@Autowired
-	public PlayerService(PlayerRepository playerRepository,RoundRepository roundRepository, ActingPlayerRepository actingPlayerRepository,TileRepository tileRepository,PieceRepository pieceRepository,SalmonBoardRepository salmonboardRepository) {
+	public PlayerService(PlayerRepository playerRepository,RoundRepository roundRepository,SalmonBoardRepository salmonboardRepository) {
 		this.playerRepository = playerRepository;
 		this.roundRepository = roundRepository;
-		this.actingPlayerRepository=actingPlayerRepository;
-		this.tileRepository=tileRepository;
-		this.pieceRepository=pieceRepository;
 		this.salmonboardRepository=salmonboardRepository;
 	}	
 
@@ -91,10 +79,15 @@ public class PlayerService {
 	public Player findPlayerByUsername(String username) throws DataAccessException {
 		return playerRepository.findByUsername(username);
 	}
+	
+	@Transactional(readOnly = true)
+	public Collection<Object> auditByUsername(String username) throws DataAccessException {
+		return playerRepository.auditByUsername(username);
+	}
 
 	@Transactional
 	public void savePlayer(Player player) throws DataAccessException {
-		String username = player.getUser().getUsername();
+		String username = findPlayerById(player.getId()).getUser().getUsername();
 		if(checkAdminAndInitiatedUser(username)) {
 			//creating player
 			playerRepository.save(player);		
@@ -102,8 +95,7 @@ public class PlayerService {
 			userService.saveUser(player.getUser());
 			//creating authorities
 			authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");
-		}
-		
+		}		
 	}	
 	
 	@Transactional(readOnly = true)

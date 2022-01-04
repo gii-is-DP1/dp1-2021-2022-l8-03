@@ -53,7 +53,7 @@ INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (15, 'Manuel', 'Dominguez', 'ejemplo@gmail.com', 'mandommag', null);
 
 
-INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (1, 0, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13, 0);
+INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (1, 0, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13, 1);
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (11, 'Carlos', 'Delgado', 'ejemplo@gmail.com', 'cardelbec', 1);
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (14, 'Manuel', 'López', 'ejemplo@gmail.com','manlopalm', 1);
 
@@ -123,10 +123,31 @@ INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_ty
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (16, 2, 1, 1, 0, 8, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (17, 2, 2, 1, 0, 1, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (18, 2, 3, 1, 0, 0, 4);
-INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (19, 3, 1, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (19, 3, 1, 3, 0, 3, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (20, 3, 2, 1, 0, 1, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (21, 3, 3, 1, 0, 0, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (22, 4, 1, 1, 0, 4, 4);
-INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (23, 4, 2, 1, 0, 1, 4);
-INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (24, 4, 3, 1, 0, 0, 4);
+
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (23, 4, 2, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (24, 4, 3, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (25, 5, 1, 1, 0, 3, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (26, 5, 2, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (27, 5, 3, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (28, 6, 1, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (29, 6, 2, 1, 0, 6, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (30, 6, 3, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (31, 7, 1, 3, 0, 0, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (32, 7, 2, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (33, 7, 3, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (34, 8, 1, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (35, 8, 2, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (36, 8, 3, 1, 0, 3, 4);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (2, 2, false, 5, 4, 14,0);
+INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (3, 2, false, 5, 4, 19,1);
+INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (4, 2, false, 5, 4, 18,2);
+INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (5, 2, false, 5, 4, 25,3);
+INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (6, 2, false, 5, 4, 28,2);
+INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (7, 2, false, 5, 4, 26,0);
+INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (8, 2, false, 5, 4, 35,1);
+INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (9, 2, false, 5, 4, 31,2);
+

@@ -15,6 +15,9 @@
  */
 package org.springframework.samples.upstream.player;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -23,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.upstream.user.AuthoritiesService;
+
 import org.springframework.samples.upstream.user.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -69,7 +73,7 @@ public class PlayerController {
 	}
 
 	@PostMapping(value = "/players/new")
-	public String processCreationForm(@Valid Player player, BindingResult result) {
+	public String processCreationForm(@Valid Player player, @Valid User user, BindingResult result) {
 		
 		if (result.hasErrors()) {
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
@@ -86,7 +90,7 @@ public class PlayerController {
 	public String initFindForm(Map<String, Object> model) {
 		Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
-			return "exception";
+			return "redirect:/";
 		}
 		model.put("player", new Player());
 		return "players/findPlayers";
@@ -96,7 +100,7 @@ public class PlayerController {
 	public String processFindForm(Player player, BindingResult result, Map<String, Object> model,Pageable pageable) {
 		Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
-			return "exception";
+			return "redirect:/";
 		}
 		// allow parameterless GET request for /players to return all records
 		if (player.getLastName() == null) {
@@ -140,7 +144,7 @@ public class PlayerController {
 		String username = player.getUser().getUsername();
 		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
 		if(permission) {
-			return "exception";
+			return "redirect:/";
 		} else {
 			model.addAttribute(player);
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
@@ -148,8 +152,6 @@ public class PlayerController {
 		
 	}
 	
-	
-
 	@PostMapping(value = "/players/{playerId}/edit")
 	public String processUpdatePlayerForm(@Valid Player player, BindingResult result,
 			@PathVariable("playerId") int playerId) {
@@ -157,19 +159,22 @@ public class PlayerController {
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
 		}
 		else {
+			Player oldPlayer = this.playerService.findPlayerById(playerId);
 			player.setId(playerId);
+			player.setPieces(oldPlayer.getPieces());
+			player.setRound(oldPlayer.getRound());
+			player.setScores(oldPlayer.getScores());
 			this.playerService.savePlayer(player);
-			return "redirect:/players/{playerId}";
-			
+			return "redirect:/players/{playerId}";			
 		}
 	}
-	
-	//ESTE METODO TIENE QUE ESTAR RESTRINGIDO PARA PLAYERS Y DEBE MANDAR A UNA PAGINA DE ERROR
 	
 	@GetMapping(value = "/players/delete/{playerId}")
 	public String deletePlayer(@PathVariable("playerId") int playerId, ModelMap model) {
 		String view = "/players/playersList";
 		Player player = this.playerService.findPlayerById(playerId);
+		Collection<Object> prueba = this.playerService.auditByUsername("cardelbec");
+		List<Object> audit = new ArrayList(prueba);
 		if(player!=null) {
 			this.playerService.delete(player);
 			model.addAttribute("message","Player successfully deleted");
@@ -180,30 +185,40 @@ public class PlayerController {
 		return view;
 	}
 	
-	/**
-	 * Custom handler for displaying an player.
-	 * @param playerId the ID of the player to display
-	 * @return a ModelMap with the model attributes for the view
-	 */
 	@GetMapping("/players/{playerId}")
 	public ModelAndView showPlayer(@PathVariable("playerId") int playerId) {
 		ModelAndView mav = new ModelAndView("players/playerDetails");
 		Player player = this.playerService.findPlayerById(playerId);
 		String username = player.getUser().getUsername();
 		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
+		Boolean admin = this.playerService.checkAdmin();
 		if(permission) {
-			ModelAndView exception = new ModelAndView("exception");
+			ModelAndView exception = new ModelAndView("redirect:/");
 			return exception;
 		}
 		mav.addObject(player);
 		mav.addObject("permission", !permission);
+		mav.addObject("admin", admin);
 		return mav;
+	}
+	
+	@GetMapping("/players/{playerId}/audit")
+	public String auditPlayerData(@PathVariable("playerId") int playerId, Map<String, Object> model) {
+		Boolean admin = this.playerService.checkAdmin();
+		if(!admin) {
+			return "redirect:/";
+		}
+		Player player = this.playerService.findPlayerById(playerId);
+		List<Object> auditedData = (List<Object>) this.playerService.auditByUsername(player.getUser().getUsername());
+		model.put("auditedData", auditedData);
+		model.put("player", player);
+		return "players/playerAudit";
 	}
 	
 	@GetMapping("/players/playerDetails")
 	public String showPlayerDetails() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		User currentUser = (User)authentication.getPrincipal();
+		User currentUser = (User) authentication.getPrincipal();
 		String currentUsername = currentUser.getUsername();
 		int playerId = playerService.findPlayerByUsername(currentUsername).getId();
 		return "redirect:/players/" + playerId;

@@ -3,6 +3,8 @@ package org.springframework.samples.upstream.piece;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.upstream.round.Round;
+import org.springframework.samples.upstream.round.RoundState;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.stereotype.Controller;
@@ -32,11 +34,12 @@ public class PieceController {
 	public String initUpdatePieceForm(@PathVariable("pieceId") int pieceId, Model model) {
 		Piece piece = this.pieceService.findPieceById(pieceId);
 		MovementTypeWrapper movementTypeWrapper = new MovementTypeWrapper(piece, false);
-//		if(!(round.getRound_state().equals(RoundState.IN_COURSE))) {
-//			return "exception"; //NO SE PUEDE MODIFICAR UNA PIEZA SI LA PARTIDA NO HA EMPEZADO
-//		}
+		Round round = piece.getRound();
+		if(!(round.getRound_state().equals(RoundState.IN_COURSE))) {
+			return "redirect:/rounds"; //NO SE PUEDE MODIFICAR UNA PIEZA SI LA PARTIDA NO HA EMPEZADO
+		}
 		if(!(this.pieceService.checkUser(piece))){
-			return "exception";	//NO SE PUEDE MODIFICAR UNA PIEZA SI NO ES TUYA O NO ES TU TURNO
+			return "redirect:/rounds";	//NO SE PUEDE MODIFICAR UNA PIEZA SI NO ES TUYA O NO ES TU TURNO
 		}else {
 			model.addAttribute(movementTypeWrapper);
 			return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
