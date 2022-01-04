@@ -8,10 +8,10 @@
 <!-- TILES -->
 
 
-<img id="SEA-0" src="/resources/images/SEA-0.png" style="display:none">
 <img id="SEA-1" src="/resources/images/SEA-1.png" style="display:none">
 <img id="SEA-2" src="/resources/images/SEA-2.png" style="display:none">
 <img id="SEA-3" src="/resources/images/SEA-3.png" style="display:none">
+<img id="SEA-4" src="/resources/images/SEA-4.png" style="display:none">
 
 <img id="BEAR-0" src="/resources/images/BEAR-0.png" style="display:none">
 <img id="BEAR-1" src="/resources/images/BEAR-1.png" style="display:none">

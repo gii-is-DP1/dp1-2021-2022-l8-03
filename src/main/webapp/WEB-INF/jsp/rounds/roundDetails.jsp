@@ -13,10 +13,15 @@
 	<div class="row" id="piecesPlayer">
 		<table id="pieces" class="table table-striped">
         <thead>
+        <h2>Your Pieces</h2>
         <tr>
             <th>Piece</th>
             <th>Row</th>
             <th>Column</th>
+            <th>Movement</th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
 	        <tbody>
@@ -32,6 +37,25 @@
 		                <td>
 		                    <c:out value="${piece.tile.columnIndex}"/>
 		                </td>
+		                <td>
+		                	<select name="movement" id="movement">
+								<option value=false>Swim</option>
+								<option value=true>Jump</option>
+							</select>
+		                </td>
+		                <td>
+		                	<input placeholder="New Row">
+		                </td>
+		                <td>
+		                	<input placeholder="New Column">
+		                </td>
+		                <td>   
+                			<spring:url value="/piece/{pieceId}/edit" var="pieceUrl">
+                			<spring:param name="pieceId" value="${piece.id}"/>
+                			</spring:url>
+                			<a href="${fn:escapeXml(pieceUrl)}" class="btn btn-default" type="submit">Move</href></a>
+		                </td>
+		                
 		            </tr>
 		        </c:forEach>
 	        </tbody>
