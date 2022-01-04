@@ -9,6 +9,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.upstream.actingPlayer.ActingPlayer;
+import org.springframework.samples.upstream.actingPlayer.ActingPlayerService;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
@@ -44,15 +46,17 @@ public class RoundController {
 	private PieceService pieceService;
 	private ScoreService scoreService;
 	private SalmonBoardService salmonBoardService;
+	private ActingPlayerService actingPlayerService;
 	
 	@Autowired
-	public RoundController(RoundService roundService, PlayerService playerService,TileService tileService,PieceService pieceService,ScoreService scoreService, SalmonBoardService salmonBoardService) {
+	public RoundController(RoundService roundService, PlayerService playerService,TileService tileService,PieceService pieceService,ScoreService scoreService, SalmonBoardService salmonBoardService,ActingPlayerService actingPlayerService) {
 		this.roundService = roundService;
 		this.playerService = playerService;
 		this.tileService = tileService;
 		this.pieceService=pieceService;
 		this.scoreService=scoreService;
 		this.salmonBoardService = salmonBoardService;
+		this.actingPlayerService=actingPlayerService;
 	}
 	
 	@InitBinder
@@ -79,10 +83,14 @@ public class RoundController {
 		else {
 			round.setRound_state(RoundState.CREATED);
 			round.setPlayer(player);
+
+			
 			Collection<Player> players=new ArrayList<Player>();
 			players.add(player);
 			round.setPlayers(players);
 			this.roundService.saveRound(round);
+			
+			this.actingPlayerService.createActingPlayerToRound(round);
 			
 			this.tileService.createInitialTiles(round);
 			

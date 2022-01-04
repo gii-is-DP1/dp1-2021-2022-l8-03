@@ -37,18 +37,7 @@
 		                <td>
 		                    <c:out value="${piece.tile.columnIndex}"/>
 		                </td>
-		                <td>
-		                	<select name="movement" id="movement">
-								<option value=false>Swim</option>
-								<option value=true>Jump</option>
-							</select>
-		                </td>
-		                <td>
-		                	<input placeholder="New Row">
-		                </td>
-		                <td>
-		                	<input placeholder="New Column">
-		                </td>
+
 		                <td>   
                 			<spring:url value="/piece/{pieceId}/edit" var="pieceUrl">
                 			<spring:param name="pieceId" value="${piece.id}"/>

@@ -236,7 +236,7 @@ public class PieceService {
 	
 	public Boolean checkCapacity(Tile newTile, Round round) {
 		Integer capacity = newTile.getPieces().size();
-		Integer numPlayers = round.getNum_players();
+		Integer numPlayers = round.getPlayers().size();
 		TileType tipo = newTile.getTileType();
 		if(tipo.equals(TileType.ROCK) && !round.getWhirlpools()) {
 			return !(capacity == numPlayers-1);

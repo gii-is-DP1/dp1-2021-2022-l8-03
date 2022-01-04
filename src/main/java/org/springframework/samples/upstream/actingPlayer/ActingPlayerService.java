@@ -50,6 +50,16 @@ public class ActingPlayerService {
 		this.actingPlayerRepository.save(actingPlayer);
 	}
 	
+	public void createActingPlayerToRound(Round round) {
+		ActingPlayer actingPlayer=new ActingPlayer();
+		actingPlayer.setFirstPlayer(0);
+		actingPlayer.setPlayer(0);
+		actingPlayer.setPoints(5);
+		actingPlayer.setTurn(1);
+		actingPlayer.setRound(round);
+		saveActingPlayer(actingPlayer);
+	}
+	
 	public void changeTurn(ActingPlayer actingPlayer) {
 		Round round = actingPlayer.getRound();
 		Integer numPlayers = actingPlayer.getRound().getNum_players();
