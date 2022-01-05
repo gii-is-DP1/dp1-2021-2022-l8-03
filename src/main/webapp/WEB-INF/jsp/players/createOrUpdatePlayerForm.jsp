@@ -15,7 +15,10 @@
             <petclinic:inputField label="First Name" name="firstName"/>
             <petclinic:inputField label="Last Name" name="lastName"/>
             <petclinic:inputField label="Email" name="email"/>
-            <petclinic:inputField label="Username" name="user.username"/>
+            <c:choose>
+            	<c:when test="${player['new']}"><petclinic:inputField label="Username" name="user.username"/></c:when>
+            	<c:otherwise><form:hidden path="user.username" name="user.username"/></c:otherwise>
+            </c:choose>
 			<petclinic:inputField label="Password" name="user.password"/>
         </div>
         <div class="form-group">

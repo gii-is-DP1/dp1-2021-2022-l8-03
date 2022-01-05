@@ -15,8 +15,6 @@
  */
 package org.springframework.samples.upstream.player;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -65,32 +63,11 @@ public class PlayerController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	@GetMapping(value = "/players/new")
-	public String initCreationForm(Map<String, Object> model) {
-		Player player = new Player();
-		model.put("player", player);
-		return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
-	}
-
-	@PostMapping(value = "/players/new")
-	public String processCreationForm(@Valid Player player, @Valid User user, BindingResult result) {
-		
-		if (result.hasErrors()) {
-			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
-		}
-		else {
-			//creating player, user and authorities
-			this.playerService.saveNewPlayer(player);
-			
-			return "redirect:/players/" + player.getId();
-		}
-	}
-
 	@GetMapping(value = "/players/find")
 	public String initFindForm(Map<String, Object> model) {
 		Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
-			return "redirect:/";
+			return "exception";
 		}
 		model.put("player", new Player());
 		return "players/findPlayers";
@@ -100,7 +77,7 @@ public class PlayerController {
 	public String processFindForm(Player player, BindingResult result, Map<String, Object> model,Pageable pageable) {
 		Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
-			return "redirect:/";
+			return "exception";
 		}
 		// allow parameterless GET request for /players to return all records
 		if (player.getLastName() == null) {
@@ -144,12 +121,11 @@ public class PlayerController {
 		String username = player.getUser().getUsername();
 		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
 		if(permission) {
-			return "redirect:/";
+			return "exception";
 		} else {
 			model.addAttribute(player);
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
-		}
-		
+		}		
 	}
 	
 	@PostMapping(value = "/players/{playerId}/edit")
@@ -174,8 +150,6 @@ public class PlayerController {
 	public String deletePlayer(@PathVariable("playerId") int playerId, ModelMap model) {
 		String view = "/players/playersList";
 		Player player = this.playerService.findPlayerById(playerId);
-		Collection<Object> prueba = this.playerService.auditByUsername("cardelbec");
-		List<Object> audit = new ArrayList(prueba);
 		if(player!=null) {
 			this.playerService.delete(player);
 			model.addAttribute("message","Player successfully deleted");
@@ -194,7 +168,7 @@ public class PlayerController {
 		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
 		Boolean admin = this.playerService.checkAdmin();
 		if(permission) {
-			ModelAndView exception = new ModelAndView("redirect:/");
+			ModelAndView exception = new ModelAndView("exception");
 			return exception;
 		}
 		mav.addObject(player);

@@ -122,12 +122,12 @@ public class PieceService {
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkRapids(piece, newTile);
 			piece = checkEagle(piece, newTile);
-			substractMovementPointsSwim(piece.getRound());
 			piece.setTile(newTile);
 			pieceRepository.save(piece);
 			if(piece.getNumSalmon() < 1) {
 				pieceRepository.delete(piece);
 			}
+			substractMovementPointsSwim(piece.getRound());
 		}
 	}
 	
@@ -141,12 +141,12 @@ public class PieceService {
 			piece = checkBear(piece, oldTile, newTile);
 			piece = checkIntermediateBear(piece, oldTile, newTile);
 			piece = checkEagle(piece, newTile);
-			substractMovementPointsJump(piece.getRound(), oldTile, newTile);
 			piece.setTile(newTile);
 			pieceRepository.save(piece);
 			if(piece.getNumSalmon() < 1) {
 				pieceRepository.delete(piece);
 			}
+			substractMovementPointsJump(piece.getRound(), oldTile, newTile);
 		}
 		
 	}
@@ -607,7 +607,11 @@ public class PieceService {
 		actingPlayerService.saveActingPlayer(actingPlayer);
 		if(actingPlayer.getPoints()==0) {
 			checkHeron(round);
-			actingPlayerService.changeTurn(actingPlayer);
+			if(round.getNum_players() > 2) {
+				actingPlayerService.changeTurn(actingPlayer);
+			}else {
+				actingPlayerService.changeTurnTwoPlayers(actingPlayer);
+			}
 		}
 	}
 	
