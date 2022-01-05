@@ -30,12 +30,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.samples.upstream.configuration.SecurityConfiguration;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.User;
+import org.springframework.samples.upstream.user.UserController;
 import org.springframework.samples.upstream.user.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(controllers = PlayerController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+@WebMvcTest(controllers = {PlayerController.class, UserController.class}, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
 public class PlayerControllerTests {
 	
 	private static final int TEST_PLAYER_ID = 1;
@@ -99,34 +100,36 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitCreationForm() throws Exception {
-		mockMvc.perform(get("/players/new"))
+		mockMvc.perform(get("/users/new"))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("player"))
-				.andExpect(view().name("players/createOrUpdatePlayerForm"));
+				.andExpect(view().name("users/createPlayerForm"));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessCreationFormSuccess() throws Exception {
-		mockMvc.perform(post("/players/new")
+		mockMvc.perform(post("/users/new")
 				.param("firstName", "Juan")
 				.param("lastName", "Diaz")
-				.with(csrf())
-				.param("email", "test@gmail.com"))
+				.param("email", "test@gmail.com")
+				.param("username", "testUsername")
+				.param("password", "password")
+				.with(csrf()))
 				.andExpect(status().is3xxRedirection());
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessCreationFormHasErrors() throws Exception {
-		mockMvc.perform(post("/players/new")
+		mockMvc.perform(post("/users/new")
 				.with(csrf())
 				.param("firstName", "Juan")
 				.param("lastName", "Diaz"))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("player"))
 				.andExpect(model().attributeHasFieldErrors("player", "email"))
-				.andExpect(view().name("players/createOrUpdatePlayerForm"));
+				.andExpect(view().name("users/createPlayerForm"));
 	}
 	
 	@WithMockUser(value = "spring")
@@ -165,16 +168,6 @@ public class PlayerControllerTests {
 				.andExpect(view().name("redirect:/players/" + TEST_PLAYER_ID));
 	}
 	
-	@Disabled
-	@WithMockUser(value = "spring")
-	@Test
-	void testProcessFindFormWithLastname() throws Exception {
-		when(this.playerService.checkAdmin()).thenReturn(true);
-		mockMvc.perform(get("/players"))
-				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/players/" + TEST_PLAYER_ID));
-	}
-	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormEmptyPage() throws Exception {
@@ -197,11 +190,12 @@ public class PlayerControllerTests {
 				.andExpect(view().name("players/playersList"));
 	}
 		
-	@Disabled
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormByLastName() throws Exception {
+		when(this.playerService.checkAdmin()).thenReturn(true);
 		given(this.playerService.findPlayerByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
+		given(this.playerService.findPlayerByLastNamePageable(george.getLastName(), pageable)).willReturn(page);
 		mockMvc.perform(get("/players").param("lastName", "Franklin")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/players/" + TEST_PLAYER_ID));
 	}
@@ -230,7 +224,8 @@ public class PlayerControllerTests {
 	@Test
 	void testProcessUpdatePlayerFormSuccess() throws Exception {
 		mockMvc.perform(post("/players/{playerId}/edit", TEST_PLAYER_ID).with(csrf()).param("firstName", "Juan")
-				.param("lastName", "Diaz").param("email", "ejemplo2@gmail.com"))
+				.param("lastName", "Diaz").param("email", "ejemplo2@gmail.com")
+				.param("user.password", "password").param("user.username", "player1"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/players/{playerId}"));
 	}
@@ -288,5 +283,21 @@ public class PlayerControllerTests {
 				.andExpect(view().name("redirect:/players/" + TEST_PLAYER_ID));
 	}
 	
-
+	@WithMockUser(value = "spring")
+	@Test
+	void testShowPlayerAuditNoAdmin() throws Exception {
+		when(this.playerService.checkAdmin()).thenReturn(false);
+		mockMvc.perform(get("/players/11/audit"))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name("redirect:/"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testShowPlayerAudit() throws Exception {
+		when(this.playerService.checkAdmin()).thenReturn(true);
+		mockMvc.perform(get("/players/" + TEST_PLAYER_ID + "/audit"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("players/playerAudit"));
+	}
 }
