@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.samples.upstream.player.Player;
+import org.springframework.samples.upstream.player.PlayerService;
+import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.samples.upstream.tile.TileType;
@@ -23,6 +26,9 @@ public class PieceServiceTest {
     
     @Autowired
     protected TileService tileService;
+    
+    @Autowired
+    protected PlayerService playerService;
 
 
     @Test
@@ -35,6 +41,16 @@ public class PieceServiceTest {
     void shouldNotFindPieceById() {
     	Piece piece = this.pieceService.findPieceById(250);
     	assertThat(piece).isEqualTo(null);
+    }
+    
+    @Test
+    @Transactional
+    @WithMockUser(username = "player5")
+    void shouldCreatePlayerPiece() {
+    	Player player = this.playerService.findPlayerByUsername("player5");
+    	Round round = this.pieceService.findPieceById(22).getRound();
+    	
+    	this.pieceService.createPlayerPieces(player, round);
     }
     
     @Test
@@ -126,6 +142,18 @@ public class PieceServiceTest {
     	Tile newTile = this.tileService.findTileById(22);
     	
     	this.pieceService.swim(piece, oldTile, newTile);
+    }
+    
+    @Test
+    @Transactional
+    @WithMockUser(username = "player5")
+    void shouldCheckHeron() {
+    	Piece piece = this.pieceService.findPieceById(30);
+    	Tile oldTile = piece.getTile();
+    	piece.getRound().getActingPlayer().setPoints(2);
+    	Tile newTile = this.tileService.findTileById(33);
+    	
+    	this.pieceService.jump(piece, oldTile, newTile);
     }
     
     @Test
