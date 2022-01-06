@@ -128,6 +128,9 @@ INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_ty
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (21, 3, 3, 1, 0, 0, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (22, 4, 1, 1, 0, 4, 4);
 
+
+
+--Test para Piece
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (23, 4, 2, 1, 0, 4, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (24, 4, 3, 1, 0, 4, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (25, 5, 1, 1, 0, 3, 4);
@@ -138,7 +141,7 @@ INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_ty
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (30, 6, 3, 1, 0, 4, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (31, 7, 1, 3, 0, 0, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (32, 7, 2, 1, 0, 4, 4);
-INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (33, 7, 3, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (33, 7, 3, 1, 0, 2, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (34, 8, 1, 1, 0, 4, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (35, 8, 2, 1, 0, 4, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (36, 8, 3, 1, 0, 3, 4);
@@ -150,4 +153,6 @@ INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VAL
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (27, 2, false, 5, 4, 26,0);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (28, 2, false, 5, 4, 35,1);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (29, 2, false, 5, 4, 31,2);
+INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (30, 2, false, 5, 4, 32,2);
+
 
