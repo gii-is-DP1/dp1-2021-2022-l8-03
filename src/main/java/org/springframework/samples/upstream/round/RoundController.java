@@ -245,8 +245,11 @@ public class RoundController {
 	@GetMapping({"/rounds/start/{roundId}"})
 	public String startRound(@PathVariable("roundId") int roundId) {
 		Round round = this.roundService.findRoundById(roundId);
-		round.setRound_state(RoundState.IN_COURSE);
-		this.roundService.saveRound(round);
+		if (round.getPlayers().size()>1){
+			round.setRound_state(RoundState.IN_COURSE);
+			this.roundService.saveRound(round);
+			
+		}
 		return  "redirect:/rounds/"+roundId;
 	}
 	
