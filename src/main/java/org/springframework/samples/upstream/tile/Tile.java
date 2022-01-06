@@ -17,8 +17,6 @@ import javax.persistence.Table;
 import org.springframework.samples.upstream.model.BaseEntity;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.round.Round;
-import org.springframework.samples.upstream.salmonBoard.SalmonBoard;
-
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -38,7 +36,6 @@ public class Tile extends BaseEntity {
 	@NotNull
 	private Integer columnIndex;
 	
-	//Provisional
     public Integer getPositionXInPixels(Integer size) {
     	if(columnIndex==1 || columnIndex==3) {
     		return (rowIndex)*(-size)+1400-(size/2);
@@ -59,7 +56,7 @@ public class Tile extends BaseEntity {
     		return (columnIndex)*size+250;
     	}
     }
-	//--------------
+	
 	@Column(name = "orientation")
 	@NotNull
 	private Integer orientation;

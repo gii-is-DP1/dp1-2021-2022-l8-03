@@ -59,9 +59,7 @@ public class Round extends BaseEntity {
 	
 	@OneToOne(optional = true, mappedBy="round",cascade = CascadeType.ALL)
 	private ActingPlayer actingPlayer;
-	
-
-	
+		
 	@Column(name = "match_start")
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private Date match_start;

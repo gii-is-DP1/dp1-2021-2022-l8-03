@@ -234,5 +234,11 @@ public class PieceServiceTest {
     	List<Piece> pieces = this.pieceService.findPiecesInRound(1);
     	assertThat(pieces.size()).isEqualTo(20);
     }
+    
+    @Test
+    void shouldFindPiecesInSpawnTiles()  {
+    	List<Piece> pieces = this.pieceService.findPiecesInSpawnTiles(1);
+    	assertThat(pieces.size()).isEqualTo(0);
+    }
 
 }
