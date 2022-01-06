@@ -17,4 +17,7 @@ public interface PieceRepository extends CrudRepository<Piece, Integer>{
 	
 	@Query("SELECT piece FROM Piece piece WHERE piece.round.id=:round_id")
 	public List<Piece> findPiecesInRound(@Param("round_id") int round_id);
+	
+	@Query("SELECT piece FROM Piece piece WHERE piece.round.id=:round_id AND piece.tile.tileType=7")
+	public List<Piece> findPiecesInSpawnTiles(@Param("round_id") int round_id);
 }

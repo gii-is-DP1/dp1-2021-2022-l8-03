@@ -55,6 +55,11 @@ public class PieceService {
 	}
 	
 	@Transactional(readOnly = true)
+	public List<Piece> findPiecesInSpawnTiles(int roundId) throws DataAccessException {
+		return pieceRepository.findPiecesInSpawnTiles(roundId);
+	}
+	
+	@Transactional(readOnly = true)
 	public void deletePiece(Piece piece) throws DataAccessException {
 		pieceRepository.delete(piece);
 	}

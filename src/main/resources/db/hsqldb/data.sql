@@ -114,6 +114,7 @@ INSERT INTO scores(id, value, player_id, round_id) VALUES (1, 0, 11, 1);
 INSERT INTO scores(id, value, player_id, round_id) VALUES (2, 0, 14, 1);
 
 INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (4, 0, false, false, 2, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13, 1);
+INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (5, 0, false, false, 2, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',14, 1);
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (5, 'Peter', 'McTavish', 'ejemplo@gmail.com', 'player5', 4);
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (6, 'Jean', 'Coleman', 'ejemplo@gmail.com', 'player6', 4);
 INSERT INTO acting_players(id, player, points, first_player,turn,round_id) VALUES (2,0,5,0,1,4);

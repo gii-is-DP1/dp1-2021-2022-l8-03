@@ -1,6 +1,7 @@
 package org.springframework.samples.upstream.actingPlayer;
 
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,97 +59,107 @@ public class ActingPlayerService {
 		actingPlayer.setTurn(1);
 		actingPlayer.setRound(round);
 		saveActingPlayer(actingPlayer);
+		round.setActingPlayer(actingPlayer);
+		this.roundService.saveRound(round);
 	}
 	
 	public void changeTurn(ActingPlayer actingPlayer) {
+		Boolean turnChanged = false;
 		Round round = actingPlayer.getRound();
 		Integer numPlayers = actingPlayer.getRound().getNum_players();
 		Integer currentPlayer = actingPlayer.getPlayer();
 		Integer newPlayer = currentPlayer + 1;
 		Integer firstPlayer = actingPlayer.getFirstPlayer();
 		Integer turn = actingPlayer.getTurn();
-		Integer newTurn = turn + 1;
 		ActingPlayer newActingPlayer = actingPlayer;
 		if(newPlayer == numPlayers) {
 			newPlayer = 0;
 		}
 		if(newPlayer == firstPlayer) {
 			firstPlayer += 1;
+			if(firstPlayer == numPlayers) {
+				firstPlayer = 0;
+			}
 			newPlayer = firstPlayer;
+			turn = turn + 1;
+			turnChanged = true;
 		}
 		newActingPlayer.setPlayer(newPlayer);
 		newActingPlayer.setFirstPlayer(firstPlayer);
 		newActingPlayer.setPoints(5);
-		newActingPlayer.setTurn(newTurn);
+		newActingPlayer.setTurn(turn);
 		actingPlayerRepository.save(newActingPlayer);
-		if(newTurn == 3) {
+		if(turn == 3 && turnChanged) {
 			tileService.removeStartingTiles(round.getId());
-		}else if(newTurn > 3) {
+		}else if(turn > 3 && turnChanged) {
 			tileService.removeLowestTiles(round.getId());
 		}
-		if(newTurn < 9) {
+		if(turn < 9 && turnChanged) {
 			tileService.addNewRow(round);
-		}else if(newTurn == 9) {
+		}else if(turn == 9 && turnChanged) {
 			tileService.addSpawnTiles(round);
 		}
-		advanceSpawnTilePieces(round);
+		if(turnChanged) {
+			advanceSpawnTilePieces(round);
+		}
 		if(checkPiecesInSpawnTiles(round)) {
 			endTheGame(round);
 		}
 	}
 	
 	public void changeTurnTwoPlayers(ActingPlayer actingPlayer) {
+		Boolean turnChanged = false;
 		Round round = actingPlayer.getRound();
 		Integer currentPlayer = actingPlayer.getPlayer();
 		Integer newPlayer = currentPlayer + 1;
 		Integer firstPlayer = actingPlayer.getFirstPlayer();
 		Integer turn = actingPlayer.getTurn();
-		Integer newTurn = turn + 1;
 		ActingPlayer newActingPlayer = actingPlayer;
 		if(newPlayer == 1) {
 			newActingPlayer.setPoints(5);
 		}else if(newPlayer == 2) {
 			newPlayer = 0;
-			newActingPlayer.setPoints(4);
+			newActingPlayer.setPoints(5);
+			turn = turn + 1;
+			turnChanged = true;
 		}
 		newActingPlayer.setPlayer(newPlayer);
 		newActingPlayer.setFirstPlayer(firstPlayer);
-		newActingPlayer.setTurn(newTurn);
+		newActingPlayer.setTurn(turn);
 		actingPlayerRepository.save(newActingPlayer);
-		if(newTurn == 3) {
+		if(turn == 3 && turnChanged) {
 			tileService.removeStartingTiles(round.getId());
-		}else if(newTurn > 3) {
+		}else if(turn > 3 && turnChanged) {
 			tileService.removeLowestTiles(round.getId());
 		}
-		if(newTurn < 9) {
+		if(turn < 9 && turnChanged) {
 			tileService.addNewRow(round);
-		}else if(newTurn == 9) {
+		}else if(turn == 9 && turnChanged) {
 			tileService.addSpawnTiles(round);
 		}
-		advanceSpawnTilePieces(round);
+		if(turnChanged) {
+			advanceSpawnTilePieces(round);
+		}
 		if(checkPiecesInSpawnTiles(round)) {
 			endTheGame(round);
 		}
 	}
 	
 	public void advanceSpawnTilePieces(Round round) {
-		List<Tile> spawnTiles = this.tileService.findSpawnTilesInRound(round.getId());
-		for(Tile spawnTile : spawnTiles) {
-			List<Piece> pieces = (List) spawnTile.getPieces();
-			for(Piece piece : pieces) {
-				Integer salmonEggs = piece.getTile().getSalmonEggs();
-				if(salmonEggs < 5) {
-					Tile newTile = this.tileService.findTileBySalmonEggs(salmonEggs + 1, round.getId());
-					piece.setTile(newTile);
-					this.pieceRepository.save(piece);
-				}
+		Collection<Piece> pieces = this.pieceRepository.findPiecesInSpawnTiles(round.getId());
+		for(Piece piece : pieces) {
+			Integer salmonEggs = piece.getTile().getSalmonEggs();
+			if(salmonEggs < 5) {
+				Tile newTile = this.tileService.findTileBySalmonEggs(salmonEggs + 1, round.getId());
+				piece.setTile(newTile);
+				this.pieceRepository.save(piece);
 			}
 		}
 	}
 	
 	public Boolean checkPiecesInSpawnTiles(Round round) {
 		Boolean flag = true;
-		List<Piece> pieces = (List) round.getPieces();
+		Collection<Piece> pieces = round.getPieces();
 		for(Piece piece : pieces) {
 			if(!piece.getTile().getTileType().equals(TileType.SPAWN)) {
 				flag = false;
