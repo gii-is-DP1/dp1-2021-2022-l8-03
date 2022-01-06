@@ -28,11 +28,19 @@
     </table>
     <td>
     	<c:if test = "${permission}">
-		     <spring:url value="/rounds/start/{roundId}" var="roundUrl">
-		     <spring:param name="roundId" value="${round.id}"/>
-		     </spring:url>
-		     <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Start game</href></a>
+    		<c:if test="${round.players.size()>=2}">
+			     <spring:url value="/rounds/start/{roundId}" var="roundUrl">
+			     <spring:param name="roundId" value="${round.id}"/>
+			     </spring:url>
+			     <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Start game</href></a>
+			 </c:if> 
 	     </c:if>
     </td>
+     <th> 
+        <spring:url value="/rounds/leave/{roundId}" var="roundUrl">
+        <spring:param name="roundId" value="${round.id}"/>
+        </spring:url>
+        <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Exit round</href></a>
+    </th>
       
 </petclinic:layout>

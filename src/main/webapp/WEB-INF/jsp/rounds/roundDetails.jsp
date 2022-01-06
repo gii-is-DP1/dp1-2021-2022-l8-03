@@ -10,7 +10,9 @@
     <p>	
     <h2><c:out value="${now}"/></h2>
 
+	
 	<div class="row" id="piecesPlayer">
+		
 		<table id="pieces" class="table table-striped">
         <thead>
         <h2>Your Pieces</h2>
@@ -24,6 +26,7 @@
             <th></th>
         </tr>
         </thead>
+        
 	        <tbody>
 
 		        <c:forEach items="${player.pieces}" var="piece" varStatus="status">
@@ -62,4 +65,11 @@
             </c:forEach>
 		</div>
     </div>
+    
+    <th> 
+        <spring:url value="/rounds/leave/{roundId}" var="roundUrl">
+        <spring:param name="roundId" value="${salmonBoard.round.id}"/>
+        </spring:url>
+        <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Exit round</href></a>
+    </th>
 </game:layout>
