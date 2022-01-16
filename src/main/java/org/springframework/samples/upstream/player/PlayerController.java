@@ -79,9 +79,8 @@ public class PlayerController {
 		if(!admin) {
 			return "exception";
 		}
-		// allow parameterless GET request for /players to return all records
 		if (player.getLastName() == null) {
-			player.setLastName(""); // empty string signifies broadest possible search
+			player.setLastName(""); 
 		}
 		
 		Page<Player> results=null;
@@ -94,20 +93,16 @@ public class PlayerController {
 		
         boolean esPrimera=results.isFirst();
         boolean esUltima=results.isLast();
-        // find players by last name
 		if (results.isEmpty()) {
-			// no players found
 			result.rejectValue("lastName", "notFound", "not found");
 			return "players/findPlayers";
 		}
 		
 		else if (results.getTotalElements() == 1) {
-			// 1 player found
 			player = results.iterator().next();
 			return "redirect:/players/" + player.getId();
 		}
 		else {
-			// multiple players found
 			model.put("selections", results);
 			model.put("esPrimera",!esPrimera);
 			model.put("esUltima",!esUltima);

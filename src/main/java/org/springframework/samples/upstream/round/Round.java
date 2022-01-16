@@ -3,6 +3,7 @@ package org.springframework.samples.upstream.round;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -82,7 +83,7 @@ public class Round extends BaseEntity {
 	private Collection<Score> scores;
 
 	@OneToMany(mappedBy = "round")
-    private Collection<Player> players;
+    private List<Player> players;
 	
 	
 

@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -91,7 +92,7 @@ public class RoundControllerTest {
 		
 		
 		
-		Collection<Player> players=new ArrayList<Player>();
+		List<Player> players=new ArrayList<Player>();
 		players.add(george);
 		round=new Round();
 		round.setId(TEST_ROUND_ID);
@@ -175,7 +176,7 @@ public class RoundControllerTest {
 				.andExpect(view().name("rounds/createOrUpdateRoundForm"));
 	}
 	
-	@WithMockUser(value = "spring")
+	@WithMockUser(value = "spring", username = "player1")
 	@Test
 	void testProcessFindForm() throws Exception {
 		mockMvc.perform(get("/rounds"))
@@ -184,7 +185,6 @@ public class RoundControllerTest {
 				.andExpect(model().attributeExists("esFinished"))
 				.andExpect(view().name("rounds/roundList"));
 	}
-	
 	
 	@WithMockUser(value = "spring")
 	@Test

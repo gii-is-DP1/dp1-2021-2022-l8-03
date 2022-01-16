@@ -33,7 +33,6 @@ public class Piece extends BaseEntity{
 	@JoinColumn(name = "tile_id")
 	private Tile tile;
 	
-	//Provisional
     Color color;
     
     public Integer getPositionXInPixels(Integer size) {
@@ -79,5 +78,4 @@ public class Piece extends BaseEntity{
     	}
     	return position;
     }
-    //---------------------
 }
