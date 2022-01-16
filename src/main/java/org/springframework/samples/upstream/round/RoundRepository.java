@@ -9,9 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface RoundRepository extends CrudRepository<Round, Integer> {
 	
-	//void save(Round round) throws DataAccessException;
-	
-	//@Query("SELECT DISTINCT round FROM Round round")
 	public Collection<Round> findAll() throws DataAccessException;
 	
 	@Query("SELECT DISTINCT round FROM Round round WHERE round.id=:id")

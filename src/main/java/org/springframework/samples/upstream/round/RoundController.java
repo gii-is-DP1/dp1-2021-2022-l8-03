@@ -7,9 +7,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.upstream.actingPlayer.ActingPlayer;
 import org.springframework.samples.upstream.actingPlayer.ActingPlayerService;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
@@ -19,7 +17,6 @@ import org.springframework.samples.upstream.salmonBoard.SalmonBoard;
 import org.springframework.samples.upstream.salmonBoard.SalmonBoardService;
 import org.springframework.samples.upstream.score.Score;
 import org.springframework.samples.upstream.score.ScoreService;
-import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -85,7 +82,7 @@ public class RoundController {
 			round.setPlayer(player);
 
 			
-			Collection<Player> players=new ArrayList<Player>();
+			List<Player> players=new ArrayList<Player>();
 			players.add(player);
 			round.setPlayers(players);
 			this.roundService.saveRound(round);
@@ -111,6 +108,13 @@ public class RoundController {
 	
 	@GetMapping(value = "/rounds")
     public String processFindForm(ModelMap model) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User) authentication.getPrincipal();
+		String currentUsername = currentUser.getUsername();
+		Player player = playerService.findPlayerByUsername(currentUsername);
+		if(player.getRound() != null) {
+			return "redirect:/rounds/" + player.getRound().getId();
+		}
         String vista = "rounds/roundList";
         Iterable<Round> rounds = roundService.findCreatedRounds();
         boolean esFinished=false;
@@ -187,7 +191,7 @@ public class RoundController {
 			playerRounds.add(round);
 			player.setRounds(playerRounds);
 			this.playerService.savePlayer(player); 
-			Collection<Player> players=round.getPlayers();
+			List<Player> players=round.getPlayers();
 			players.add(player);
 			round.setPlayers(players);
 			this.roundService.saveRound(round);
@@ -247,6 +251,7 @@ public class RoundController {
 		Round round = this.roundService.findRoundById(roundId);
 		if (round.getPlayers().size()>1){
 			round.setRound_state(RoundState.IN_COURSE);
+			round.setNum_players(round.getPlayers().size());
 			this.roundService.saveRound(round);
 			
 		}

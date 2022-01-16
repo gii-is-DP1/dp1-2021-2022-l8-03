@@ -5,15 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.upstream.round.Round;
 
 @Service
 public class SalmonBoardService {
 	@Autowired 
 	SalmonBoardRepository boardRepo;
-	
-
-	
+		
 	public Optional<SalmonBoard> findById(Integer id){
 		return boardRepo.findById(id);
 	}
