@@ -2,8 +2,11 @@ package org.springframework.samples.upstream.tile;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -126,32 +129,73 @@ public class TileService {
 		if(roundTiles==null) {
 			roundTiles = new ArrayList<Tile>();
 		}
+		
 		Tile tile = new Tile();
 		tile.setPieces(new ArrayList<Piece>());
 		tile.setRound(round);
 		tile.setColumnIndex(column);
 		tile.setRowIndex(row);
 		tile.setSalmonEggs(0);
+		
+		//tile = createRandomTile(tile,round);
 		if(round.getRapids()) {
 			tile.setTileType(TileType.values()[ThreadLocalRandom.current().nextInt(0, 7)]);
 		}else {
 			tile.setTileType(TileType.values()[ThreadLocalRandom.current().nextInt(0, 6)]);			
 		}
+		
 		TileType type = tile.getTileType();
-		if(type.equals(TileType.BEAR)) {
-			tile.setOrientation(ThreadLocalRandom.current().nextInt(0, 2));
+		if(type.equals(TileType.BEAR)||type.equals(TileType.WATERFALL)) {
+			tile.setOrientation(ThreadLocalRandom.current().nextInt(0, 6));
 		}
 		else if(type.equals(TileType.EAGLE)||type.equals(TileType.HERON)||type.equals(TileType.WATER)||type.equals(TileType.ROCK)){
 			tile.setOrientation(0);
 		}
 		else {
-			tile.setOrientation(ThreadLocalRandom.current().nextInt(0, 3));
+			if(tile.getColumnIndex()==1) {
+				tile.setOrientation(ThreadLocalRandom.current().nextInt(1, 3));
+			}
+			else if(tile.getColumnIndex()==2) {
+				tile.setOrientation(ThreadLocalRandom.current().nextInt(0, 2));
+			}
+			else {
+				tile.setOrientation(ThreadLocalRandom.current().nextInt(0, 3));
+			}
+			
 		}
 		tileRepository.save(tile);
 		roundTiles.add(tile);
 		round.setTiles(roundTiles);
 		roundRepository.save(round);
 	}
+	
+//	private Tile createRandomTile(Tile tile, Round round) {
+//		List<TileType> tileTypes = round.getTiles().stream().map(x->x.getTileType()).collect(Collectors.toList());
+//		List<Integer> numList = new ArrayList<Integer>();
+//		if(Collections.frequency(tileTypes, TileType.BEAR)<=3) {
+//			numList.add(0);
+//		}
+//		else if(Collections.frequency(tileTypes, TileType.EAGLE)<=5) {
+//			numList.add(1);
+//		}
+//		else if(Collections.frequency(tileTypes, TileType.HERON)<=5) {
+//			numList.add(2);
+//		}
+//		else if(Collections.frequency(tileTypes, TileType.WATERFALL)<=4) {
+//			numList.add(3);
+//		}
+//		else if(Collections.frequency(tileTypes, TileType.WATER)<=7) {
+//			numList.add(4);
+//		}
+//		else if(Collections.frequency(tileTypes, TileType.ROCK)<=5) {
+//			numList.add(5);
+//		}
+//		else if(Collections.frequency(tileTypes, TileType.RAPIDS)<=6 && round.getRapids()) {
+//			numList.add(6);
+//		}
+//		tile.setTileType(TileType.values()[numList.get(ThreadLocalRandom.current().nextInt(0,numList.size()))]);		
+//		return tile;
+//	}
 
 	public void addSpawnTiles(Round round) {
 		Collection<Tile> roundTiles=round.getTiles();
