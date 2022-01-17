@@ -110,8 +110,8 @@ INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VAL
 --INSERT INTO piece(id,color,type,x_position,y_position,board_id) VALUES (3,'WHITE','KING',7,5,1);
 --INSERT INTO piece(id,color,type,x_position,y_position,board_id) VALUES (4,'BLACK','HORSE',6,1,1);
 
-INSERT INTO scores(id, value, player_id, round_id) VALUES (1, 0, 11, 1);
-INSERT INTO scores(id, value, player_id, round_id) VALUES (2, 0, 14, 1);
+INSERT INTO scores(id, value, player_id, round_id) VALUES (1, 1, 11, 1);
+INSERT INTO scores(id, value, player_id, round_id) VALUES (2, 2, 14, 1);
 
 INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (4, 0, false, false, 2, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13, 1);
 INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (5, 0, false, false, 2, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',14, 1);

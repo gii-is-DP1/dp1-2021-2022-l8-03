@@ -279,7 +279,7 @@ public class RoundController {
 			mav.addObject("round", round);
 			return mav;
 		}
-		else {
+		else if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.IN_COURSE)){
 			SalmonBoard board = new SalmonBoard();
 			board.setRound(round);
 			this.salmonBoardService.saveBoard(board);
@@ -288,10 +288,11 @@ public class RoundController {
 			mav.addObject(player);
 			mav.addObject(board);
 			return mav;
+		}else {
+			ModelAndView mav = new ModelAndView("rounds/roundScore");
+			List<Score> scores = this.scoreService.findByRound(roundId);
+			mav.addObject(scores);
+			return mav;
 		}
-		
-		//mav.addObject(this.roundService.findRoundById(roundId));
-		
-	  }
-	
+	  }	
 }

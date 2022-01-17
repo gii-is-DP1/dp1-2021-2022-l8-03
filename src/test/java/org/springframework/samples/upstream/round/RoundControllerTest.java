@@ -336,4 +336,12 @@ public class RoundControllerTest {
 				.andExpect(view().name("rounds/roundDetails"));
 	}
 	
+	@WithMockUser(username="player1",value = "spring")
+	@Test
+	void testShowRoundFinished() throws Exception{
+		round.setRound_state(RoundState.FINISHED);
+		mockMvc.perform(get("/rounds/{roundId}",TEST_ROUND_ID))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(view().name("rounds/roundScore"));
+	}
 }
