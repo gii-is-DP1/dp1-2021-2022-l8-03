@@ -5,25 +5,25 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:layout pageName="tiles">
-    <h2>Tiles</h2>
+<petclinic:layout pageName="rounds">
+    <h2>Round scores</h2>
 
-    <table id="tilesTable" class="table table-striped">
+    <table id="scores" class="table table-striped">
         <thead>
         <tr>
-            <th style="width: 150px;">Row</th>
-            <th style="width: 150px;">Column</th>
+            <th>Player</th>
+            <th>Score</th>
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${tiles}" var="tile">
+        <c:forEach items="${scoreList}" var="score">
             <tr>
-                <td>
-                    <c:out value="${tile.rowIndex}"/>
-                </td>   
-                <td>
-                	<c:out value="${tile.columnIndex}"/>
-                </td>         
+	           <td>
+	           		<c:out value="${score.player.user.username}"/>
+	           </td>
+	           <td>
+	           		<c:out value="${score.value}"/>
+	           </td>
             </tr>
         </c:forEach>
         </tbody>

@@ -30,6 +30,10 @@ public class ScoreService {
 		return scoreRepo.findByPlayerAndRound(playerId, roundId);
 	}
 	
+	public List<Score> findByRound(int roundId) {
+		return scoreRepo.findByRound(roundId);
+	}
+	
 	public void setPlayerScores(Round round) {
 		List<Player> players = (List) round.getPlayers();
 		for(Player player : players) {
