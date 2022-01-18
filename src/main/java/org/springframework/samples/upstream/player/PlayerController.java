@@ -67,7 +67,7 @@ public class PlayerController {
 	public String initFindForm(Map<String, Object> model) {
 		Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
-			return "exception";
+			return "noPermissionException";
 		}
 		model.put("player", new Player());
 		return "players/findPlayers";
@@ -77,7 +77,7 @@ public class PlayerController {
 	public String processFindForm(Player player, BindingResult result, Map<String, Object> model,Pageable pageable) {
 		Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
-			return "exception";
+			return "noPermissionException";
 		}
 		if (player.getLastName() == null) {
 			player.setLastName(""); 
@@ -116,8 +116,10 @@ public class PlayerController {
 		String username = player.getUser().getUsername();
 		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
 		if(permission) {
-			return "exception";
+			return "noPermissionException";
 		} else {
+			Boolean isNew=false;
+			model.addAttribute(isNew);
 			model.addAttribute(player);
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
 		}		
@@ -125,8 +127,10 @@ public class PlayerController {
 	
 	@PostMapping(value = "/players/{playerId}/edit")
 	public String processUpdatePlayerForm(@Valid Player player, BindingResult result,
-			@PathVariable("playerId") int playerId) {
+			@PathVariable("playerId") int playerId,Model model) {
 		if (result.hasErrors()) {
+			Boolean isNew=false;
+			model.addAttribute(isNew);
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
 		}
 		else {
@@ -163,7 +167,7 @@ public class PlayerController {
 		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
 		Boolean admin = this.playerService.checkAdmin();
 		if(permission) {
-			ModelAndView exception = new ModelAndView("exception");
+			ModelAndView exception = new ModelAndView("noPermissionException");
 			return exception;
 		}
 		mav.addObject(player);
@@ -176,7 +180,7 @@ public class PlayerController {
 	public String auditPlayerData(@PathVariable("playerId") int playerId, Map<String, Object> model) {
 		Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
-			return "redirect:/";
+			return "noPermissionException";
 		}
 		Player player = this.playerService.findPlayerById(playerId);
 		List<Object> auditedData = (List<Object>) this.playerService.auditByUsername(player.getUser().getUsername());

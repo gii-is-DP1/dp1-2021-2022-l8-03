@@ -1,6 +1,7 @@
 package org.springframework.samples.upstream.piece;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -14,6 +15,8 @@ import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.samples.upstream.tile.TileType;
+import org.springframework.samples.upstream.tile.exceptions.InvalidPlayerException;
+import org.springframework.samples.upstream.tile.exceptions.InvalidPositionException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +59,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotJumpPointsNeeded() {
+    void shouldNotJumpPointsNeeded() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(35);
@@ -67,7 +70,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotMoveSameTile() {
+    void shouldNotMoveSameTile() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = piece.getTile();
@@ -78,7 +81,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldSwim() {
+    void shouldSwim() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(16);
@@ -90,7 +93,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldJump() {
+    void shouldJump() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(17);
@@ -103,18 +106,19 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player6")
-    void shouldNotSwimDifferentUser() {
+    void shouldNotSwimDifferentUser() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(16);
     	
-    	this.pieceService.swim(piece, oldTile, newTile);
+    	
+    	assertThrows(InvalidPlayerException.class,()-> this.pieceService.swim(piece, oldTile, newTile));
     }
     
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotSwimCurrentBear() {
+    void shouldNotSwimCurrentBear() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(24);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(24);
@@ -125,7 +129,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotSwimNextBear() {
+    void shouldNotSwimNextBear() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(18);
@@ -136,7 +140,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotSwimCurrentWaterfallVertical() {
+    void shouldNotSwimCurrentWaterfallVertical() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(23);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(22);
@@ -147,7 +151,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldCheckHeron() {
+    void shouldCheckHeron() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(30);
     	Tile oldTile = piece.getTile();
     	piece.getRound().getActingPlayer().setPoints(2);
@@ -159,7 +163,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotSwimCurrentWaterfallRight() {
+    void shouldNotSwimCurrentWaterfallRight() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(25);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(26);
@@ -170,7 +174,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotSwimNewWaterfall() {
+    void shouldNotSwimNewWaterfall() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(28);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(36);
@@ -181,7 +185,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldCheckEagle() {
+    void shouldCheckEagle() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(17);
@@ -192,7 +196,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldCheckRapids() {
+    void shouldCheckRapids() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(26);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(29);
@@ -203,7 +207,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldCheckBear() {
+    void shouldCheckBear() throws InvalidPositionException,InvalidPlayerException{
     	Piece piece = this.pieceService.findPieceById(29);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(35);

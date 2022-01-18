@@ -7,7 +7,7 @@
 
 <game:layout pageName="rounds">
     
-    <p>	
+    	
     <h2><c:out value="${now}"/></h2>
 	<h2>Turn <c:out value="${round.actingPlayer.turn}"/> </h2>
 	<h2>Current player: <c:out value="${round.players[round.actingPlayer.player].user.username}"/> </h2>

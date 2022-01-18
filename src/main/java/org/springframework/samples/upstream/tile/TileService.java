@@ -14,6 +14,7 @@ import org.springframework.samples.upstream.piece.Piece;
 
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
+import org.springframework.samples.upstream.tile.exceptions.InvalidPositionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,8 +49,13 @@ public class TileService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Tile findByPosition(int row, int column, int round_id) throws DataAccessException {
-		return tileRepository.findByPosition(row, column, round_id);
+	public Tile findByPosition(int row, int column, int round_id) throws DataAccessException,InvalidPositionException {
+		Tile tile=tileRepository.findByPosition(row, column, round_id);
+		if(tile==null) {
+			throw new InvalidPositionException();
+		}else {
+			return tile;
+		}
 	}
 	
 	@Transactional(readOnly = true)
@@ -104,15 +110,25 @@ public class TileService {
 		Integer lowestRow = findLowestRow(roundId);
 		for(int i=1;i<4;i++) {
 			if(i==2) {
-				Tile tile = findByPosition(lowestRow+1, i, roundId);
-				if(!tile.getTileType().equals(TileType.SPAWN)) {
-					deleteTile(tile);
+				try {
+					Tile tile = findByPosition(lowestRow+1, i, roundId);
+					if(!tile.getTileType().equals(TileType.SPAWN)) {
+						deleteTile(tile);
+					}
+				}catch(InvalidPositionException ex) {
+					
 				}
+				
 			}else {
-				Tile tile = findByPosition(lowestRow, i, roundId);
-				if(!tile.getTileType().equals(TileType.SPAWN)) {
-					deleteTile(tile);
+				try {
+					Tile tile = findByPosition(lowestRow, i, roundId);
+					if(!tile.getTileType().equals(TileType.SPAWN)) {
+						deleteTile(tile);
+					}
+				}catch(InvalidPositionException ex) {
+					
 				}
+
 			}
 		}
 	}

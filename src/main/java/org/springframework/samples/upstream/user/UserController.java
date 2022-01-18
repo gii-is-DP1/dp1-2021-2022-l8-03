@@ -56,12 +56,16 @@ public class UserController {
 	public String initCreationForm(Map<String, Object> model) {
 		Player player = new Player();
 		model.put("player", player);
+		Boolean isNew=true;
+		model.put("isNew", isNew);
 		return VIEWS_PLAYER_CREATE_FORM;
 	}
 
 	@PostMapping(value = "/users/new")
-	public String processCreationForm(@Valid Player player, BindingResult result) {
+	public String processCreationForm(@Valid Player player, BindingResult result,Map<String, Object> model) {
 		if (result.hasErrors()) {
+			Boolean isNew=true;
+			model.put("isNew",isNew);
 			return VIEWS_PLAYER_CREATE_FORM;
 		}
 		else {

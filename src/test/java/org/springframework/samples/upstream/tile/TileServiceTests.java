@@ -3,6 +3,7 @@ package org.springframework.samples.upstream.tile;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +19,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.upstream.player.PlayerService;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundService;
+import org.springframework.samples.upstream.tile.exceptions.InvalidPlayerException;
+import org.springframework.samples.upstream.tile.exceptions.InvalidPositionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -40,11 +43,11 @@ public class TileServiceTests {
 	
 	@Test
 	@Transactional
-	void shouldDeleteTile(){
+	void shouldDeleteTile() throws InvalidPositionException{
 		Tile tile = tileService.findByPosition(1, 2, 1);
+		assertThat(tile!=null);
 		tileService.deleteTile(tile);
-		tile = tileService.findByPosition(1, 2, 1);
-		assertThat(tile).isEqualTo(null);
+    	assertThrows(InvalidPositionException.class,()-> this.tileService.findByPosition(1, 2, 1));
 	}
 	
 	@Test
@@ -63,16 +66,15 @@ public class TileServiceTests {
 	
 	@Test
 	@Transactional
-	void shouldFindByPosition(){
+	void shouldFindByPosition() throws InvalidPositionException{
 		Tile tile = this.tileService.findByPosition(1, 1, 1);
 		assertThat(tile.getId()).isEqualTo(1);
 	}
 	
 	@Test
 	@Transactional
-	void shouldNotFindByPosition(){
-		Tile tile = this.tileService.findByPosition(1, 1, 99);
-		assertThat(tile).isEqualTo(null);
+	void shouldNotFindByPosition() throws InvalidPositionException{
+    	assertThrows(InvalidPositionException.class,()-> this.tileService.findByPosition(1, 1, 99));
 	}
 	
 	@Test

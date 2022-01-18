@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.id.IdentifierGenerationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.util.Pair;
@@ -17,6 +18,8 @@ import org.springframework.samples.upstream.round.RoundState;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.samples.upstream.tile.TileType;
+import org.springframework.samples.upstream.tile.exceptions.InvalidPlayerException;
+import org.springframework.samples.upstream.tile.exceptions.InvalidPositionException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -74,7 +77,7 @@ public class PieceService {
 		return this.pieceRepository.findPiecesInRound(roundId);
 	}
 	
-	public void createPlayerPieces(Player player,Round round) {
+	public void createPlayerPieces(Player player,Round round) throws DataAccessException{
 		Collection<Piece> roundPieces=round.getPieces();
 		if(roundPieces==null) {
 			roundPieces=new ArrayList<Piece>();
@@ -117,7 +120,7 @@ public class PieceService {
 		pieceRepository.save(piece);		
 	}	
 	
-	public void swim(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException {
+	public void swim(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException, InvalidPositionException,InvalidPlayerException {
 		if(checkUser(piece) && checkRoundState(piece.getRound()) && checkDistanceSwim(oldTile, newTile) && sameTile(oldTile, newTile)
 			&& checkCapacity(newTile, piece.getRound()) && checkDirectionSwim(oldTile, newTile)
 			&& checkSwimPoints(piece.getRound()) && checkCurrentWaterfall(oldTile, newTile)
@@ -136,7 +139,7 @@ public class PieceService {
 		}
 	}
 	
-	public void jump(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException {
+	public void jump(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException, InvalidPositionException,InvalidPlayerException {
 		if(checkUser(piece) && checkRoundState(piece.getRound()) && sameTile(oldTile, newTile) 
 			&& checkDistanceJump(oldTile, newTile, piece.getRound()) && checkCapacity(newTile, piece.getRound()) 
 			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece)  && checkSpawn(oldTile)) {		//MOVIMIENTO VÁLIDO
@@ -160,14 +163,20 @@ public class PieceService {
 		return round.getRound_state().equals(RoundState.IN_COURSE);
 	}
 
-	public Boolean checkUser(Piece piece) {
+	public Boolean checkUser(Piece piece) throws InvalidPositionException,InvalidPlayerException{
+		
 		Round round = piece.getRound();
 		Integer actingPlayer = round.getActingPlayer().getPlayer();
 		List<Player> players = (List<Player>) round.getPlayers();
 		String actingUsername = players.get(actingPlayer).getUser().getUsername();
 		String pieceUsername = piece.getPlayer().getUser().getUsername();
 		String authenticatedUsername = getCurrentUsername();
-		return actingUsername.equals(pieceUsername) && actingUsername.equals(authenticatedUsername);
+		
+		if(actingUsername.equals(pieceUsername) && actingUsername.equals(authenticatedUsername)) {
+			return true;
+		}else {
+			throw new InvalidPlayerException();
+		}
 	}
 	
 	public Boolean checkDistanceSwim(Tile oldTile, Tile newTile) {
@@ -176,7 +185,7 @@ public class PieceService {
 		return rowDistance <= 1 || columnDistance <= 1;
 	}
 	
-	public Boolean checkDistanceJump(Tile oldTile, Tile newTile, Round round) {
+	public Boolean checkDistanceJump(Tile oldTile, Tile newTile, Round round) throws InvalidPositionException{
 		Integer row = oldTile.getRowIndex();
 		Integer column = oldTile.getColumnIndex();
 		Integer colDir = newTile.getColumnIndex() - oldTile.getColumnIndex();
@@ -194,7 +203,7 @@ public class PieceService {
 		return movementPoints >= numTiles;
 	}
 	
-	private Integer checkDistanceJumpColumn1(Integer colDir, Integer rowDir, Integer numTiles, Integer row, Integer column, Integer roundId, Tile newTile) {
+	private Integer checkDistanceJumpColumn1(Integer colDir, Integer rowDir, Integer numTiles, Integer row, Integer column, Integer roundId, Tile newTile) throws InvalidPositionException{
 		if(colDir == 0) {
 			for(int i = 1; i < rowDir; i++) {
 				numTiles += 1;
@@ -217,7 +226,7 @@ public class PieceService {
 		return numTiles;
 	}
 	
-	private Integer checkDistanceJumpColumn3(Integer colDir, Integer rowDir, Integer numTiles, Integer row, Integer column, Integer roundId, Tile newTile) {
+	private Integer checkDistanceJumpColumn3(Integer colDir, Integer rowDir, Integer numTiles, Integer row, Integer column, Integer roundId, Tile newTile) throws InvalidPositionException{
 		if(colDir == 0) {
 			for(int i = 1; i < rowDir; i++) {
 				numTiles += 1;
@@ -481,7 +490,7 @@ public class PieceService {
 		return !oldTile.getTileType().equals(TileType.SPAWN);
 	}
 	
-	public Piece checkIntermediateBear(Piece piece, Tile oldTile, Tile newTile) {
+	public Piece checkIntermediateBear(Piece piece, Tile oldTile, Tile newTile) throws InvalidPositionException{
 		Integer row = oldTile.getRowIndex();
 		Integer column = oldTile.getColumnIndex();
 		Integer colDir = newTile.getColumnIndex() - oldTile.getColumnIndex();
@@ -497,7 +506,7 @@ public class PieceService {
 		return piece;
 	}
 	
-	private Piece checkIntermediateBearColumn1(Integer colDir, Integer rowDir, Piece piece, Integer row, Integer column, Integer roundId) {
+	private Piece checkIntermediateBearColumn1(Integer colDir, Integer rowDir, Piece piece, Integer row, Integer column, Integer roundId) throws InvalidPositionException{
 		if(colDir == 0) {
 			for(int i = 1; i < rowDir; i++) {
 				Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
@@ -517,7 +526,7 @@ public class PieceService {
 		return piece;
 	}
 	
-	private Piece checkIntermediateBearColumn2(Integer colDir, Integer rowDir, Piece piece, Integer row, Integer column, Integer roundId) {
+	private Piece checkIntermediateBearColumn2(Integer colDir, Integer rowDir, Piece piece, Integer row, Integer column, Integer roundId) throws InvalidPositionException{
 		if(colDir == 0) {
 			for(int i = 1; i < rowDir; i++) {
 				Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
@@ -532,7 +541,7 @@ public class PieceService {
 		return piece;
 	}
 	
-	private Piece checkIntermediateBearColumn3(Integer colDir, Integer rowDir, Piece piece, Integer row, Integer column, Integer roundId) {
+	private Piece checkIntermediateBearColumn3(Integer colDir, Integer rowDir, Piece piece, Integer row, Integer column, Integer roundId) throws InvalidPositionException {
 		if(colDir == 0) {
 			for(int i = 1; i < rowDir; i++) {
 				Tile intermediateTile = this.tileService.findByPosition(row + i, column, roundId);
@@ -552,7 +561,7 @@ public class PieceService {
 		return piece;
 	}
 	
-	public Integer countIntermediateTiles(Tile oldTile, Tile newTile, Round round) {
+	public Integer countIntermediateTiles(Tile oldTile, Tile newTile, Round round) throws InvalidPositionException {
 		Integer row = oldTile.getRowIndex();
 		Integer column = oldTile.getColumnIndex();
 		Integer colDir = newTile.getColumnIndex() - oldTile.getColumnIndex();
@@ -569,7 +578,7 @@ public class PieceService {
 		return numTiles;
 	}
 	
-	private Integer countIntermediateTilesColumn1(Integer colDir, Integer rowDir, Integer numTiles, Integer row, Integer column, Integer roundId, Tile newTile) {
+	private Integer countIntermediateTilesColumn1(Integer colDir, Integer rowDir, Integer numTiles, Integer row, Integer column, Integer roundId, Tile newTile)throws InvalidPositionException {
 		if(colDir == 0) {
 			for(int i = 1; i < rowDir; i++) {
 				numTiles += 1;
@@ -592,7 +601,7 @@ public class PieceService {
 		return numTiles;
 	}
 	
-	private Integer countIntermediateTilesColumn3(Integer colDir, Integer rowDir, Integer numTiles, Integer row, Integer column, Integer roundId, Tile newTile) {
+	private Integer countIntermediateTilesColumn3(Integer colDir, Integer rowDir, Integer numTiles, Integer row, Integer column, Integer roundId, Tile newTile) throws InvalidPositionException {
 		if(colDir == 0) {
 			for(int i = 1; i < rowDir; i++) {
 				numTiles += 1;
@@ -606,7 +615,7 @@ public class PieceService {
 		return numTiles;
 	}
 	
-	public void substractMovementPointsSwim(Round round) {
+	public void substractMovementPointsSwim(Round round) throws InvalidPositionException,InvalidPlayerException{
 		ActingPlayer actingPlayer = round.getActingPlayer();
 		actingPlayer.setPoints(actingPlayer.getPoints()-1);
 		actingPlayerService.saveActingPlayer(actingPlayer);
@@ -620,7 +629,7 @@ public class PieceService {
 		}
 	}
 	
-	public void substractMovementPointsJump(Round round, Tile oldTile, Tile newTile) {
+	public void substractMovementPointsJump(Round round, Tile oldTile, Tile newTile) throws InvalidPositionException,InvalidPlayerException{
 		ActingPlayer actingPlayer = round.getActingPlayer();
 		Integer substraction = countIntermediateTiles(oldTile, newTile, round);
 		actingPlayer.setPoints(actingPlayer.getPoints()-substraction);
@@ -635,7 +644,7 @@ public class PieceService {
 		}
 	}
 	
-	private void checkHeron(Round round) {
+	private void checkHeron(Round round) throws InvalidPositionException,InvalidPlayerException{
 		List<Tile> heronTiles = tileService.findHeronTilesInRound(round.getId()); 
 		for(Tile tile : heronTiles) {
 			for(Piece piece : tile.getPieces()) {
@@ -655,7 +664,7 @@ public class PieceService {
 		return piece;
 	}
 	
-	public Piece checkRapids(Piece piece, Tile newTile) {
+	public Piece checkRapids(Piece piece, Tile newTile) throws InvalidPositionException{
 		Integer newRow = newTile.getRowIndex();
 		Integer newColumn = newTile.getColumnIndex();
 		Integer roundId = piece.getRound().getId();
