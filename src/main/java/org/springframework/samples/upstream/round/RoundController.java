@@ -267,8 +267,14 @@ public class RoundController {
 		User currentUser = (User)authentication.getPrincipal();
 		String currentUsername = currentUser.getUsername();
 		Player player=playerService.findPlayerByUsername(currentUsername);
-		
-		if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.CREATED)) {
+		if(round==null){
+			ModelAndView mav = new ModelAndView("rounds/roundList");
+	        Iterable<Round> rounds = roundService.findCreatedRounds();
+	        boolean esFinished=false;
+	        mav.addObject("rounds", rounds);
+	        mav.addObject("esFinished",esFinished);
+			return mav;
+		}else if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.CREATED)) {
 			ModelAndView mav = new ModelAndView("rounds/roundWaitingRoom");
 			response.addHeader("Refresh", "5");
 			

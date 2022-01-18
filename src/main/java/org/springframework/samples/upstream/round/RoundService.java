@@ -1,9 +1,11 @@
 package org.springframework.samples.upstream.round;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.upstream.player.Player;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,9 @@ public class RoundService {
 	
 	@Transactional
 	public void deleteRound(Round round) throws DataAccessException {
+		for(Player player :round.getPlayers()) {
+			player.setRound(null);
+		}
 		roundRepository.delete(round);
 	}
 	
