@@ -11,9 +11,6 @@
     <table id="rounds" class="table table-striped">
         <thead>
         <tr>
-        <c:if test="${esFinished}">
-            <th>Duration</th>
-        </c:if>
             <th>Rapids</th>
             <th>Whirlpools</th>
             <th>NumPlayers</th>
@@ -30,12 +27,7 @@
         
         <c:if test="${esFinished}">
             <th style="width: 360px">end</th>
-        </c:if>
-        
-        <c:if test="${esFinished}">
-            <th style="width: 360px">turnStart</th>
-        </c:if>
-
+        </c:if>        
             <th> 
                 <spring:url value="/rounds/new" var="roundUrl"></spring:url>
                 <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Create round</href></a>
@@ -45,11 +37,6 @@
         <tbody>
         <c:forEach items="${rounds}" var="round">
             <tr>
-	            <c:if test="${esFinished}">
-	                <td>
-	                    <c:out value="${round.duration}"/>
-	                </td>
-	            </c:if>
 	                <td>
 	                    <c:out value="${round.rapids}"/>
 	                </td>
@@ -78,11 +65,6 @@
 	                    <c:out value="${round.match_end}"/>
 	                </td>
 	            </c:if>     
-	            <c:if test="${esFinished}">
-	                <td>
-	                    <c:out value="${round.turn_start}"/>
-	                </td>   
-	            </c:if>
 	            <c:if test="${round.players.size()<round.num_players}">
 	           		<td> 
 		                <spring:url value="/rounds/join/{roundId}" var="roundUrl">
