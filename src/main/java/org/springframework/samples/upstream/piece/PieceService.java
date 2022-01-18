@@ -182,7 +182,7 @@ public class PieceService {
 	public Boolean checkDistanceSwim(Tile oldTile, Tile newTile) {
 		Integer rowDistance = Math.abs(oldTile.getRowIndex() - newTile.getRowIndex());
 		Integer columnDistance = Math.abs(oldTile.getColumnIndex() - newTile.getColumnIndex());
-		return rowDistance <= 1 || columnDistance <= 1;
+		return rowDistance <= 1 && columnDistance <= 1;
 	}
 	
 	public Boolean checkDistanceJump(Tile oldTile, Tile newTile, Round round) throws InvalidPositionException{

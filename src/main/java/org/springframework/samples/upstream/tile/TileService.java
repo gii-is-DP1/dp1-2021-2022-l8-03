@@ -162,7 +162,7 @@ public class TileService {
 		
 		TileType type = tile.getTileType();
 		if(type.equals(TileType.BEAR)||type.equals(TileType.WATERFALL)) {
-			tile.setOrientation(ThreadLocalRandom.current().nextInt(0, 6));
+			tile.setOrientation(ThreadLocalRandom.current().nextInt(1, 7));
 		}
 		else if(type.equals(TileType.EAGLE)||type.equals(TileType.HERON)||type.equals(TileType.WATER)||type.equals(TileType.ROCK)){
 			tile.setOrientation(0);
@@ -171,11 +171,11 @@ public class TileService {
 			if(tile.getColumnIndex()==1) {
 				tile.setOrientation(ThreadLocalRandom.current().nextInt(1, 3));
 			}
-			else if(tile.getColumnIndex()==2) {
-				tile.setOrientation(ThreadLocalRandom.current().nextInt(0, 2));
+			else if(tile.getColumnIndex()==3) {
+				tile.setOrientation(ThreadLocalRandom.current().nextInt(1, 3));
 			}
 			else {
-				tile.setOrientation(ThreadLocalRandom.current().nextInt(0, 3));
+				tile.setOrientation(ThreadLocalRandom.current().nextInt(1, 4));
 			}
 			
 		}
