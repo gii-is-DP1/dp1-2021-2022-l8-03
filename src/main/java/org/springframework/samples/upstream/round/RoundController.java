@@ -104,6 +104,10 @@ public class RoundController {
 			score.setValue(0);
 			this.scoreService.saveScore(score);
 			
+			SalmonBoard board = new SalmonBoard();
+			board.setRound(round);
+			this.salmonBoardService.saveBoard(board);
+			
 			return "redirect:/rounds/"+round.getId();
 		}
 	}
@@ -226,6 +230,10 @@ public class RoundController {
 			if(round.getPlayer()==player) {
 				this.scoreService.deleteScore(this.scoreService.findByPlayerAndRound(player.getId(), roundId));
 				player.setRound(null);
+				player.getPieces().removeAll(player.getPieces());
+				SalmonBoard salmonBoard=this.salmonBoardService.findByRoundId(round.getId());
+				salmonBoard.setRound(null);
+				this.salmonBoardService.delete(salmonBoard);
 				this.roundService.deleteRound(round);
 			}else {
 				this.scoreService.deleteScore(this.scoreService.findByPlayerAndRound(player.getId(), roundId));
@@ -236,9 +244,9 @@ public class RoundController {
 				this.playerService.savePlayer(player);
 				players.remove(player);
 				
-				List<Piece> piecesPlayer=new ArrayList<Piece>(player.getPieces());
-				pieces.removeAll(piecesPlayer);
-				
+				pieces.removeAll(player.getPieces());
+				player.getPieces().removeAll(player.getPieces());
+
 				this.roundService.saveRound(round);
 			}
 			return "redirect:/rounds";
@@ -288,13 +296,8 @@ public class RoundController {
 			return mav;
 		}
 		else if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.IN_COURSE)){
-			SalmonBoard board = new SalmonBoard();
+			SalmonBoard board=this.salmonBoardService.findByRoundId(round.getId());
 			response.addHeader("Refresh", "5");
-			board.setRound(round);
-			List<Player> players= round.getPlayers();
-			Color color= Color.values()[players.indexOf(player)];
-			this.salmonBoardService.saveBoard(board);
-			
 			ModelAndView mav = new ModelAndView("rounds/roundDetails");
 			mav.addObject(player);
 			mav.addObject(board);
