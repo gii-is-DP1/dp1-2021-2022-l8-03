@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.upstream.actingPlayer.ActingPlayerService;
+import org.springframework.samples.upstream.piece.Color;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
@@ -290,12 +291,15 @@ public class RoundController {
 			SalmonBoard board = new SalmonBoard();
 			response.addHeader("Refresh", "5");
 			board.setRound(round);
+			List<Player> players= round.getPlayers();
+			Color color= Color.values()[players.indexOf(player)];
 			this.salmonBoardService.saveBoard(board);
 			
 			ModelAndView mav = new ModelAndView("rounds/roundDetails");
 			mav.addObject(player);
 			mav.addObject(board);
 			mav.addObject(round);
+			mav.addObject(color);
 			return mav;
 		}else {
 			ModelAndView mav = new ModelAndView("rounds/roundScore");

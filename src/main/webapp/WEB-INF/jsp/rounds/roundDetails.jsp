@@ -17,13 +17,13 @@
 		
 		<table id="pieces" class="table table-striped">
         <thead>
-        <h2>Your Pieces</h2>
+        <h2>Your Pieces: <c:out value="${color}"/></h2>
         <tr>
             <th>Piece</th>
             <th>Row</th>
             <th>Column</th>
+			<th>Salmon's number</th>
             <th>Movement</th>
-            <th></th>
             <th></th>
             <th></th>
         </tr>
@@ -42,7 +42,9 @@
 		                <td>
 		                    <c:out value="${piece.tile.columnIndex}"/>
 		                </td>
-
+						<td>
+		                    <c:out value="${piece.numSalmon}"/>
+		                </td>
 		                <td>   
                 			<spring:url value="/piece/{pieceId}/edit" var="pieceUrl">
                 			<spring:param name="pieceId" value="${piece.id}"/>
