@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.id.IdentifierGenerationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.util.Pair;
@@ -25,7 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-//PieceService
+
 @Service
 public class PieceService {
 	@Autowired
@@ -116,7 +115,6 @@ public class PieceService {
 	}
 	
 	public void savePiece(Piece piece) throws DataAccessException {
-		//creating piece
 		pieceRepository.save(piece);		
 	}	
 	
@@ -644,11 +642,13 @@ public class PieceService {
 		}
 	}
 	
-	private void checkHeron(Round round) throws InvalidPositionException,InvalidPlayerException{
-		List<Tile> heronTiles = tileService.findHeronTilesInRound(round.getId()); 
+	private void checkHeron(Round round) throws InvalidPositionException {
+		List<Tile> heronTiles = tileService.findHeronTilesInRound(round.getId()); 	
+		String authenticatedUsername = getCurrentUsername();
 		for(Tile tile : heronTiles) {
 			for(Piece piece : tile.getPieces()) {
-				if(checkUser(piece)) {
+				String pieceUsername = piece.getPlayer().getUser().getUsername();
+				if(pieceUsername.equals(authenticatedUsername)) {
 					piece.setNumSalmon(piece.getNumSalmon()-1);
 					pieceRepository.save(piece);
 				}

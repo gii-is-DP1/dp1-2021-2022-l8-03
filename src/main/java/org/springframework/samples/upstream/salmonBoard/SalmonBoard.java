@@ -34,7 +34,7 @@ public class SalmonBoard extends BaseEntity{
 	private Round round;
 
     public SalmonBoard(){
-        this.background="/resources/images/back_pattern.jpg"; //fondo del tablero
+        this.background="/resources/images/back_pattern.jpg";
         this.width=1160;
         this.height=1500;
     }
