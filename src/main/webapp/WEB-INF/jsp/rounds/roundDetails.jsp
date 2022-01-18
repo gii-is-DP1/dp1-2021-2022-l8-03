@@ -7,7 +7,7 @@
 
 <game:layout pageName="rounds">
     
-    <p>	
+    	
     <h2><c:out value="${now}"/></h2>
 
 	

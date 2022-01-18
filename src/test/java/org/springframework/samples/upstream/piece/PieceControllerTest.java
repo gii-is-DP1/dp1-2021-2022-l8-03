@@ -23,6 +23,8 @@ import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundState;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
+import org.springframework.samples.upstream.tile.exceptions.InvalidPlayerException;
+import org.springframework.samples.upstream.tile.exceptions.InvalidPositionException;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,7 +50,7 @@ public class PieceControllerTest {
 	private MovementTypeWrapper movement;
 	
 	@BeforeEach
-	void setup() {
+	void setup() throws InvalidPlayerException,InvalidPositionException{
 		piece = new Piece();
 		round = new Round();
 		tile = new Tile();

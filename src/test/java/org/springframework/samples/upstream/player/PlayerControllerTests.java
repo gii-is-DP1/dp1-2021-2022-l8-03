@@ -146,7 +146,7 @@ public class PlayerControllerTests {
 	void testInitFindFormHasErrors() throws Exception {
 		mockMvc.perform(get("/players/find"))
 				.andExpect(status().is2xxSuccessful())
-				.andExpect(view().name("exception"));
+				.andExpect(view().name("noPermissionException"));
 	}
 	
 	@WithMockUser(value = "spring")
@@ -154,7 +154,7 @@ public class PlayerControllerTests {
 	void testProcessFindFormNoAdmin() throws Exception {
 		mockMvc.perform(get("/players"))
 				.andExpect(status().isOk())
-				.andExpect(view().name("exception"));
+				.andExpect(view().name("noPermissionException"));
 	}
 	
 	@WithMockUser(value = "spring")
@@ -216,7 +216,7 @@ public class PlayerControllerTests {
 	void testInitUpdatePlayerFormNoPermission() throws Exception {
 		mockMvc.perform(get("/players/{playerId}/edit", TEST_PLAYER_ID))
 				.andExpect(status().isOk())
-				.andExpect(view().name("exception"));
+				.andExpect(view().name("noPermissionException"));
 	}
 	
 	@WithMockUser(value = "spring")
@@ -271,7 +271,7 @@ public class PlayerControllerTests {
 	void testShowPlayerNoPermission() throws Exception {
 		mockMvc.perform(get("/players/{playerId}", TEST_PLAYER_ID))
 				.andExpect(status().isOk())
-				.andExpect(view().name("exception"));
+				.andExpect(view().name("noPermissionException"));
 	}
 	
 	@WithMockUser(value = "spring",username="player1")
@@ -287,8 +287,8 @@ public class PlayerControllerTests {
 	void testShowPlayerAuditNoAdmin() throws Exception {
 		when(this.playerService.checkAdmin()).thenReturn(false);
 		mockMvc.perform(get("/players/11/audit"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/"));
+			.andExpect(status().is2xxSuccessful())
+			.andExpect(view().name("noPermissionException"));
 	}
 	
 	@WithMockUser(value = "spring")
