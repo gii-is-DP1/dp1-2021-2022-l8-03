@@ -2,12 +2,8 @@ package org.springframework.samples.upstream.tile;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.upstream.piece.Piece;
@@ -153,7 +149,6 @@ public class TileService {
 		tile.setRowIndex(row);
 		tile.setSalmonEggs(0);
 		
-		//tile = createRandomTile(tile,round);
 		if(round.getRapids()) {
 			tile.setTileType(TileType.values()[ThreadLocalRandom.current().nextInt(0, 7)]);
 		}else {
@@ -183,35 +178,7 @@ public class TileService {
 		roundTiles.add(tile);
 		round.setTiles(roundTiles);
 		roundRepository.save(round);
-	}
-	
-//	private Tile createRandomTile(Tile tile, Round round) {
-//		List<TileType> tileTypes = round.getTiles().stream().map(x->x.getTileType()).collect(Collectors.toList());
-//		List<Integer> numList = new ArrayList<Integer>();
-//		if(Collections.frequency(tileTypes, TileType.BEAR)<=3) {
-//			numList.add(0);
-//		}
-//		else if(Collections.frequency(tileTypes, TileType.EAGLE)<=5) {
-//			numList.add(1);
-//		}
-//		else if(Collections.frequency(tileTypes, TileType.HERON)<=5) {
-//			numList.add(2);
-//		}
-//		else if(Collections.frequency(tileTypes, TileType.WATERFALL)<=4) {
-//			numList.add(3);
-//		}
-//		else if(Collections.frequency(tileTypes, TileType.WATER)<=7) {
-//			numList.add(4);
-//		}
-//		else if(Collections.frequency(tileTypes, TileType.ROCK)<=5) {
-//			numList.add(5);
-//		}
-//		else if(Collections.frequency(tileTypes, TileType.RAPIDS)<=6 && round.getRapids()) {
-//			numList.add(6);
-//		}
-//		tile.setTileType(TileType.values()[numList.get(ThreadLocalRandom.current().nextInt(0,numList.size()))]);		
-//		return tile;
-//	}
+	}	
 
 	public void addSpawnTiles(Round round) {
 		Collection<Tile> roundTiles=round.getTiles();

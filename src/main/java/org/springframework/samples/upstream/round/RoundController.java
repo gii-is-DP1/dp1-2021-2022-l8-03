@@ -252,6 +252,7 @@ public class RoundController {
 		Round round = this.roundService.findRoundById(roundId);
 		if (round.getPlayers().size()>1){
 			round.setRound_state(RoundState.IN_COURSE);
+			round.setMatch_start(new java.util.Date());
 			round.setNum_players(round.getPlayers().size());
 			this.roundService.saveRound(round);
 			
