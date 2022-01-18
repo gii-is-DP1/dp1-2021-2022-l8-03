@@ -5,9 +5,8 @@
 <img id="source" src="${salmonBoard.background}" style="display:none">
 <script src="/src/main/webapp/WEB-INF/tags/tile.tag"></script>
 <script src="/src/main/webapp/WEB-INF/tags/piece.tag"></script>
+
 <!-- TILES -->
-
-
 <img id="SEA-1" src="/resources/images/SEA-1.png" style="display:none">
 <img id="SEA-2" src="/resources/images/SEA-2.png" style="display:none">
 <img id="SEA-3" src="/resources/images/SEA-3.png" style="display:none">
@@ -15,6 +14,10 @@
 
 <img id="BEAR-0" src="/resources/images/BEAR-0.png" style="display:none">
 <img id="BEAR-1" src="/resources/images/BEAR-1.png" style="display:none">
+<img id="BEAR-2" src="/resources/images/BEAR-2.png" style="display:none">
+<img id="BEAR-3" src="/resources/images/BEAR-3.png" style="display:none">
+<img id="BEAR-4" src="/resources/images/BEAR-4.png" style="display:none">
+<img id="BEAR-5" src="/resources/images/BEAR-5.png" style="display:none">
 
 <img id="EAGLE-0" src="/resources/images/EAGLE.png" style="display:none">
 <img id="HERON-0" src="/resources/images/HERON.png" style="display:none">
@@ -30,6 +33,14 @@
 <img id="WATERFALL-0" src="/resources/images/WATERFALL-0.png" style="display:none">
 <img id="WATERFALL-1" src="/resources/images/WATERFALL-1.png" style="display:none">
 <img id="WATERFALL-2" src="/resources/images/WATERFALL-2.png" style="display:none">
+<img id="WATERFALL-3" src="/resources/images/WATERFALL-3.png" style="display:none">
+<img id="WATERFALL-4" src="/resources/images/WATERFALL-4.png" style="display:none">
+<img id="WATERFALL-5" src="/resources/images/WATERFALL-5.png" style="display:none">
+
+<img id="RAPIDS-0" src="/resources/images/RAPIDS-0.png" style="display:none">
+<img id="RAPIDS-1" src="/resources/images/RAPIDS-1.png" style="display:none">
+<img id="RAPIDS-2" src="/resources/images/RAPIDS-2.png" style="display:none">
+
 
 <!-- PIECES -->
 <img id="SALMON-RED-1" src="/resources/images/SALMON-RED-1.png" style="display:none">
@@ -42,9 +53,6 @@
 <img id="SALMON-GREEN-2" src="/resources/images/SALMON-GREEN-2.png" style="display:none">
 <img id="SALMON-YELLOW-1" src="/resources/images/SALMON-YELLOW-1.png" style="display:none">
 <img id="SALMON-YELLOW-2" src="/resources/images/SALMON-YELLOW-2.png" style="display:none">
-
-<img id="HORSE-BLACK" src="/resources/images/HORSE-BLACK.png" style="display:none">
-<img id="KING-BLACK" src="/resources/images/KING-BLACK.png" style="display:none">
 
 <script>
 var canvas = document.getElementById("canvas");
