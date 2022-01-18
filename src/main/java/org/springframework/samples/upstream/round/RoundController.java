@@ -128,7 +128,7 @@ public class RoundController {
     public String processFindInCourse(ModelMap model) {
     	Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
-			return "exception";
+			return "noPermissionException";
 		}
     	
         String vista = "rounds/roundList";
@@ -143,7 +143,7 @@ public class RoundController {
     public String processFindFinished(ModelMap model) {
     	Boolean admin = this.playerService.checkAdmin();
 		if(!admin) {
-			return "exception";
+			return "noPermissionException";
 		}
         String vista = "rounds/roundList";
         Iterable<Round> rounds = roundService.findFinishedRounds();
