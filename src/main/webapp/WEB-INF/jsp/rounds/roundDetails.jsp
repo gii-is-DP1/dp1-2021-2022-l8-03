@@ -9,7 +9,9 @@
     
     <p>	
     <h2><c:out value="${now}"/></h2>
-
+	<h2>Turn <c:out value="${round.actingPlayer.turn}"/> </h2>
+	<h2>Current player: <c:out value="${round.players[round.actingPlayer.player].user.username}"/> </h2>
+	<h2>Movement points left:  <c:out value="${round.actingPlayer.points}"/> </h2>
 	
 	<div class="row" id="piecesPlayer">
 		

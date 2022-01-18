@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -259,7 +260,7 @@ public class RoundController {
 	}
 	
 	@GetMapping({"/rounds/{roundId}"})
-	public ModelAndView showRound(@PathVariable("roundId") int roundId) {
+	public ModelAndView showRound(@PathVariable("roundId") int roundId, HttpServletResponse response) {
 		Round round = this.roundService.findRoundById(roundId);
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -269,7 +270,7 @@ public class RoundController {
 		
 		if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.CREATED)) {
 			ModelAndView mav = new ModelAndView("rounds/roundWaitingRoom");
-			
+			response.addHeader("Refresh", "5");
 			
 			Player creator = round.getPlayer();
 
@@ -281,12 +282,14 @@ public class RoundController {
 		}
 		else if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.IN_COURSE)){
 			SalmonBoard board = new SalmonBoard();
+			response.addHeader("Refresh", "5");
 			board.setRound(round);
 			this.salmonBoardService.saveBoard(board);
 			
 			ModelAndView mav = new ModelAndView("rounds/roundDetails");
 			mav.addObject(player);
 			mav.addObject(board);
+			mav.addObject(round);
 			return mav;
 		}else {
 			ModelAndView mav = new ModelAndView("rounds/roundScore");

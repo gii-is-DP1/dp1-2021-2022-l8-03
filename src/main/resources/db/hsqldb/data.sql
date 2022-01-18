@@ -1,7 +1,6 @@
--- One admin user, named admin1 with passwor 4dm1n and authority admin
 INSERT INTO users(username,password,enabled) VALUES ('admin1','4dm1n',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (1,'admin1','admin');
--- One player user, named player1 with passwor 0wn3r
+
 INSERT INTO users(username,password,enabled) VALUES ('player1','0wn3r',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (2,'player1','player');
 INSERT INTO users(username,password,enabled) VALUES ('player2','0wn3r',TRUE);
@@ -22,11 +21,11 @@ INSERT INTO users(username,password,enabled) VALUES ('player9','0wn3r',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (10,'player9','player');
 INSERT INTO users(username,password,enabled) VALUES ('player10','0wn3r',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (11,'player10','player');
--- One vet user, named vet1 with passwor v3t
+
 INSERT INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (99,'vet1','veterinarian');
 
--- Meted aqui los usuarios antes de añadiros a la tabla de players
+
 INSERT INTO users(username,password,enabled) VALUES ('cardelbec','cardelbec',TRUE);
 INSERT INTO authorities(id, username, authority) VALUES (12, 'cardelbec', 'player');
 INSERT INTO users(username,password,enabled) VALUES ('sonlaumot','sonlaumot',TRUE);
@@ -53,12 +52,12 @@ INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (15, 'Manuel', 'Dominguez', 'ejemplo@gmail.com', 'mandommag', null);
 
 
-INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (1, 0, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13, 1);
+INSERT INTO rounds(id,rapids,whirlpools,num_players, match_start, match_end, player_id, round_state) VALUES (1, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00',13, 1);
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (11, 'Carlos', 'Delgado', 'ejemplo@gmail.com', 'cardelbec', 1);
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (14, 'Manuel', 'López', 'ejemplo@gmail.com','manlopalm', 1);
 
-INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (2, 0, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13, 1);
-INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (3, 0, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13, 2);
+INSERT INTO rounds(id,rapids,whirlpools,num_players, match_start, match_end, player_id, round_state) VALUES (2, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', 13, 1);
+INSERT INTO rounds(id,rapids,whirlpools,num_players, match_start, match_end, player_id, round_state) VALUES (3, false, false, 3, '2013-01-04 08:00', '2013-01-04 08:00', 13, 2);
 
 INSERT INTO acting_players(id, player, points, first_player,turn,round_id) VALUES (1,0,5,0,1,1);
 
@@ -113,8 +112,8 @@ INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VAL
 INSERT INTO scores(id, value, player_id, round_id) VALUES (1, 1, 11, 1);
 INSERT INTO scores(id, value, player_id, round_id) VALUES (2, 2, 14, 1);
 
-INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (4, 0, false, false, 2, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',13, 1);
-INSERT INTO rounds(id,duration,rapids,whirlpools,num_players, match_start, match_end, turn_start, player_id, round_state) VALUES (5, 0, false, false, 2, '2013-01-04 08:00', '2013-01-04 08:00', '2013-01-04 08:00',14, 1);
+INSERT INTO rounds(id,rapids,whirlpools,num_players, match_start, match_end, player_id, round_state) VALUES (4, false, false, 2, '2013-01-04 08:00', '2013-01-04 08:00', 13, 1);
+INSERT INTO rounds(id,rapids,whirlpools,num_players, match_start, match_end, player_id, round_state) VALUES (5, false, false, 2, '2013-01-04 08:00', '2013-01-04 08:00', 14, 1);
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (5, 'Peter', 'McTavish', 'ejemplo@gmail.com', 'player5', 4);
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (6, 'Jean', 'Coleman', 'ejemplo@gmail.com', 'player6', 4);
 INSERT INTO acting_players(id, player, points, first_player,turn,round_id) VALUES (2,0,5,0,1,4);

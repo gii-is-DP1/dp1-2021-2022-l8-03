@@ -33,10 +33,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "rounds")
 public class Round extends BaseEntity {
-	
-	@Column(name = "duration")
-	private Double duration;
-	
+		
 	@Column(name = "rapids")
 	@NotNull
 	private Boolean rapids;
@@ -68,10 +65,6 @@ public class Round extends BaseEntity {
 	@Column(name = "match_end")
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private Date match_end;
-	
-	@Column(name = "turn_start")
-	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
-	private Date turn_start;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "round",orphanRemoval=true)
 	private Collection<Piece> pieces;
