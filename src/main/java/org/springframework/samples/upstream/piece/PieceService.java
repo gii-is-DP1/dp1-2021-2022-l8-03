@@ -62,7 +62,7 @@ public class PieceService {
 		return pieceRepository.findPiecesInSpawnTiles(roundId);
 	}
 	
-	@Transactional(readOnly = true)
+	@Transactional
 	public void deletePiece(Piece piece) throws DataAccessException {
 		pieceRepository.delete(piece);
 	}

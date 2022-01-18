@@ -21,15 +21,15 @@ public class Piece extends BaseEntity{
 	private Integer numSalmon;
 	private Boolean stuck;
 	
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(name = "player_id")
 	private Player player;
 	
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(name = "round_id")
 	private Round round;
 		
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(name = "tile_id")
 	private Tile tile;
 	
