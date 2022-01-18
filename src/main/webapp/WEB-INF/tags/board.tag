@@ -12,12 +12,12 @@
 <img id="SEA-3" src="/resources/images/SEA-3.png" style="display:none">
 <img id="SEA-4" src="/resources/images/SEA-4.png" style="display:none">
 
-<img id="BEAR-0" src="/resources/images/BEAR-0.png" style="display:none">
 <img id="BEAR-1" src="/resources/images/BEAR-1.png" style="display:none">
 <img id="BEAR-2" src="/resources/images/BEAR-2.png" style="display:none">
 <img id="BEAR-3" src="/resources/images/BEAR-3.png" style="display:none">
 <img id="BEAR-4" src="/resources/images/BEAR-4.png" style="display:none">
 <img id="BEAR-5" src="/resources/images/BEAR-5.png" style="display:none">
+<img id="BEAR-6" src="/resources/images/BEAR-6.png" style="display:none">
 
 <img id="EAGLE-0" src="/resources/images/EAGLE.png" style="display:none">
 <img id="HERON-0" src="/resources/images/HERON.png" style="display:none">
@@ -30,16 +30,16 @@
 <img id="SPAWN-3" src="/resources/images/SPAWN-3.png" style="display:none">
 <img id="SPAWN-4" src="/resources/images/SPAWN-4.png" style="display:none">
 
-<img id="WATERFALL-0" src="/resources/images/WATERFALL-0.png" style="display:none">
 <img id="WATERFALL-1" src="/resources/images/WATERFALL-1.png" style="display:none">
 <img id="WATERFALL-2" src="/resources/images/WATERFALL-2.png" style="display:none">
 <img id="WATERFALL-3" src="/resources/images/WATERFALL-3.png" style="display:none">
 <img id="WATERFALL-4" src="/resources/images/WATERFALL-4.png" style="display:none">
 <img id="WATERFALL-5" src="/resources/images/WATERFALL-5.png" style="display:none">
+<img id="WATERFALL-6" src="/resources/images/WATERFALL-6.png" style="display:none">
 
-<img id="RAPIDS-0" src="/resources/images/RAPIDS-0.png" style="display:none">
 <img id="RAPIDS-1" src="/resources/images/RAPIDS-1.png" style="display:none">
 <img id="RAPIDS-2" src="/resources/images/RAPIDS-2.png" style="display:none">
+<img id="RAPIDS-3" src="/resources/images/RAPIDS-0.png" style="display:none">
 
 
 <!-- PIECES -->
