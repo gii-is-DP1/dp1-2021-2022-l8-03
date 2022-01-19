@@ -9,14 +9,29 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidCapacityException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidCurrentBearException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidCurrentWaterfallException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDirectionJumpException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDirectionSwimException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDistanceJumpException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDistanceSwimException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidNewBearException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidNewWaterfallException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidPlayerException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidPositionException;
+import org.springframework.samples.upstream.piece.exceptions.NoPointsException;
+import org.springframework.samples.upstream.piece.exceptions.PieceStuckException;
+import org.springframework.samples.upstream.piece.exceptions.RoundNotInCourseException;
+import org.springframework.samples.upstream.piece.exceptions.SameTileException;
+import org.springframework.samples.upstream.piece.exceptions.TileSpawnException;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.player.PlayerService;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.samples.upstream.tile.TileType;
-import org.springframework.samples.upstream.tile.exceptions.InvalidPlayerException;
-import org.springframework.samples.upstream.tile.exceptions.InvalidPositionException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,29 +74,29 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotJumpPointsNeeded() throws InvalidPositionException,InvalidPlayerException{
+    void shouldNotJumpPointsNeeded() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceJumpException, SameTileException, InvalidCapacityException, InvalidDirectionJumpException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(35);
     	
-    	this.pieceService.jump(piece, oldTile, newTile);
+    	assertThrows(InvalidDistanceJumpException.class, () -> this.pieceService.jump(piece, oldTile, newTile));
     }
     
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotMoveSameTile() throws InvalidPositionException,InvalidPlayerException{
+    void shouldNotMoveSameTile() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = piece.getTile();
     	
-    	this.pieceService.swim(piece, oldTile, newTile);
+    	assertThrows(SameTileException.class, () -> this.pieceService.swim(piece, oldTile, newTile));
     }
     
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldSwim() throws InvalidPositionException,InvalidPlayerException{
+    void shouldSwim() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(16);
@@ -93,7 +108,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldJump() throws InvalidPositionException,InvalidPlayerException{
+    void shouldJump() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceJumpException, SameTileException, InvalidCapacityException, InvalidDirectionJumpException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(17);
@@ -118,40 +133,40 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotSwimCurrentBear() throws InvalidPositionException,InvalidPlayerException{
+    void shouldNotSwimCurrentBear() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(24);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(24);
     	
-    	this.pieceService.swim(piece, oldTile, newTile);
+    	assertThrows(InvalidCurrentBearException.class, () -> this.pieceService.swim(piece, oldTile, newTile));
     }
     
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotSwimNextBear() throws InvalidPositionException,InvalidPlayerException{
+    void shouldNotSwimNextBear() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(18);
     	
-    	this.pieceService.swim(piece, oldTile, newTile);
+    	assertThrows(InvalidNewBearException.class, () -> this.pieceService.swim(piece, oldTile, newTile));
     }
     
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotSwimCurrentWaterfallVertical() throws InvalidPositionException,InvalidPlayerException{
+    void shouldNotSwimCurrentWaterfallVertical() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(23);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(22);
     	
-    	this.pieceService.swim(piece, oldTile, newTile);
+    	assertThrows(InvalidCurrentWaterfallException.class, () -> this.pieceService.swim(piece, oldTile, newTile));
     }
     
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldCheckHeron() throws InvalidPositionException,InvalidPlayerException{
+    void shouldCheckHeron() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceJumpException, SameTileException, InvalidCapacityException, InvalidDirectionJumpException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(30);
     	Tile oldTile = piece.getTile();
     	piece.getRound().getActingPlayer().setPoints(2);
@@ -163,29 +178,29 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotSwimCurrentWaterfallRight() throws InvalidPositionException,InvalidPlayerException{
+    void shouldNotSwimCurrentWaterfallRight() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(25);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(26);
     	
-    	this.pieceService.swim(piece, oldTile, newTile);
+    	assertThrows(InvalidCurrentWaterfallException.class, () -> this.pieceService.swim(piece, oldTile, newTile));
     }
     
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldNotSwimNewWaterfall() throws InvalidPositionException,InvalidPlayerException{
+    void shouldNotSwimNewWaterfall() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(28);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(36);
     	
-    	this.pieceService.swim(piece, oldTile, newTile);
+    	assertThrows(InvalidNewWaterfallException.class, () -> this.pieceService.swim(piece, oldTile, newTile));
     }
     
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldCheckEagle() throws InvalidPositionException,InvalidPlayerException{
+    void shouldCheckEagle() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(17);
@@ -196,7 +211,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldCheckRapids() throws InvalidPositionException,InvalidPlayerException{
+    void shouldCheckRapids() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(26);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(29);
@@ -207,7 +222,7 @@ public class PieceServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "player5")
-    void shouldCheckBear() throws InvalidPositionException,InvalidPlayerException{
+    void shouldCheckBear() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceJumpException, SameTileException, InvalidCapacityException, InvalidDirectionJumpException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(29);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(35);

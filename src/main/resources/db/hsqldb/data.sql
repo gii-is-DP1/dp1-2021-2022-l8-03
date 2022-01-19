@@ -131,7 +131,7 @@ INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_ty
 
 
 --Test para Piece
-INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (23, 4, 2, 1, 0, 4, 4);
+INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (23, 4, 2, 4, 0, 0, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (24, 4, 3, 1, 0, 4, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (25, 5, 1, 1, 0, 3, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (26, 5, 2, 1, 0, 4, 4);
@@ -147,7 +147,7 @@ INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_ty
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (36, 8, 3, 1, 0, 3, 4);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (22, 2, false, 5, 4, 14,0);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (23, 2, false, 5, 4, 19,1);
-INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (24, 2, false, 5, 4, 18,2);
+INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (24, 2, false, 5, 4, 23,2);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (25, 2, false, 5, 4, 25,3);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (26, 2, false, 5, 4, 28,2);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (27, 2, false, 5, 4, 26,0);

@@ -9,6 +9,22 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.util.Pair;
 import org.springframework.samples.upstream.actingPlayer.ActingPlayer;
 import org.springframework.samples.upstream.actingPlayer.ActingPlayerService;
+import org.springframework.samples.upstream.piece.exceptions.InvalidCapacityException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidCurrentBearException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidCurrentWaterfallException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDirectionJumpException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDirectionSwimException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDistanceJumpException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDistanceSwimException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidNewBearException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidNewWaterfallException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidPlayerException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidPositionException;
+import org.springframework.samples.upstream.piece.exceptions.NoPointsException;
+import org.springframework.samples.upstream.piece.exceptions.PieceStuckException;
+import org.springframework.samples.upstream.piece.exceptions.RoundNotInCourseException;
+import org.springframework.samples.upstream.piece.exceptions.SameTileException;
+import org.springframework.samples.upstream.piece.exceptions.TileSpawnException;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.player.PlayerService;
 import org.springframework.samples.upstream.round.Round;
@@ -17,8 +33,6 @@ import org.springframework.samples.upstream.round.RoundState;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.samples.upstream.tile.TileType;
-import org.springframework.samples.upstream.tile.exceptions.InvalidPlayerException;
-import org.springframework.samples.upstream.tile.exceptions.InvalidPositionException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -118,7 +132,7 @@ public class PieceService {
 		pieceRepository.save(piece);		
 	}	
 	
-	public void swim(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException, InvalidPositionException,InvalidPlayerException {
+	public void swim(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException, InvalidPositionException,InvalidPlayerException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException {
 		if(checkUser(piece) && checkRoundState(piece.getRound()) && checkDistanceSwim(oldTile, newTile) && sameTile(oldTile, newTile)
 			&& checkCapacity(newTile, piece.getRound()) && checkDirectionSwim(oldTile, newTile)
 			&& checkSwimPoints(piece.getRound()) && checkCurrentWaterfall(oldTile, newTile)
@@ -137,7 +151,7 @@ public class PieceService {
 		}
 	}
 	
-	public void jump(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException, InvalidPositionException,InvalidPlayerException {
+	public void jump(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException, InvalidPositionException,InvalidPlayerException, InvalidDistanceJumpException, SameTileException, InvalidCapacityException, InvalidDirectionJumpException, PieceStuckException, TileSpawnException, RoundNotInCourseException {
 		if(checkUser(piece) && checkRoundState(piece.getRound()) && sameTile(oldTile, newTile) 
 			&& checkDistanceJump(oldTile, newTile, piece.getRound()) && checkCapacity(newTile, piece.getRound()) 
 			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece)  && checkSpawn(oldTile)) {		//MOVIMIENTO VÁLIDO
@@ -157,8 +171,12 @@ public class PieceService {
 		
 	}
 	
-	private Boolean checkRoundState(Round round) {
-		return round.getRound_state().equals(RoundState.IN_COURSE);
+	private Boolean checkRoundState(Round round) throws RoundNotInCourseException {
+		if(round.getRound_state().equals(RoundState.IN_COURSE)) {
+			return true;
+		} else {
+			throw new RoundNotInCourseException();
+		}
 	}
 
 	public Boolean checkUser(Piece piece) throws InvalidPositionException,InvalidPlayerException{
@@ -177,13 +195,17 @@ public class PieceService {
 		}
 	}
 	
-	public Boolean checkDistanceSwim(Tile oldTile, Tile newTile) {
+	public Boolean checkDistanceSwim(Tile oldTile, Tile newTile) throws InvalidDistanceSwimException{
 		Integer rowDistance = Math.abs(oldTile.getRowIndex() - newTile.getRowIndex());
 		Integer columnDistance = Math.abs(oldTile.getColumnIndex() - newTile.getColumnIndex());
-		return rowDistance <= 1 && columnDistance <= 1;
+		if(rowDistance <= 1 && columnDistance <= 1) {
+			return true;
+		} else {
+			throw new InvalidDistanceSwimException();
+		}
 	}
 	
-	public Boolean checkDistanceJump(Tile oldTile, Tile newTile, Round round) throws InvalidPositionException{
+	public Boolean checkDistanceJump(Tile oldTile, Tile newTile, Round round) throws InvalidPositionException, InvalidDistanceJumpException{
 		Integer row = oldTile.getRowIndex();
 		Integer column = oldTile.getColumnIndex();
 		Integer colDir = newTile.getColumnIndex() - oldTile.getColumnIndex();
@@ -198,7 +220,11 @@ public class PieceService {
 			numTiles = checkDistanceJumpColumn3(colDir, rowDir, numTiles, row, column, roundId, newTile);
 		}
 		Integer movementPoints = round.getActingPlayer().getPoints();
-		return movementPoints >= numTiles;
+		if(movementPoints >= numTiles) {
+			return true;
+		} else {
+			throw new InvalidDistanceJumpException();
+		}
 	}
 	
 	private Integer checkDistanceJumpColumn1(Integer colDir, Integer rowDir, Integer numTiles, Integer row, Integer column, Integer roundId, Tile newTile) throws InvalidPositionException{
@@ -238,32 +264,48 @@ public class PieceService {
 		return numTiles;
 	}
 	
-	public Boolean sameTile(Tile oldTile, Tile newTile) {
+	public Boolean sameTile(Tile oldTile, Tile newTile) throws SameTileException {
 		Integer oldRow = oldTile.getRowIndex();
 		Integer oldColumn = oldTile.getColumnIndex();
 		Integer newRow = newTile.getRowIndex();
 		Integer newColumn = newTile.getColumnIndex();
-		return !(oldRow==newRow && oldColumn==newColumn);
+		if(!(oldRow==newRow && oldColumn==newColumn)) {
+			return true;
+		} else {
+			throw new SameTileException();
+		}
 	}
 	
-	public Boolean checkCapacity(Tile newTile, Round round) {
+	public Boolean checkCapacity(Tile newTile, Round round) throws InvalidCapacityException {
 		Integer capacity = newTile.getPieces().size();
 		Integer numPlayers = round.getPlayers().size();
 		TileType tipo = newTile.getTileType();
 		if(tipo.equals(TileType.ROCK) && !round.getWhirlpools()) {
-			return !(capacity == numPlayers-1);
+			if(!(capacity == numPlayers-1)) {
+				return true;
+			} else {
+				throw new InvalidCapacityException();
+			}
 		}else {
-			return !(capacity == numPlayers);
+			if(!(capacity == numPlayers)) {
+				return true;
+			} else {
+				throw new InvalidCapacityException();
+			}
 		}
 	}
 	
-	public Boolean checkDirectionSwim(Tile oldTile, Tile newTile) {
+	public Boolean checkDirectionSwim(Tile oldTile, Tile newTile) throws InvalidDirectionSwimException {
 		Integer oldRow = oldTile.getRowIndex();
 		Integer newRow = newTile.getRowIndex();
-		return newRow >= oldRow;
+		if(newRow >= oldRow) {
+			return true;
+		} else {
+			throw new InvalidDirectionSwimException();
+		}
 	}
 	
-	public Boolean checkDirectionJump(Tile oldTile, Tile newTile) {
+	public Boolean checkDirectionJump(Tile oldTile, Tile newTile) throws InvalidDirectionJumpException {
 		Integer oldRow = oldTile.getRowIndex();
 		Integer newRow = newTile.getRowIndex();
 		Boolean ahead = newRow >= oldRow;
@@ -277,7 +319,11 @@ public class PieceService {
 		}else if(oldTile.getColumnIndex()==3) {
 			straightLine = straightLineColumn3(colDir, rowDir) ;
 		}
-		return ahead && straightLine;
+		if(ahead && straightLine) {
+			return true;
+		} else {
+			throw new InvalidDirectionJumpException();
+		}
 	}
 	
 	private Boolean straightLineColumn1(Integer colDir, Integer rowDir) {
@@ -292,25 +338,34 @@ public class PieceService {
 		return (colDir == 0) || (colDir == -1 && rowDir == 1) || (colDir == -2 && rowDir == 1);
 	}
 	
-	public Boolean checkSwimPoints(Round round) {
+	public Boolean checkSwimPoints(Round round) throws NoPointsException {
 		ActingPlayer player = round.getActingPlayer();
-		return player.getPoints() >= 1;
+		if(player.getPoints() >= 1) {
+			return true;
+		} else {
+			throw new NoPointsException();
+		}
 	}
 	
-	public Boolean checkCurrentWaterfall(Tile oldTile, Tile newTile) {
+	public Boolean checkCurrentWaterfall(Tile oldTile, Tile newTile) throws InvalidCurrentWaterfallException {
 		TileType type = oldTile.getTileType();
 		Integer rowMovement = newTile.getRowIndex() - oldTile.getRowIndex();
 		Integer columnMovement = newTile.getColumnIndex() - oldTile.getColumnIndex();
+		Boolean permission = true;
 		if(type.equals(TileType.WATERFALL)) {
 			if(columnMovement == 0) { //MOVIMIENTO VERTICAL
-				return checkCurrentWaterfallVerticalMovement(oldTile);
+				permission = checkCurrentWaterfallVerticalMovement(oldTile);
 			} else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
-				return checkCurrentWaterfallLeftMovement(rowMovement, oldTile);
+				permission = checkCurrentWaterfallLeftMovement(rowMovement, oldTile);
 			} else { //MOVIMIENTO DERECHA
-				return checkCurrentWaterfallRightMovement(rowMovement, oldTile);
+				permission = checkCurrentWaterfallRightMovement(rowMovement, oldTile);
 			}
 		}
-		return true;
+		if(permission) {
+			return true;
+		} else {
+			throw new InvalidCurrentWaterfallException();
+		}
 	}
 	
 	private Boolean checkCurrentWaterfallVerticalMovement(Tile oldTile) {
@@ -337,20 +392,25 @@ public class PieceService {
 		}		
 	}
 	
-	public Boolean checkCurrentBear(Tile oldTile, Tile newTile) {
+	public Boolean checkCurrentBear(Tile oldTile, Tile newTile) throws InvalidCurrentBearException {
 		TileType type = oldTile.getTileType();
 		Integer rowMovement = newTile.getRowIndex() - oldTile.getRowIndex();
 		Integer columnMovement = newTile.getColumnIndex() - oldTile.getColumnIndex();
+		Boolean permission = true;
 		if(type.equals(TileType.BEAR)) {
 			if(columnMovement == 0) { //MOVIMIENTO VERTICAL
-				return checkCurrentBearVerticalMovement(oldTile);
+				permission = checkCurrentBearVerticalMovement(oldTile);
 			} else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
-				return checkCurrentBearLeftMovement(rowMovement, oldTile);
+				permission = checkCurrentBearLeftMovement(rowMovement, oldTile);
 			} else { //MOVIMIENTO DERECHA
-				return checkCurrentBearRightMovement(rowMovement, oldTile);
+				permission = checkCurrentBearRightMovement(rowMovement, oldTile);
 			}
 		}
-		return true;
+		if(permission) {
+			return true;
+		} else {
+			throw new InvalidCurrentBearException();
+		}
 	}
 	
 	private Boolean checkCurrentBearVerticalMovement(Tile oldTile) {
@@ -377,20 +437,25 @@ public class PieceService {
 		}		
 	}
 	
-	public Boolean checkNewWaterfall(Tile oldTile, Tile newTile) {
+	public Boolean checkNewWaterfall(Tile oldTile, Tile newTile) throws InvalidNewWaterfallException {
 		TileType type = newTile.getTileType();
 		Integer rowMovement = newTile.getRowIndex() - oldTile.getRowIndex();
 		Integer columnMovement = newTile.getColumnIndex() - oldTile.getColumnIndex();
+		Boolean permission = true;
 		if(type.equals(TileType.WATERFALL)) {
 			if(columnMovement == 0) { //MOVIMIENTO VERTICAL
-				return checkNewWaterfallVerticalMovement(newTile);
+				permission = checkNewWaterfallVerticalMovement(newTile);
 			} else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
-				return checkNewWaterfallLeftMovement(rowMovement, oldTile, newTile);
+				permission = checkNewWaterfallLeftMovement(rowMovement, oldTile, newTile);
 			} else { //MOVIMIENTO DERECHA
-				return checkNewWaterFallRightMovement(rowMovement, oldTile, newTile);				
+				permission = checkNewWaterFallRightMovement(rowMovement, oldTile, newTile);				
 			}
 		}
-		return true;
+		if(permission) {
+			return true;
+		} else {
+			throw new InvalidNewWaterfallException();
+		}
 	}
 	
 	private Boolean checkNewWaterfallVerticalMovement(Tile newTile) {
@@ -417,20 +482,25 @@ public class PieceService {
 		}
 	}
 	
-	public Boolean checkNewBear(Tile oldTile, Tile newTile) {
+	public Boolean checkNewBear(Tile oldTile, Tile newTile) throws InvalidNewBearException {
 		TileType type = newTile.getTileType();
 		Integer rowMovement = newTile.getRowIndex() - oldTile.getRowIndex();
 		Integer columnMovement = newTile.getColumnIndex() - oldTile.getColumnIndex();
+		Boolean permission = true;
 		if(type.equals(TileType.BEAR)) {
 			if(columnMovement == 0) { //MOVIMIENTO VERTICAL
-				return checkNewBearVerticalMovement(newTile);
+				permission = checkNewBearVerticalMovement(newTile);
 			} else if(columnMovement == -1) { //MOVIMIENTO IZQUIERDA
-				return checkNewBearLeftMovement(rowMovement, oldTile, newTile);
+				permission = checkNewBearLeftMovement(rowMovement, oldTile, newTile);
 			} else { //MOVIMIENTO DERECHA
-				return checkNewBearRightMovement(rowMovement, oldTile, newTile);				
+				permission = checkNewBearRightMovement(rowMovement, oldTile, newTile);				
 			}
 		}
-		return true;
+		if(permission) {
+			return true;
+		} else {
+			throw new InvalidNewBearException();
+		}
 	}
 	
 	private Boolean checkNewBearVerticalMovement(Tile newTile) {
@@ -457,8 +527,12 @@ public class PieceService {
 		}
 	}
 	
-	public Boolean checkStuck(Piece piece) {
-		return !piece.getStuck();
+	public Boolean checkStuck(Piece piece) throws PieceStuckException {
+		if(!piece.getStuck()) {
+			return true;
+		} else {
+			throw new PieceStuckException();
+		}
 	}
 	
 	public Piece checkEagle(Piece piece, Tile newTile) {
@@ -484,8 +558,12 @@ public class PieceService {
 		return piece;
 	}
 	
-	public Boolean checkSpawn(Tile oldTile) {
-		return !oldTile.getTileType().equals(TileType.SPAWN);
+	public Boolean checkSpawn(Tile oldTile) throws TileSpawnException {
+		if(!oldTile.getTileType().equals(TileType.SPAWN)) {
+			return true;
+		} else {
+			throw new TileSpawnException();
+		}
 	}
 	
 	public Piece checkIntermediateBear(Piece piece, Tile oldTile, Tile newTile) throws InvalidPositionException{
