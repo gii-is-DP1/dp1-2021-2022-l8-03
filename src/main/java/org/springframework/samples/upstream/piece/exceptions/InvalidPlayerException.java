@@ -1,8 +1,8 @@
-package org.springframework.samples.upstream.tile.exceptions;
+package org.springframework.samples.upstream.piece.exceptions;
 
 public class InvalidPlayerException extends Exception{
 	
     public InvalidPlayerException() {
-        super("Is not your turn");
+        super("It's not your turn");
     }
 }

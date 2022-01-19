@@ -1,4 +1,4 @@
-package org.springframework.samples.upstream.tile.exceptions;
+package org.springframework.samples.upstream.piece.exceptions;
 
 public class InvalidPositionException extends Exception{
 	
