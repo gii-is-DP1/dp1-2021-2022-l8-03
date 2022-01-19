@@ -163,7 +163,7 @@ public class TileService {
 		}
 		else {
 			if(tile.getColumnIndex()==1) {
-				tile.setOrientation(ThreadLocalRandom.current().nextInt(1, 3));
+				tile.setOrientation(ThreadLocalRandom.current().nextInt(2, 4));
 			}
 			else if(tile.getColumnIndex()==3) {
 				tile.setOrientation(ThreadLocalRandom.current().nextInt(1, 3));
@@ -176,7 +176,7 @@ public class TileService {
 		tileRepository.save(tile);
 		roundTiles.add(tile);
 		round.setTiles(roundTiles);
-		roundRepository.save(round);
+		this.roundRepository.save(round);
 	}	
 
 	public void addSpawnTiles(Round round) {

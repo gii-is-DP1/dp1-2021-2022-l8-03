@@ -154,5 +154,3 @@ INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VAL
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (28, 2, false, 5, 4, 35,1);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (29, 2, false, 5, 4, 31,2);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (30, 2, false, 5, 4, 32,2);
-
-
