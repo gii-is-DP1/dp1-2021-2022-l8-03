@@ -140,9 +140,9 @@ public class PieceService {
 			&& checkNewBear(oldTile, newTile) && checkStuck(piece) && checkSpawn(oldTile, newTile)) {
 			
 			piece = checkWhirlpool(piece, newTile);
-			piece = checkRapids(piece, newTile);
 			piece = checkEagle(piece, newTile);
 			piece.setTile(newTile);
+			piece = checkRapids(piece, newTile);
 			pieceRepository.save(piece);
 			if(piece.getNumSalmon() < 1) {
 				pieceRepository.delete(piece);
@@ -156,11 +156,11 @@ public class PieceService {
 			&& checkDistanceJump(oldTile, newTile, piece.getRound()) && checkCapacity(newTile, piece.getRound()) 
 			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece)  && checkSpawn(oldTile, newTile)) {			
 			piece = checkWhirlpool(piece, newTile);
-			piece = checkRapids(piece, newTile);
 			piece = checkBear(piece, oldTile, newTile);
 			piece = checkIntermediateBear(piece, oldTile, newTile);
 			piece = checkEagle(piece, newTile);
 			piece.setTile(newTile);
+			piece = checkRapids(piece, newTile);
 			pieceRepository.save(piece);
 			if(piece.getNumSalmon() < 1) {
 				pieceRepository.delete(piece);
@@ -724,10 +724,9 @@ public class PieceService {
 	}
 	
 	private void checkHeron(Round round) throws InvalidPositionException {
-		List<Tile> heronTiles = tileService.findHeronTilesInRound(round.getId()); 	
 		String authenticatedUsername = getCurrentUsername();
-		for(Tile tile : heronTiles) {
-			for(Piece piece : tile.getPieces()) {
+		for(Piece piece : round.getPieces()) {
+			if(piece.getTile().getTileType().equals(TileType.HERON)) {
 				String pieceUsername = piece.getPlayer().getUser().getUsername();
 				if(pieceUsername.equals(authenticatedUsername)) {
 					piece.setNumSalmon(piece.getNumSalmon()-1);					
@@ -769,7 +768,9 @@ public class PieceService {
 			}
 		}
 		newTile = this.tileService.findByPosition(newRow, newColumn, roundId);
-		piece.setTile(newTile);
+		if(newTile.getPieces().size()<piece.getRound().getNum_players()) {
+			piece.setTile(newTile);
+		}
 		return piece;
 	}
 	

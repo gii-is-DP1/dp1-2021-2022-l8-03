@@ -252,4 +252,17 @@ public class ActingPlayerServiceTests {
     	Boolean bool = this.actingPlayerService.checkMovablePieces(player);
     	assertThat(bool).isEqualTo(false);
     }
+    
+    @Test
+    void shouldUnstuckPieces() {
+        Piece piece = this.pieceService.findPieceById(1);
+        piece.setStuck(true);
+        this.pieceService.save(piece);
+        piece = this.pieceService.findPieceById(1);
+        assertThat(piece.getStuck()).isEqualTo(true);
+
+        this.actingPlayerService.unstuckPieces(piece.getRound());
+        piece = this.pieceService.findPieceById(1);
+        assertThat(piece.getStuck()).isEqualTo(false);
+    }
 }
