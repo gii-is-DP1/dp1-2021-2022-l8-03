@@ -10,9 +10,19 @@
     <div class="row">
     	<h2>Project ${title}</h2>
     	<p>
+    	
+    	<p>
+ 			${description}
+ 		<p>
+ 		 	<div class="row">
+        <div class="col-md-12">
+            <spring:url value="/resources/images/upstream_details.jpg" htmlEscape="true" var="petsImage"/>
+            <img class="img-responsive" src="${petsImage}"/>
+        </div>
+    </div>
+    	
     	<h2>Group ${group}</h2>
  		</p>
- 		<p>
  			<ul>
  			<c:forEach items = "${persons}" var = "person">
  			<li>
