@@ -259,5 +259,4 @@ public class PieceServiceTest {
     	List<Piece> pieces = this.pieceService.findPiecesInSpawnTiles(1);
     	assertThat(pieces.size()).isEqualTo(0);
     }
-
 }
