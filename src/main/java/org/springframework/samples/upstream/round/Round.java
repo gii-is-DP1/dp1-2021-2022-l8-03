@@ -24,6 +24,7 @@ import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.score.Score;
 import org.springframework.samples.upstream.tile.Tile;
+import org.springframework.samples.upstream.tile.TileType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "rounds")
 public class Round extends BaseEntity {
+	
 		
 	@Column(name = "rapids")
 	@NotNull

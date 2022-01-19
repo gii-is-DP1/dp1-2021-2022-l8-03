@@ -56,7 +56,12 @@ public class ActingPlayerService {
 		ActingPlayer actingPlayer=new ActingPlayer();
 		actingPlayer.setFirstPlayer(0);
 		actingPlayer.setPlayer(0);
-		actingPlayer.setPoints(5);
+		if(round.getNum_players()==2) {
+			actingPlayer.setPoints(4);
+		}
+		else {
+			actingPlayer.setPoints(5);
+		}
 		actingPlayer.setTurn(1);
 		actingPlayer.setRound(round);
 		saveActingPlayer(actingPlayer);
@@ -202,10 +207,10 @@ public class ActingPlayerService {
 	}
 	
 	public void unstuckPieces(Round round) {
-		List<Piece> pieces = this.pieceRepository.findPiecesInRound(round.getId());
-		for(Piece piece: pieces) {
-			piece.setStuck(false);
-			this.pieceRepository.save(piece);
-		}
-	}
+        List<Piece> pieces = this.pieceRepository.findPiecesInRound(round.getId());
+        for(Piece piece: pieces) {
+            piece.setStuck(false);
+            this.pieceRepository.save(piece);
+        }
+    }
 }

@@ -39,8 +39,19 @@ public class WelcomeController {
           Collections.addAll(persons, sonia, celia, carlos, manuel2, manuel);
           
           model.put("persons", persons);
-          model.put("title", "My project");
-          model.put("group", "Teachers");
+          model.put("title", "Upstream");
+          model.put("group", "Developers");
+          model.put("description","Like every spring the melted snow fills the riverbeds, opening the way back\r\n" + 
+          		"home for the Salmon, after a life swimming in the oceans.\r\n" + 
+          		"Each player controls a run of salmons going upstream to lay their eggs\r\n" + 
+          		"where they were born. During their journey they will face hungry bears,\r\n" + 
+          		"fierce birds of prey, as well as patient herons, which they must avoid in\r\n" + 
+          		"order to survive.\r\n" + 
+          		"The game ends when all the salmons are either deceased or on the spawn\r\n" + 
+          		"area, at the very end of the river. Players will then score points, according\r\n" + 
+          		"to the number and speed of their remaining Salmons: the player with most\r\n" + 
+          		"points wins the game!\r" +
+          		"We have designed the online version for those players who want to delight and spend a good time.");
 
 	    return "welcome";
 	  }

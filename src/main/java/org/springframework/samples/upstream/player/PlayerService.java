@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.upstream.piece.Color;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
 import org.springframework.samples.upstream.round.RoundState;
@@ -57,6 +58,10 @@ public class PlayerService {
 	@Transactional(readOnly = true)
 	public Player findPlayerById(int id) throws DataAccessException {
 		return playerRepository.findById(id);
+	}
+	
+	public Color getPlayerColor(Integer id) {
+		return playerRepository.getPlayerColor(id);
 	}
 
 	@Transactional(readOnly = true)

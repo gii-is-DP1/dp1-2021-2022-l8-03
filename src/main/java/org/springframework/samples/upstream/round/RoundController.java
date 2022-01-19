@@ -307,12 +307,13 @@ public class RoundController {
 		else if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.IN_COURSE)){
 			SalmonBoard board=this.salmonBoardService.findByRoundId(round.getId());
 			response.addHeader("Refresh", "5");
-			List<Player> players= round.getPlayers();
-			Color color= Color.values()[players.indexOf(player)];
+
+			Color color= this.playerService.getPlayerColor(player.getId());
 			ModelAndView mav = new ModelAndView("rounds/roundDetails");
 			mav.addObject(player);
 			mav.addObject(board);
 			mav.addObject(round);
+			mav.addObject(color);
 			return mav;
 		}else {
 			ModelAndView mav = new ModelAndView("rounds/roundScore");
