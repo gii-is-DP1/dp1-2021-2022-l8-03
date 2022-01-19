@@ -3,12 +3,26 @@ package org.springframework.samples.upstream.piece;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.upstream.piece.exceptions.InvalidCapacityException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidCurrentBearException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidCurrentWaterfallException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDirectionJumpException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDirectionSwimException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDistanceJumpException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidDistanceSwimException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidNewBearException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidNewWaterfallException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidPlayerException;
+import org.springframework.samples.upstream.piece.exceptions.InvalidPositionException;
+import org.springframework.samples.upstream.piece.exceptions.NoPointsException;
+import org.springframework.samples.upstream.piece.exceptions.PieceStuckException;
+import org.springframework.samples.upstream.piece.exceptions.RoundNotInCourseException;
+import org.springframework.samples.upstream.piece.exceptions.SameTileException;
+import org.springframework.samples.upstream.piece.exceptions.TileSpawnException;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundState;
 import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
-import org.springframework.samples.upstream.tile.exceptions.InvalidPlayerException;
-import org.springframework.samples.upstream.tile.exceptions.InvalidPositionException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -76,8 +90,49 @@ public class PieceController {
 			}catch(InvalidPositionException ex) {
 				model.addAttribute("message", ex.getMessage());
 				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(InvalidDistanceSwimException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(InvalidDistanceJumpException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(SameTileException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(InvalidCapacityException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(InvalidDirectionSwimException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(InvalidDirectionJumpException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(NoPointsException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(InvalidCurrentWaterfallException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(InvalidCurrentBearException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(InvalidNewWaterfallException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(InvalidNewBearException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(PieceStuckException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(TileSpawnException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
+			}catch(RoundNotInCourseException ex) {
+				model.addAttribute("message", ex.getMessage());
+				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
 			}
-			
 			
 		}
 	}
