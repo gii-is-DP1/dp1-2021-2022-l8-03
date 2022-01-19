@@ -50,7 +50,8 @@ public class WelcomeController {
           		"The game ends when all the salmons are either deceased or on the spawn\r\n" + 
           		"area, at the very end of the river. Players will then score points, according\r\n" + 
           		"to the number and speed of their remaining Salmons: the player with most\r\n" + 
-          		"points wins the game!\r");
+          		"points wins the game!\r" +
+          		"We have designed the online version for those players who want to delight and spend a good time.");
 
 	    return "welcome";
 	  }
