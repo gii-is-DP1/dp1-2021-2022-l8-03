@@ -28,6 +28,7 @@ import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.player.PlayerService;
+import org.springframework.samples.upstream.salmonBoard.SalmonBoard;
 import org.springframework.samples.upstream.salmonBoard.SalmonBoardService;
 import org.springframework.samples.upstream.score.ScoreService;
 import org.springframework.samples.upstream.tile.Tile;
@@ -73,6 +74,7 @@ public class RoundControllerTest {
 	private User userGeorge;
 	private Tile tile;
 	private Piece piece;
+	private SalmonBoard salmonBoard;
 	
 	@BeforeEach
 	void setup() {
@@ -122,6 +124,11 @@ public class RoundControllerTest {
 		piece.setPlayer(george);
 		piece.setRound(round);
 		piece.setStuck(false);
+		
+		salmonBoard=new SalmonBoard();
+		salmonBoard.setId(1);
+		salmonBoard.setRound(round);
+		given(this.salmonBoardService.findByRoundId(TEST_ROUND_ID)).willReturn(salmonBoard);
 		
 		Collection<Piece> pieces=new ArrayList<Piece>();
 		Collection<Round> rounds=new ArrayList<Round>();
@@ -182,7 +189,7 @@ public class RoundControllerTest {
 		mockMvc.perform(get("/rounds"))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("rounds"))
-				.andExpect(model().attributeExists("esFinished"))
+				.andExpect(model().attributeExists("isFinished"))
 				.andExpect(view().name("rounds/roundList"));
 	}
 	
@@ -193,7 +200,7 @@ public class RoundControllerTest {
 		mockMvc.perform(get("/rounds/inCourse"))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("rounds"))
-				.andExpect(model().attributeExists("esFinished"))
+				.andExpect(model().attributeExists("isFinished"))
 				.andExpect(view().name("rounds/roundList"));
 	}
 	
@@ -211,7 +218,7 @@ public class RoundControllerTest {
 		mockMvc.perform(get("/rounds/finished"))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("rounds"))
-				.andExpect(model().attributeExists("esFinished"))
+				.andExpect(model().attributeExists("isFinished"))
 				.andExpect(view().name("rounds/roundList"));
 	}
 	

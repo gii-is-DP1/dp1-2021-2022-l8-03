@@ -58,6 +58,7 @@ public class PieceController {
 //			return "redirect:/rounds";	//NO SE PUEDE MODIFICAR UNA PIEZA SI NO ES TUYA O NO ES TU TURNO
 //		}
 		else {
+			model.addAttribute(round);
 			model.addAttribute(movementTypeWrapper);
 			return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
 		}
