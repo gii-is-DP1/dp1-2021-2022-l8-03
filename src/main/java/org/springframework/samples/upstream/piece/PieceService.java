@@ -729,6 +729,9 @@ public class PieceService {
 				if(pieceUsername.equals(authenticatedUsername)) {
 					piece.setNumSalmon(piece.getNumSalmon()-1);
 					pieceRepository.save(piece);
+					if(piece.getNumSalmon() < 1) {
+						pieceRepository.delete(piece);
+					}
 				}
 			}
 		}
