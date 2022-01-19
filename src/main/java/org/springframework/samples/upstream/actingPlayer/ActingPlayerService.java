@@ -97,6 +97,7 @@ public class ActingPlayerService {
 		newActingPlayer.setPoints(5);
 		newActingPlayer.setTurn(turn);
 		actingPlayerRepository.save(newActingPlayer);
+		unstuckPieces(round);
 		if(turn == 3 && turnChanged) {
 			tileService.removeStartingTiles(round.getId());
 		}else if(turn > 3 && turnChanged) {
@@ -141,6 +142,7 @@ public class ActingPlayerService {
 		newActingPlayer.setFirstPlayer(firstPlayer);
 		newActingPlayer.setTurn(turn);
 		actingPlayerRepository.save(newActingPlayer);
+		unstuckPieces(round);
 		if(turn == 3 && turnChanged) {
 			tileService.removeStartingTiles(round.getId());
 		}else if(turn > 3 && turnChanged) {
@@ -197,5 +199,13 @@ public class ActingPlayerService {
 			}
 		}
 		return true;
+	}
+	
+	public void unstuckPieces(Round round) {
+		List<Piece> pieces = this.pieceRepository.findPiecesInRound(round.getId());
+		for(Piece piece: pieces) {
+			piece.setStuck(false);
+			this.pieceRepository.save(piece);
+		}
 	}
 }

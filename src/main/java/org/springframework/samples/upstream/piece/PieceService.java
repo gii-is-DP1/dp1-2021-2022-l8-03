@@ -519,11 +519,11 @@ public class PieceService {
 	}
 	
 	private Boolean checkNewBearRightMovement(Integer rowMovement, Tile oldTile, Tile newTile) {
-		if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 3
+		if(rowMovement == 0 && oldTile.getColumnIndex()==2) {
 			return !(newTile.getOrientation()==1 || newTile.getOrientation()==2);
-		} else if(rowMovement == 0 && oldTile.getColumnIndex()==1) { //COLUMNA  1 -> 2
+		} else if(rowMovement == 0 && oldTile.getColumnIndex()==1) {
 			return !(newTile.getOrientation()==2 || newTile.getOrientation()==3);
-		} else { //COLUMNA 1 -> 2 Y SUBE FILA
+		} else {
 			return !(newTile.getOrientation()==1 || newTile.getOrientation()==2);
 		}
 	}
