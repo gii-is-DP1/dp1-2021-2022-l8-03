@@ -2,10 +2,13 @@ package org.springframework.samples.upstream.actingPlayer;
 
 
 import java.util.Collection;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceRepository;
+import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundService;
 import org.springframework.samples.upstream.round.RoundState;
@@ -77,6 +80,9 @@ public class ActingPlayerService {
 		ActingPlayer newActingPlayer = actingPlayer;
 		if(newPlayer == numPlayers) {
 			newPlayer = 0;
+			if(checkMovablePieces(round.getPlayers().get(newPlayer))) {
+				newPlayer += 1;
+			}
 		}
 		if(newPlayer == firstPlayer) {
 			firstPlayer += 1;
@@ -84,6 +90,10 @@ public class ActingPlayerService {
 				firstPlayer = 0;
 			}
 			newPlayer = firstPlayer;
+			if(checkMovablePieces(round.getPlayers().get(newPlayer))) {
+				newPlayer += 1;
+				firstPlayer += 1;
+			}
 			turn = turn + 1;
 			turnChanged = true;
 		}
@@ -120,8 +130,14 @@ public class ActingPlayerService {
 		ActingPlayer newActingPlayer = actingPlayer;
 		if(newPlayer == 1) {
 			newActingPlayer.setPoints(5);
+			if(checkMovablePieces(round.getPlayers().get(newPlayer))) {
+				newPlayer = 2;
+			}
 		}else if(newPlayer == 2) {
 			newPlayer = 0;
+			if(checkMovablePieces(round.getPlayers().get(newPlayer))) {
+				newPlayer = 1;
+			}
 			newActingPlayer.setPoints(5);
 			turn = turn + 1;
 			turnChanged = true;
@@ -176,5 +192,15 @@ public class ActingPlayerService {
 		round.setMatch_end(new java.util.Date());
 		this.roundService.saveRound(round);
 		this.scoreService.setPlayerScores(round);
+	}
+	
+	public boolean checkMovablePieces(Player player) {
+		List<Piece> pieces = this.pieceRepository.findPiecesOfPlayer(player.getId());
+		for(Piece piece : pieces) {
+			if(!piece.getTile().getTileType().equals(TileType.SPAWN)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

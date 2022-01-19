@@ -13,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
+import org.springframework.samples.upstream.player.PlayerService;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundService;
 import org.springframework.samples.upstream.round.RoundState;
@@ -32,6 +33,8 @@ public class ActingPlayerServiceTests {
 	TileService tileService;
 	@Autowired
 	PieceService pieceService;
+	@Autowired
+	PlayerService playerService;
 	
 	private Player george;
     private User userGeorge;
@@ -242,4 +245,11 @@ public class ActingPlayerServiceTests {
 		this.actingPlayerService.endTheGame(round);
 		assertThat(round.getRound_state()).isEqualTo(RoundState.FINISHED);
 	}
+	
+    @Test
+    void shouldHaveMovablePieces() {
+    	Player player = this.playerService.findPlayerById(11);
+    	Boolean bool = this.actingPlayerService.checkMovablePieces(player);
+    	assertThat(bool).isEqualTo(false);
+    }
 }

@@ -137,7 +137,7 @@ public class PieceService {
 			&& checkCapacity(newTile, piece.getRound()) && checkDirectionSwim(oldTile, newTile)
 			&& checkSwimPoints(piece.getRound()) && checkCurrentWaterfall(oldTile, newTile)
 			&& checkNewWaterfall(oldTile,newTile) && checkCurrentBear(oldTile, newTile) 
-			&& checkNewBear(oldTile, newTile) && checkStuck(piece) && checkSpawn(oldTile)) {	//MOVIMIENTO VÁLIDO	
+			&& checkNewBear(oldTile, newTile) && checkStuck(piece) && checkSpawn(oldTile, newTile)) {
 			
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkRapids(piece, newTile);
@@ -154,8 +154,7 @@ public class PieceService {
 	public void jump(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException, InvalidPositionException,InvalidPlayerException, InvalidDistanceJumpException, SameTileException, InvalidCapacityException, InvalidDirectionJumpException, PieceStuckException, TileSpawnException, RoundNotInCourseException {
 		if(checkUser(piece) && checkRoundState(piece.getRound()) && sameTile(oldTile, newTile) 
 			&& checkDistanceJump(oldTile, newTile, piece.getRound()) && checkCapacity(newTile, piece.getRound()) 
-			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece)  && checkSpawn(oldTile)) {		//MOVIMIENTO VÁLIDO
-			
+			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece)  && checkSpawn(oldTile, newTile)) {			
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkRapids(piece, newTile);
 			piece = checkBear(piece, oldTile, newTile);
@@ -280,7 +279,9 @@ public class PieceService {
 		Integer capacity = newTile.getPieces().size();
 		Integer numPlayers = round.getPlayers().size();
 		TileType tipo = newTile.getTileType();
-		if(tipo.equals(TileType.ROCK) && !round.getWhirlpools()) {
+		if(tipo.equals(TileType.SPAWN)) {
+			return true;
+		}else if(tipo.equals(TileType.ROCK) && !round.getWhirlpools()) {
 			if(!(capacity == numPlayers-1)) {
 				return true;
 			} else {
@@ -558,8 +559,8 @@ public class PieceService {
 		return piece;
 	}
 	
-	public Boolean checkSpawn(Tile oldTile) throws TileSpawnException {
-		if(!oldTile.getTileType().equals(TileType.SPAWN)) {
+	public Boolean checkSpawn(Tile oldTile, Tile newTile) throws TileSpawnException {
+		if(!oldTile.getTileType().equals(TileType.SPAWN) && newTile.getSalmonEggs() < 2) {
 			return true;
 		} else {
 			throw new TileSpawnException();
@@ -695,7 +696,7 @@ public class PieceService {
 		ActingPlayer actingPlayer = round.getActingPlayer();
 		actingPlayer.setPoints(actingPlayer.getPoints()-1);
 		actingPlayerService.saveActingPlayer(actingPlayer);
-		if(actingPlayer.getPoints()==0) {
+		if(actingPlayer.getPoints()==0 || this.actingPlayerService.checkMovablePieces(round.getPlayers().get(actingPlayer.getPlayer()))) {
 			checkHeron(round);
 			if(round.getNum_players() > 2) {
 				actingPlayerService.changeTurn(actingPlayer);
@@ -705,12 +706,14 @@ public class PieceService {
 		}
 	}
 	
+	
+	
 	public void substractMovementPointsJump(Round round, Tile oldTile, Tile newTile) throws InvalidPositionException,InvalidPlayerException{
 		ActingPlayer actingPlayer = round.getActingPlayer();
 		Integer substraction = countIntermediateTiles(oldTile, newTile, round);
 		actingPlayer.setPoints(actingPlayer.getPoints()-substraction);
 		actingPlayerService.saveActingPlayer(actingPlayer);
-		if(actingPlayer.getPoints()==0) {
+		if(actingPlayer.getPoints()==0 || this.actingPlayerService.checkMovablePieces(round.getPlayers().get(actingPlayer.getPlayer()))) {
 			checkHeron(round);
 			if(round.getNum_players() > 2) {
 				actingPlayerService.changeTurn(actingPlayer);
@@ -727,7 +730,7 @@ public class PieceService {
 			for(Piece piece : tile.getPieces()) {
 				String pieceUsername = piece.getPlayer().getUser().getUsername();
 				if(pieceUsername.equals(authenticatedUsername)) {
-					piece.setNumSalmon(piece.getNumSalmon()-1);
+					piece.setNumSalmon(piece.getNumSalmon()-1);					
 					pieceRepository.save(piece);
 					if(piece.getNumSalmon() < 1) {
 						pieceRepository.delete(piece);
