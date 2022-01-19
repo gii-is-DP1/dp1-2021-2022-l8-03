@@ -177,7 +177,7 @@ public class TileService {
 		tileRepository.save(tile);
 		roundTiles.add(tile);
 		round.setTiles(roundTiles);
-		roundRepository.save(round);
+		this.roundRepository.save(round);
 	}	
 
 	public void addSpawnTiles(Round round) {
