@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.samples.upstream.piece.Color;
 
 /**
  * Spring Data JPA PlayerRepository interface
@@ -50,4 +51,8 @@ public interface PlayerRepository extends CrudRepository<Player, Integer> {
 	
 	@Query("SELECT player FROM Player player WHERE player.user.username=:username")
 	public Player findByUsername(@Param("username") String username);
+	
+	@Query("SELECT DISTINCT piece.color FROM Piece piece WHERE piece.player.id=:id")
+	public Color getPlayerColor(@Param("id") Integer id);
+	
 }

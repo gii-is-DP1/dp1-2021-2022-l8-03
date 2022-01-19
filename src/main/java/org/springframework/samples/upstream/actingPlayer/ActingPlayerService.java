@@ -56,7 +56,12 @@ public class ActingPlayerService {
 		ActingPlayer actingPlayer=new ActingPlayer();
 		actingPlayer.setFirstPlayer(0);
 		actingPlayer.setPlayer(0);
-		actingPlayer.setPoints(5);
+		if(round.getNum_players()==2) {
+			actingPlayer.setPoints(4);
+		}
+		else {
+			actingPlayer.setPoints(5);
+		}
 		actingPlayer.setTurn(1);
 		actingPlayer.setRound(round);
 		saveActingPlayer(actingPlayer);

@@ -730,8 +730,11 @@ public class PieceService {
 			for(Piece piece : tile.getPieces()) {
 				String pieceUsername = piece.getPlayer().getUser().getUsername();
 				if(pieceUsername.equals(authenticatedUsername)) {
-					piece.setNumSalmon(piece.getNumSalmon()-1);
-					pieceRepository.save(piece);						
+					piece.setNumSalmon(piece.getNumSalmon()-1);					
+					pieceRepository.save(piece);
+					if(piece.getNumSalmon() < 1) {
+						pieceRepository.delete(piece);
+					}
 				}
 			}
 		}
