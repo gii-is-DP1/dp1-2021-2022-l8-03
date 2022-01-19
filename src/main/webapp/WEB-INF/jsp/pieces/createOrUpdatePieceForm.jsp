@@ -20,7 +20,12 @@
         	<input type="radio" name="movementType" value="true">Jump
         <div class="form-group"> 
             <div class="col-sm-offset-2 col-sm-10">
-                  <button class="btn btn-default" type="submit">Move</button>
+                <button class="btn btn-default" type="submit">Move</button>
+                  
+                <spring:url value="/rounds/{roundId}" var="roundUrl">
+               		<spring:param name="roundId" value="${round.id}"/>
+               	</spring:url>
+               	<a href="${fn:escapeXml(roundUrl)}" class="btn btn-default">Back</href></a>
             </div>
         </div>
     </form:form>

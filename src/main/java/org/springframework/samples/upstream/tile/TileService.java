@@ -7,10 +7,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.upstream.piece.Piece;
-
+import org.springframework.samples.upstream.piece.exceptions.InvalidPositionException;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
-import org.springframework.samples.upstream.tile.exceptions.InvalidPositionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

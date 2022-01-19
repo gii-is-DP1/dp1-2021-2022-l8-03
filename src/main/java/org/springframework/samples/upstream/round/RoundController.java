@@ -123,9 +123,11 @@ public class RoundController {
 		}
         String vista = "rounds/roundList";
         Iterable<Round> rounds = roundService.findCreatedRounds();
-        boolean esFinished=false;
+        boolean isFinished=false;
+        boolean isInCourse=false;
         model.addAttribute("rounds", rounds);
-        model.addAttribute("esFinished",esFinished);
+        model.addAttribute("isFinished",isFinished);
+        model.addAttribute("isInCourse",isInCourse);
         return vista;
     }
 
@@ -138,9 +140,11 @@ public class RoundController {
     	
         String vista = "rounds/roundList";
         Iterable<Round> rounds = roundService.findInCourseRounds();
-        boolean esFinished=false;
+        boolean isFinished=false;
+        boolean isInCourse=true;
+        model.addAttribute("isInCourse",isInCourse);
         model.addAttribute("rounds", rounds);
-        model.addAttribute("esFinished",esFinished);
+        model.addAttribute("isFinished",isFinished);
         return vista;
     }
 
@@ -152,9 +156,11 @@ public class RoundController {
 		}
         String vista = "rounds/roundList";
         Iterable<Round> rounds = roundService.findFinishedRounds();
-        boolean esFinished=true;
+        boolean isFinished=true;
+        boolean isInCourse=false;
+        model.addAttribute("isInCourse",isInCourse);
         model.addAttribute("rounds", rounds);
-        model.addAttribute("esFinished",esFinished);
+        model.addAttribute("isFinished",isFinished);
         return vista;
     }
 	
@@ -280,9 +286,11 @@ public class RoundController {
 		if(round==null){
 			ModelAndView mav = new ModelAndView("rounds/roundList");
 	        Iterable<Round> rounds = roundService.findCreatedRounds();
-	        boolean esFinished=false;
+	        boolean isFinished=false;
+	        boolean isInCourse=false;
+	        mav.addObject("isInCourse",isInCourse);
 	        mav.addObject("rounds", rounds);
-	        mav.addObject("esFinished",esFinished);
+	        mav.addObject("isFinished",isFinished);
 			return mav;
 		}else if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.CREATED)) {
 			ModelAndView mav = new ModelAndView("rounds/roundWaitingRoom");
@@ -299,6 +307,8 @@ public class RoundController {
 		else if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.IN_COURSE)){
 			SalmonBoard board=this.salmonBoardService.findByRoundId(round.getId());
 			response.addHeader("Refresh", "5");
+			List<Player> players= round.getPlayers();
+			Color color= Color.values()[players.indexOf(player)];
 			ModelAndView mav = new ModelAndView("rounds/roundDetails");
 			mav.addObject(player);
 			mav.addObject(board);

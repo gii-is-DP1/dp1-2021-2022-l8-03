@@ -24,8 +24,6 @@
             <th>Column</th>
 			<th>Salmon's number</th>
             <th>Movement</th>
-            <th></th>
-            <th></th>
         </tr>
         </thead>
         
