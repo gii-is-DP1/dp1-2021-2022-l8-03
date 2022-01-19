@@ -3,7 +3,7 @@ package org.springframework.samples.upstream.actingPlayer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +21,7 @@ import org.springframework.samples.upstream.tile.Tile;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.samples.upstream.tile.TileType;
 import org.springframework.samples.upstream.user.User;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
@@ -135,12 +136,25 @@ public class ActingPlayerServiceTests {
 	}
 	
 	@Test
+	@WithMockUser(username = "admin")
 	void shouldChangeTurn() {
 		Round round = this.roundService.findRoundById(5);
 		round.setNum_players(3);
+		Player player1 = this.playerService.findPlayerById(11);
+		Player player2 = this.playerService.findPlayerById(14);
+		Player player3 = this.playerService.findPlayerById(15);
+		player1.setRound(round);
+		this.playerService.savePlayer(player1);
+		player2.setRound(round);
+		this.playerService.savePlayer(player2);
+		player3.setRound(round);
+		this.playerService.savePlayer(player3);
 		this.actingPlayerService.createActingPlayerToRound(round);
 		ActingPlayer actingPlayer = round.getActingPlayer();
 		this.tileService.createInitialTiles(round);
+		this.pieceService.createPlayerPieces(player1, round);
+		this.pieceService.createPlayerPieces(player2, round);
+		this.pieceService.createPlayerPieces(player3, round);
 		this.actingPlayerService.changeTurn(actingPlayer);
 		assertThat(actingPlayer.getPlayer()).isEqualTo(1);
 		assertThat(actingPlayer.getTurn()).isEqualTo(1);
@@ -150,36 +164,23 @@ public class ActingPlayerServiceTests {
 		this.actingPlayerService.changeTurn(actingPlayer);
 		assertThat(actingPlayer.getPlayer()).isEqualTo(1);
 		assertThat(actingPlayer.getTurn()).isEqualTo(2);
-		
-		actingPlayer.setPlayer(0);
-		
-		List<Tile> startingTiles = this.tileService.findSeaTilesInRound(round.getId());
-		assertThat(startingTiles.size()).isEqualTo(4);
-		this.actingPlayerService.changeTurn(actingPlayer);
-		startingTiles = this.tileService.findSeaTilesInRound(round.getId());
-		assertThat(startingTiles.size()).isEqualTo(0);		
-		
-		actingPlayer.setPlayer(1);
-		Integer lowestRow = this.tileService.findLowestRow(5);
-		this.actingPlayerService.changeTurn(actingPlayer);
-		Integer newLowestRow = this.tileService.findLowestRow(5);
-		assertThat(newLowestRow).isEqualTo(lowestRow+1);
-		
-		actingPlayer.setTurn(8);
-		actingPlayer.setPlayer(2);
-		List<Tile> noSpawnTiles = this.tileService.findSpawnTilesInRound(5);
-		this.actingPlayerService.changeTurn(actingPlayer);
-		List<Tile> spawnTiles = this.tileService.findSpawnTilesInRound(5);
-		assertThat(noSpawnTiles.size()).isEqualTo(0);
-		assertThat(spawnTiles.size()).isEqualTo(5);
 	}
 	
 	@Test
+	@WithMockUser(username = "admin")
 	void shouldChangeTurnTwoPlayers() {
 		Round round = this.roundService.findRoundById(5);
+		Player player1 = this.playerService.findPlayerById(11);
+		Player player2 = this.playerService.findPlayerById(14);
+		player1.setRound(round);
+		this.playerService.savePlayer(player1);
+		player2.setRound(round);
+		this.playerService.savePlayer(player2);
 		this.actingPlayerService.createActingPlayerToRound(round);
 		ActingPlayer actingPlayer = round.getActingPlayer();
 		this.tileService.createInitialTiles(round);
+		this.pieceService.createPlayerPieces(player1, round);
+		this.pieceService.createPlayerPieces(player2, round);
 		this.actingPlayerService.changeTurnTwoPlayers(actingPlayer);
 		assertThat(actingPlayer.getPlayer()).isEqualTo(1);
 		assertThat(actingPlayer.getTurn()).isEqualTo(1);
@@ -187,28 +188,6 @@ public class ActingPlayerServiceTests {
 		this.actingPlayerService.changeTurnTwoPlayers(actingPlayer);
 		assertThat(actingPlayer.getPlayer()).isEqualTo(0);
 		assertThat(actingPlayer.getTurn()).isEqualTo(2);
-		
-		actingPlayer.setPlayer(1);
-		
-		List<Tile> startingTiles = this.tileService.findSeaTilesInRound(round.getId());
-		assertThat(startingTiles.size()).isEqualTo(4);
-		this.actingPlayerService.changeTurnTwoPlayers(actingPlayer);
-		startingTiles = this.tileService.findSeaTilesInRound(round.getId());
-		assertThat(startingTiles.size()).isEqualTo(0);		
-		
-		actingPlayer.setPlayer(1);
-		Integer lowestRow = this.tileService.findLowestRow(5);
-		this.actingPlayerService.changeTurnTwoPlayers(actingPlayer);
-		Integer newLowestRow = this.tileService.findLowestRow(5);
-		assertThat(newLowestRow).isEqualTo(lowestRow+1);
-		
-		actingPlayer.setTurn(8);
-		actingPlayer.setPlayer(1);
-		List<Tile> noSpawnTiles = this.tileService.findSpawnTilesInRound(5);
-		this.actingPlayerService.changeTurnTwoPlayers(actingPlayer);
-		List<Tile> spawnTiles = this.tileService.findSpawnTilesInRound(5);
-		assertThat(noSpawnTiles.size()).isEqualTo(0);
-		assertThat(spawnTiles.size()).isEqualTo(5);
 	}
 	
 	@Test

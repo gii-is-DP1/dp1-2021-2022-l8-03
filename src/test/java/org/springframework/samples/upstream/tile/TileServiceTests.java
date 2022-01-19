@@ -66,6 +66,25 @@ public class TileServiceTests {
 	
 	@Test
 	@Transactional
+	void shouldFindBySalmonEggs() {
+		Round round = this.roundService.findRoundById(5);
+		Tile notFound = this.tileService.findTileBySalmonEggs(1, 5);
+		assertThat(notFound).isEqualTo(null);
+		Tile tile = new Tile();
+		tile.setColumnIndex(1);
+		tile.setId(100);
+		tile.setOrientation(1);
+		tile.setRound(round);
+		tile.setRowIndex(1);
+		tile.setSalmonEggs(1);
+		tile.setTileType(TileType.SPAWN);
+		tileService.saveTile(tile);
+		Tile found = this.tileService.findTileBySalmonEggs(1, 5);
+		assertThat(found).isNotEqualTo(null);
+	}
+	
+	@Test
+	@Transactional
 	void shouldFindByPosition() throws InvalidPositionException{
 		Tile tile = this.tileService.findByPosition(1, 1, 1);
 		assertThat(tile.getId()).isEqualTo(1);

@@ -154,7 +154,8 @@ public class PieceService {
 	public void jump(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException, InvalidPositionException,InvalidPlayerException, InvalidDistanceJumpException, SameTileException, InvalidCapacityException, InvalidDirectionJumpException, PieceStuckException, TileSpawnException, RoundNotInCourseException {
 		if(checkUser(piece) && checkRoundState(piece.getRound()) && sameTile(oldTile, newTile) 
 			&& checkDistanceJump(oldTile, newTile, piece.getRound()) && checkCapacity(newTile, piece.getRound()) 
-			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece)  && checkSpawn(oldTile, newTile)) {			
+			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece)  && checkSpawn(oldTile, newTile)) {	
+			
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkRapids(piece, newTile);
 			piece = checkBear(piece, oldTile, newTile);
@@ -723,15 +724,17 @@ public class PieceService {
 		}
 	}
 	
-	private void checkHeron(Round round) throws InvalidPositionException {
-		List<Tile> heronTiles = tileService.findHeronTilesInRound(round.getId()); 	
+	private void checkHeron(Round round) throws InvalidPositionException {	
 		String authenticatedUsername = getCurrentUsername();
-		for(Tile tile : heronTiles) {
-			for(Piece piece : tile.getPieces()) {
-				String pieceUsername = piece.getPlayer().getUser().getUsername();
-				if(pieceUsername.equals(authenticatedUsername)) {
-					piece.setNumSalmon(piece.getNumSalmon()-1);
-					pieceRepository.save(piece);						
+		Player player = this.playerService.findPlayerByUsername(authenticatedUsername);
+		List<Piece> pieces = findPiecesOfPlayer(player.getId());
+		for(Piece piece : pieces) {
+			String pieceUsername = piece.getPlayer().getUser().getUsername();
+			if(pieceUsername.equals(authenticatedUsername)) {
+				piece.setNumSalmon(piece.getNumSalmon()-1);
+				pieceRepository.save(piece);				
+				if(piece.getNumSalmon() < 1) {
+					pieceRepository.delete(piece);
 				}
 			}
 		}
