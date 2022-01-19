@@ -260,7 +260,7 @@ public class ActingPlayerServiceTests {
     	this.pieceService.save(piece);
     	piece = this.pieceService.findPieceById(1);
     	assertThat(piece.getStuck()).isEqualTo(true);
-    	//comentario sobrante
+
     	this.actingPlayerService.unstuckPieces(piece.getRound());
     	piece = this.pieceService.findPieceById(1);
     	assertThat(piece.getStuck()).isEqualTo(false);
