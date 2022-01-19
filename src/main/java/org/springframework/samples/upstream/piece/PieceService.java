@@ -690,15 +690,11 @@ public class PieceService {
 	}
 	
 	private Pair<Integer, Integer> checkRapidsColumn1(Tile newTile, Integer newRow, Integer newColumn) {
-		if(newTile.getOrientation() == 1) {
+		if(newTile.getOrientation() == 2) {
 			newRow = newRow + 1;
-		}else if(newTile.getOrientation() == 2) {
-			newRow = newRow + 1;
-			newColumn = newColumn + 1;
 		}else if(newTile.getOrientation() == 3) {
+			newRow = newRow + 1;
 			newColumn = newColumn + 1;
-		}else if(newTile.getOrientation() == 4) {
-			newRow = newRow - 1;
 		}
 		Pair<Integer, Integer> tupla = Pair.of(newRow, newColumn);
 		return tupla;
@@ -710,14 +706,6 @@ public class PieceService {
 		}else if(newTile.getOrientation() == 2) {
 			newColumn = newColumn + 1;
 		}else if(newTile.getOrientation() == 3) {
-			newRow = newRow - 1;
-			newColumn = newColumn + 1;
-		}else if(newTile.getOrientation() == 4) {
-			newRow = newRow - 1;
-		}else if(newTile.getOrientation() == 5) {
-			newRow = newRow - 1;
-			newColumn = newColumn - 1;
-		}else if(newTile.getOrientation() == 6) {
 			newColumn = newColumn - 1;
 		}
 		Pair<Integer, Integer> tupla = Pair.of(newRow, newColumn);
@@ -727,13 +715,9 @@ public class PieceService {
 	private Pair<Integer, Integer> checkRapidsColumn3(Tile newTile, Integer newRow, Integer newColumn) {
 		if(newTile.getOrientation() == 1) {
 			newRow = newRow + 1;
-		}else if(newTile.getOrientation() == 4) {
-			newRow = newRow - 1;
-		}else if(newTile.getOrientation() == 5) {
 			newColumn = newColumn - 1;
-		}else if(newTile.getOrientation() == 6) {
+		}else if(newTile.getOrientation() == 2) {
 			newRow = newRow + 1;
-			newColumn = newColumn - 1;
 		}
 		Pair<Integer, Integer> tupla = Pair.of(newRow, newColumn);
 		return tupla;

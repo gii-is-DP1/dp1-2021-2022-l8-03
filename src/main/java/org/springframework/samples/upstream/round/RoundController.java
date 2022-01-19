@@ -303,7 +303,6 @@ public class RoundController {
 			mav.addObject(player);
 			mav.addObject(board);
 			mav.addObject(round);
-			mav.addObject(color);
 			return mav;
 		}else {
 			ModelAndView mav = new ModelAndView("rounds/roundScore");

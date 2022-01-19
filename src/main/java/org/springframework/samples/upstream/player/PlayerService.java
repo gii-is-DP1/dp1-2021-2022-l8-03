@@ -34,12 +34,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Mostly used as a facade for all Upstream controllers Also a placeholder
- * for @Transactional and @Cacheable annotations
- *
- * @author Michael Isvy
- */
 @Service
 public class PlayerService {
 
@@ -89,11 +83,11 @@ public class PlayerService {
 	public void savePlayer(Player player) throws DataAccessException {
 		String username = findPlayerById(player.getId()).getUser().getUsername();
 		if(checkAdminAndInitiatedUser(username)) {
-			//creating player
+			
 			playerRepository.save(player);		
-			//creating user
+			
 			userService.saveUser(player.getUser());
-			//creating authorities
+			
 			authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");
 		}		
 	}	
@@ -110,11 +104,11 @@ public class PlayerService {
 	
 	@Transactional
 	public void saveNewPlayer(Player player) throws DataAccessException {
-			//creating player
+			
 			playerRepository.save(player);		
-			//creating user
+			
 			userService.saveUser(player.getUser());
-			//creating authorities
+			
 			authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");		
 	}	
 	
