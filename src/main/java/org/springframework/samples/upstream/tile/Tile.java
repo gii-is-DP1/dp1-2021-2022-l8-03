@@ -38,10 +38,10 @@ public class Tile extends BaseEntity {
 	
     public Integer getPositionXInPixels(Integer size) {
     	if(columnIndex==1 || columnIndex==3) {
-    		return (rowIndex)*(-size)+1400-(size/2);
+    		return (rowIndex)*(-size)+1900-(size/2);
     	}
     	else {
-    		return (rowIndex)*(-size)+1400;
+    		return (rowIndex)*(-size)+1900;
     	}
     }
     
