@@ -111,7 +111,6 @@ public class PieceService {
 			piece.setPlayer(player);
 			piece.setRound(round);
 			piece.setStuck(false);
-			tilePieces.add(piece);
 			piece.setTile(tile);
 			
 			List<Player> players = new ArrayList<Player>(round.getPlayers());
@@ -121,6 +120,7 @@ public class PieceService {
 			
 			roundPieces.add(piece);
 			playerPieces.add(piece);
+			tilePieces.add(piece);
 		}
 		round.setPieces(roundPieces);
 		roundService.saveRound(round);
@@ -138,12 +138,13 @@ public class PieceService {
 			&& checkSwimPoints(piece.getRound()) && checkCurrentWaterfall(oldTile, newTile)
 			&& checkNewWaterfall(oldTile,newTile) && checkCurrentBear(oldTile, newTile) 
 			&& checkNewBear(oldTile, newTile) && checkStuck(piece) && checkSpawn(oldTile, newTile)) {
-			
-			piece = checkWhirlpool(piece, newTile);
-			piece = checkEagle(piece, newTile);
+						
 			piece.setTile(newTile);
 			piece = checkRapids(piece, newTile);
+			piece = checkWhirlpool(piece, newTile);
+			piece = checkEagle(piece, newTile);
 			pieceRepository.save(piece);
+			
 			if(piece.getNumSalmon() < 1) {
 				pieceRepository.delete(piece);
 			}
@@ -156,12 +157,13 @@ public class PieceService {
 			&& checkDistanceJump(oldTile, newTile, piece.getRound()) && checkCapacity(newTile, piece.getRound()) 
 			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece)  && checkSpawn(oldTile, newTile)) {	
 			
-			piece = checkWhirlpool(piece, newTile);
-			piece = checkBear(piece, oldTile, newTile);
-			piece = checkIntermediateBear(piece, oldTile, newTile);
-			piece = checkEagle(piece, newTile);
+			
+			piece = checkIntermediateBear(piece, oldTile, newTile);			
 			piece.setTile(newTile);
 			piece = checkRapids(piece, newTile);
+			piece = checkWhirlpool(piece, newTile);
+			piece = checkBear(piece, oldTile, newTile);
+			piece = checkEagle(piece, newTile);
 			pieceRepository.save(piece);
 			if(piece.getNumSalmon() < 1) {
 				pieceRepository.delete(piece);
@@ -196,9 +198,10 @@ public class PieceService {
 	}
 	
 	public Boolean checkDistanceSwim(Tile oldTile, Tile newTile) throws InvalidDistanceSwimException{
+		Integer oldColumn = oldTile.getColumnIndex();
 		Integer rowDistance = Math.abs(oldTile.getRowIndex() - newTile.getRowIndex());
 		Integer columnDistance = Math.abs(oldTile.getColumnIndex() - newTile.getColumnIndex());
-		if(rowDistance <= 1 && columnDistance <= 1) {
+		if((rowDistance + columnDistance <= 1 && oldColumn == 2) || (rowDistance <= 1 && columnDistance <= 1 && oldColumn != 2)) {
 			return true;
 		} else {
 			throw new InvalidDistanceSwimException();
