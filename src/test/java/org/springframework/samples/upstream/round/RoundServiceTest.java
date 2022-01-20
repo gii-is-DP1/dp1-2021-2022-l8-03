@@ -2,7 +2,9 @@ package org.springframework.samples.upstream.round;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.samples.upstream.player.Player;
 import org.springframework.samples.upstream.player.PlayerService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -74,11 +77,13 @@ public class RoundServiceTest {
 	
 	@Test
 	void shouldDeleteRound() {
+		List<Player> players=new ArrayList<Player>();
 		Round round=new Round();
 			round.setPlayer(this.playerService.findPlayerByUsername("mandommag"));
 			round.setWhirlpools(true);
 			round.setRapids(true);
 			round.setNum_players(3);
+			round.setPlayers(players);
 		this.roundService.saveRound(round);
 		Collection<Round> roundsStart = this.roundService.findAll();
 		this.roundService.deleteRound(round);
