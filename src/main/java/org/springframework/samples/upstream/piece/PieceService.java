@@ -729,12 +729,14 @@ public class PieceService {
 		Player player = this.playerService.findPlayerByUsername(authenticatedUsername);
 		List<Piece> pieces = findPiecesOfPlayer(player.getId());
 		for(Piece piece : pieces) {
-			String pieceUsername = piece.getPlayer().getUser().getUsername();
-			if(pieceUsername.equals(authenticatedUsername)) {
-				piece.setNumSalmon(piece.getNumSalmon()-1);
-				pieceRepository.save(piece);				
-				if(piece.getNumSalmon() < 1) {
-					pieceRepository.delete(piece);
+			if(piece.getTile().getTileType().equals(TileType.HERON)) {
+				String pieceUsername = piece.getPlayer().getUser().getUsername();
+				if(pieceUsername.equals(authenticatedUsername)) {
+					piece.setNumSalmon(piece.getNumSalmon()-1);
+					pieceRepository.save(piece);				
+					if(piece.getNumSalmon() < 1) {
+						pieceRepository.delete(piece);
+					}
 				}
 			}
 		}

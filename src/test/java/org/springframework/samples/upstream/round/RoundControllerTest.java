@@ -24,6 +24,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.upstream.actingPlayer.ActingPlayerService;
 import org.springframework.samples.upstream.configuration.SecurityConfiguration;
+import org.springframework.samples.upstream.piece.Color;
 import org.springframework.samples.upstream.piece.Piece;
 import org.springframework.samples.upstream.piece.PieceService;
 import org.springframework.samples.upstream.player.Player;
@@ -89,6 +90,7 @@ public class RoundControllerTest {
 		userGeorge.setPassword("0wn3r");
 		george.setUser(userGeorge);
 		given(this.playerService.findPlayerById(TEST_PLAYER_ID)).willReturn(george);
+		given(this.playerService.getPlayerColor(TEST_PLAYER_ID)).willReturn(Color.BLACK);
 		given(this.playerService.findPlayerByUsername("player1")).willReturn(george);
 		when(this.playerService.checkAdminAndInitiatedUser("player1")).thenReturn(true);
 		
