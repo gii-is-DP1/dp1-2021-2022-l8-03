@@ -36,7 +36,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-//PieceServiceTest
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 public class PieceServiceTest {
     @Autowired
