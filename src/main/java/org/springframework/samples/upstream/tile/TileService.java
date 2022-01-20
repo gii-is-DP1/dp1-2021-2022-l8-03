@@ -7,7 +7,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.upstream.piece.Piece;
-import org.springframework.samples.upstream.piece.PieceRepository;
 import org.springframework.samples.upstream.piece.exceptions.InvalidPositionException;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
@@ -21,29 +20,15 @@ public class TileService {
 	
 	@Autowired
 	private RoundRepository roundRepository;
-	
-	@Autowired
-	private PieceRepository pieceRepository;
 
 	@Autowired
-	public TileService(TileRepository tileRepository,RoundRepository roundRepository,PieceRepository pieceRepository) {
+	public TileService(TileRepository tileRepository,RoundRepository roundRepository) {
 		this.tileRepository = tileRepository;
 		this.roundRepository= roundRepository;
-		this.pieceRepository=pieceRepository;
 	}	
 	
 	@Transactional(readOnly = true)
 	public void deleteTile(Tile tile) throws DataAccessException {
-//		Collection<Piece> pieces=tile.
-		
-		
-		
-//		Collection<Piece> pieces=this.roundRepository.findById(tile.getRound().getId()).get().getPieces();
-//		for(Piece p:pieces) {
-//			if(p.getTile().equals(tile)) {
-//				this.pieceRepo
-//			}
-//		}
 		tileRepository.delete(tile);
 	}
 
