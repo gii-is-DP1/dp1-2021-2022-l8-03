@@ -138,14 +138,20 @@ public class PieceService {
 			&& checkSwimPoints(piece.getRound()) && checkCurrentWaterfall(oldTile, newTile)
 			&& checkNewWaterfall(oldTile,newTile) && checkCurrentBear(oldTile, newTile) 
 			&& checkNewBear(oldTile, newTile) && checkStuck(piece) && checkSpawn(oldTile, newTile)) {
-						
+					
 			piece.setTile(newTile);
+			newTile.getPieces().add(piece);
+			oldTile.getPieces().remove(piece);
+			tileService.saveTile(newTile);
+			tileService.saveTile(oldTile);
 			piece = checkRapids(piece, newTile);
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkEagle(piece, newTile);
 			pieceRepository.save(piece);
 			
 			if(piece.getNumSalmon() < 1) {
+				newTile.getPieces().remove(piece);
+				tileService.saveTile(newTile);
 				pieceRepository.delete(piece);
 			}
 			substractMovementPointsSwim(piece.getRound());
@@ -160,12 +166,18 @@ public class PieceService {
 			
 			piece = checkIntermediateBear(piece, oldTile, newTile);			
 			piece.setTile(newTile);
+			newTile.getPieces().add(piece);
+			oldTile.getPieces().remove(piece);
+			tileService.saveTile(newTile);
+			tileService.saveTile(oldTile);
 			piece = checkRapids(piece, newTile);
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkBear(piece, oldTile, newTile);
 			piece = checkEagle(piece, newTile);
 			pieceRepository.save(piece);
 			if(piece.getNumSalmon() < 1) {
+				newTile.getPieces().remove(piece);
+				tileService.saveTile(newTile);
 				pieceRepository.delete(piece);
 			}
 			substractMovementPointsJump(piece.getRound(), oldTile, newTile);
@@ -556,7 +568,8 @@ public class PieceService {
 		if(oldTile.getTileType().equals(TileType.BEAR)) {
 			numSalmon += -1;
 			piece.setNumSalmon(numSalmon);
-		} else if (newTile.getTileType().equals(TileType.BEAR)) {
+		}
+		if(newTile.getTileType().equals(TileType.BEAR)) {
 			numSalmon += -1;
 			piece.setNumSalmon(numSalmon);
 		}
@@ -729,20 +742,22 @@ public class PieceService {
 	
 	private void checkHeron(Round round) throws InvalidPositionException {
 		String authenticatedUsername = getCurrentUsername();
-		Player player = this.playerService.findPlayerByUsername(authenticatedUsername);
-		List<Piece> pieces = findPiecesOfPlayer(player.getId());
-		for(Piece piece : pieces) {
-			if(piece.getTile().getTileType().equals(TileType.HERON)) {
+		List<Tile> heronTiles = tileService.findHeronTilesInRound(round.getId());
+		for(Tile heron:heronTiles) {
+			for(Piece piece:heron.getPieces()) {
 				String pieceUsername = piece.getPlayer().getUser().getUsername();
 				if(pieceUsername.equals(authenticatedUsername)) {
 					piece.setNumSalmon(piece.getNumSalmon()-1);
 					pieceRepository.save(piece);				
 					if(piece.getNumSalmon() < 1) {
+						heron.getPieces().remove(piece);
+						tileService.saveTile(heron);
 						pieceRepository.delete(piece);
 					}
 				}
-			}
+			}	
 		}
+		
 	}
 
 	public Piece checkWhirlpool(Piece piece, Tile newTile) {
