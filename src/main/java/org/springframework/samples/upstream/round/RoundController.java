@@ -255,7 +255,10 @@ public class RoundController {
 				this.playerService.savePlayer(player);
 				if(!round.getRound_state().equals(RoundState.FINISHED)) {
 					players.remove(player);
-				}				
+				}		
+				if(round.getRound_state().equals(RoundState.IN_COURSE)) {
+					round.setNum_players(round.getNum_players()-1);
+				}		
 				
 				pieces.removeAll(player.getPieces());
 				player.getPieces().removeAll(player.getPieces());
@@ -314,9 +317,14 @@ public class RoundController {
 		else if(this.roundService.findRoundById(roundId).getRound_state().equals(RoundState.IN_COURSE)){
 			SalmonBoard board=this.salmonBoardService.findByRoundId(round.getId());
 			response.addHeader("Refresh", "5");
-
+			boolean noPieces = false;
 			Color color= this.playerService.getPlayerColor(player.getId());
 			ModelAndView mav = new ModelAndView("rounds/roundDetails");
+			if(player.getPieces().isEmpty()) {
+				color = Color.BLACK;
+				noPieces = true;
+			}
+			mav.addObject(noPieces);
 			mav.addObject(player);
 			mav.addObject(board);
 			mav.addObject(round);

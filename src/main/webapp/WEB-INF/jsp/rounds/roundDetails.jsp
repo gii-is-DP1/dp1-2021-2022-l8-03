@@ -17,7 +17,8 @@
 		
 		<table id="pieces" class="table table-striped">
         <thead>
-        <h2>Your Pieces: <c:out value="${color}"/></h2>
+        <h2>Your Pieces: <c:if test="${!noPieces}">
+        	<c:out value="${color}"/></c:if></h2>
         <tr>
             <th>Piece</th>
             <th>Row</th>
@@ -28,7 +29,8 @@
         </thead>
         
 	        <tbody>
-
+				<c:if test="${!noPieces}">
+				
 		        <c:forEach items="${player.pieces}" var="piece" varStatus="status">
 		            <tr>
 		                <td>
@@ -52,6 +54,7 @@
 		                
 		            </tr>
 		        </c:forEach>
+		        </c:if>
 	        </tbody>
     	</table>
 	</div>

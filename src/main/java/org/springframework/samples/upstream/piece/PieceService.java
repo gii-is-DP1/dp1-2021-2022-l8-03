@@ -569,7 +569,8 @@ public class PieceService {
 		if(oldTile.getTileType().equals(TileType.BEAR)) {
 			numSalmon += -1;
 			piece.setNumSalmon(numSalmon);
-		} else if (newTile.getTileType().equals(TileType.BEAR)) {
+		}
+		if(newTile.getTileType().equals(TileType.BEAR)) {
 			numSalmon += -1;
 			piece.setNumSalmon(numSalmon);
 		}
