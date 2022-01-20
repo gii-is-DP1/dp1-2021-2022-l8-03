@@ -103,14 +103,14 @@ public class ActingPlayerService {
 		newActingPlayer.setTurn(turn);
 		actingPlayerRepository.save(newActingPlayer);
 		unstuckPieces(round);
-		if(turn == 9 && turnChanged) {
+		if(turn == 3 && turnChanged) {
 			tileService.removeStartingTiles(round.getId());
-		}else if(turn > 9 && turnChanged) {
+		}else if(turn > 3 && turnChanged) {
 			tileService.removeLowestTiles(round.getId());
 		}
-		if(turn < 9 && turnChanged) {
+		if(turn < 5 && turnChanged) {
 			tileService.addNewRow(round);
-		}else if(turn == 9 && turnChanged) {
+		}else if(turn == 5 && turnChanged) {
 			tileService.addSpawnTiles(round);
 		}
 		if(turnChanged) {

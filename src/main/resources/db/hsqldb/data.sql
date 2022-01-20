@@ -36,7 +36,8 @@ INSERT INTO users(username,password,enabled) VALUES ('manlopalm', 'manlopalm',TR
 INSERT INTO authorities(id, username, authority) VALUES (15, 'manlopalm', 'player');
 INSERT INTO users(username,password,enabled) VALUES ('mandommag','mandommag',TRUE);
 INSERT INTO authorities(id, username, authority) VALUES (16, 'mandommag', 'player');
-
+INSERT INTO users(username,password,enabled) VALUES ('player11','mandommag',TRUE);
+INSERT INTO authorities(id, username, authority) VALUES (17, 'player11', 'player');
 
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (1, 'George', 'Franklin', 'ejemplo@gmail.com', 'player1', NULL);
 INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (2, 'Betty', 'Davis', 'ejemplo@gmail.com', 'player2', NULL);
@@ -100,14 +101,7 @@ INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VAL
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (19, 1, false, 11, 1, 4, 0);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (20, 2, false, 14, 1, 4, 1);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (21, 2, false, 14, 1, 4, 2);
---INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id) VALUES (2, 2, false, 14, 1, 1);
 
-
-
---INSERT INTO piece(id,color,type,x_position,y_position,board_id) VALUES (1,'BLACK','HORSE',1,1,1);
---INSERT INTO piece(id,color,type,x_position,y_position,board_id) VALUES (2,'BLACK','KING',5,1,1);
---INSERT INTO piece(id,color,type,x_position,y_position,board_id) VALUES (3,'WHITE','KING',7,5,1);
---INSERT INTO piece(id,color,type,x_position,y_position,board_id) VALUES (4,'BLACK','HORSE',6,1,1);
 
 INSERT INTO scores(id, value, player_id, round_id) VALUES (1, 1, 11, 1);
 INSERT INTO scores(id, value, player_id, round_id) VALUES (2, 2, 14, 1);
@@ -129,8 +123,6 @@ INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_ty
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (22, 4, 1, 1, 0, 4, 4);
 
 
-
---Test para Piece
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (23, 4, 2, 4, 0, 0, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (24, 4, 3, 1, 0, 4, 4);
 INSERT INTO tiles(id, row_index, column_index, orientation, salmon_eggs, tile_type, round_id) VALUES (25, 5, 1, 1, 0, 3, 4);
@@ -154,3 +146,6 @@ INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VAL
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (28, 2, false, 5, 4, 35,1);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (29, 2, false, 5, 4, 31,2);
 INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (30, 2, false, 5, 4, 32,2);
+
+INSERT INTO players(id, first_name, last_name, email, username, round_id) VALUES (28, 'Jean', 'Coleman', 'ejemplo@gmail.com', 'player11', null);
+INSERT INTO piece(id, num_salmon, stuck, player_id, round_id, tile_id,color) VALUES (31, 2, false, 28, null, null,0);

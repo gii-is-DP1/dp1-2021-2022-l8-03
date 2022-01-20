@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.samples.upstream.piece.exceptions.InvalidPlayerException;
 import org.springframework.samples.upstream.piece.exceptions.InvalidPositionException;
 import org.springframework.samples.upstream.player.PlayerService;
 import org.springframework.samples.upstream.round.Round;
@@ -87,6 +86,13 @@ public class TileServiceTests {
 	@Transactional
 	void shouldFindByPosition() throws InvalidPositionException{
 		Tile tile = this.tileService.findByPosition(1, 1, 1);
+		assertThat(tile.getId()).isEqualTo(1);
+	}
+	
+	@Test
+	@Transactional
+	void shouldFindByPositionRapids() {
+		Tile tile = this.tileService.findByPositionRapids(1, 1, 1);
 		assertThat(tile.getId()).isEqualTo(1);
 	}
 	

@@ -28,4 +28,10 @@
         </c:forEach>
         </tbody>
     </table>
+    <th> 
+        <spring:url value="/rounds/leave/{roundId}" var="roundUrl">
+        <spring:param name="roundId" value="${round.id}"/>
+        </spring:url>
+        <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Exit round</href></a>
+    </th>
 </petclinic:layout>

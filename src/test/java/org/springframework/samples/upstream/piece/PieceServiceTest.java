@@ -99,7 +99,7 @@ public class PieceServiceTest {
     void shouldSwim() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(22);
     	Tile oldTile = piece.getTile();
-    	Tile newTile = this.tileService.findTileById(16);
+    	Tile newTile = this.tileService.findTileById(13);
     	newTile.setTileType(TileType.WATER);
     	
     	this.pieceService.swim(piece, oldTile, newTile);
@@ -146,6 +146,8 @@ public class PieceServiceTest {
     @WithMockUser(username = "player5")
     void shouldNotSwimNextBear() throws InvalidPositionException,InvalidPlayerException, DataAccessException, InvalidDistanceSwimException, SameTileException, InvalidCapacityException, InvalidDirectionSwimException, NoPointsException, InvalidCurrentWaterfallException, InvalidCurrentBearException, InvalidNewWaterfallException, InvalidNewBearException, PieceStuckException, TileSpawnException, RoundNotInCourseException{
     	Piece piece = this.pieceService.findPieceById(22);
+    	piece.setTile(this.tileService.findTileById(17));
+    	this.pieceService.save(piece);
     	Tile oldTile = piece.getTile();
     	Tile newTile = this.tileService.findTileById(18);
     	
