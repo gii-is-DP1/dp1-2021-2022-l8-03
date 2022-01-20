@@ -282,7 +282,7 @@ public class PieceService {
 		TileType tipo = newTile.getTileType();
 		if(tipo.equals(TileType.SPAWN)) {
 			return true;
-		}else if(tipo.equals(TileType.ROCK) && !round.getWhirlpools()) {
+		}else if(tipo.equals(TileType.ROCK) && !round.getWhirlpools() && round.getNum_players() > 2) {
 			if(!(capacity == numPlayers-1)) {
 				return true;
 			} else {
@@ -770,11 +770,19 @@ public class PieceService {
 				newColumn = tupla.getSecond();
 			}
 		}
-		newTile = this.tileService.findByPosition(newRow, newColumn, roundId);
-		if(newTile.getPieces().size()<piece.getRound().getNum_players()) {
-			piece.setTile(newTile);
+		newTile = this.tileService.findByPositionRapids(newRow, newColumn, roundId);
+		if(newTile != null) {
+			if(newTile.getPieces().size()<piece.getRound().getNum_players()-1 && newTile.getTileType().equals(TileType.ROCK) && !piece.getRound().getWhirlpools() && piece.getRound().getNum_players() > 2) {
+				piece.setTile(newTile);
+			} else if(newTile.getPieces().size()<piece.getRound().getNum_players()) {
+				piece.setTile(newTile);
+				if(newTile.getTileType().equals(TileType.ROCK) && piece.getRound().getWhirlpools()) {
+					piece.setStuck(true);
+				}
+			}
 		}
 		return piece;
+		
 	}
 	
 	private Pair<Integer, Integer> checkRapidsColumn1(Tile newTile, Integer newRow, Integer newColumn) {

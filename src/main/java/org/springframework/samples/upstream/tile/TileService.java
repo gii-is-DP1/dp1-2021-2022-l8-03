@@ -181,6 +181,7 @@ public class TileService {
 
 	public void addSpawnTiles(Round round) {
 		Collection<Tile> roundTiles=round.getTiles();
+		Integer maxRow = findHighestRow(round.getId());
 		for(int i = 1; i < 6; i++) {
 			Tile tile = new Tile();
 			tile.setOrientation(i-1);
@@ -188,7 +189,7 @@ public class TileService {
 			tile.setColumnIndex(2);
 			tile.setPieces(new ArrayList<Piece>());
 			tile.setTileType(TileType.SPAWN);
-			tile.setRowIndex(13 + i);
+			tile.setRowIndex(maxRow + i);
 			tile.setSalmonEggs(i);
 			tileRepository.save(tile);
 			roundTiles.add(tile);
@@ -235,4 +236,10 @@ public class TileService {
 			this.roundRepository.save(round);
 		}
 	}	
+	
+	@Transactional(readOnly = true)
+	public Tile findByPositionRapids(int row, int column, int round_id) throws DataAccessException {
+		Tile tile=tileRepository.findByPosition(row, column, round_id);
+		return tile;
+	}
 }
