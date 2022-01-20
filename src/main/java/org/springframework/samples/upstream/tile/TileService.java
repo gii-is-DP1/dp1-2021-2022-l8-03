@@ -96,7 +96,7 @@ public class TileService {
 	public void removeStartingTiles(Integer roundId) {
 		List<Tile> startingTiles = findSeaTilesInRound(roundId);
 		for(Tile tile : startingTiles) {
-			deleteTile(tile);
+			this.tileRepository.delete(tile);
 		}
 	}
 	

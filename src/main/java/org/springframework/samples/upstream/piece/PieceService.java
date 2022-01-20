@@ -154,7 +154,8 @@ public class PieceService {
 	public void jump(Piece piece, Tile oldTile, Tile newTile) throws DataAccessException, InvalidPositionException,InvalidPlayerException, InvalidDistanceJumpException, SameTileException, InvalidCapacityException, InvalidDirectionJumpException, PieceStuckException, TileSpawnException, RoundNotInCourseException {
 		if(checkUser(piece) && checkRoundState(piece.getRound()) && sameTile(oldTile, newTile) 
 			&& checkDistanceJump(oldTile, newTile, piece.getRound()) && checkCapacity(newTile, piece.getRound()) 
-			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece)  && checkSpawn(oldTile, newTile)) {			
+			&& checkDirectionJump(oldTile, newTile) && checkStuck(piece)  && checkSpawn(oldTile, newTile)) {	
+			
 			piece = checkWhirlpool(piece, newTile);
 			piece = checkBear(piece, oldTile, newTile);
 			piece = checkIntermediateBear(piece, oldTile, newTile);
@@ -519,11 +520,11 @@ public class PieceService {
 	}
 	
 	private Boolean checkNewBearRightMovement(Integer rowMovement, Tile oldTile, Tile newTile) {
-		if(rowMovement == 0 && oldTile.getColumnIndex()==2) { //COLUMNA 2 -> 3
+		if(rowMovement == 0 && oldTile.getColumnIndex()==2) {
 			return !(newTile.getOrientation()==1 || newTile.getOrientation()==2);
-		} else if(rowMovement == 0 && oldTile.getColumnIndex()==1) { //COLUMNA  1 -> 2
+		} else if(rowMovement == 0 && oldTile.getColumnIndex()==1) {
 			return !(newTile.getOrientation()==2 || newTile.getOrientation()==3);
-		} else { //COLUMNA 1 -> 2 Y SUBE FILA
+		} else {
 			return !(newTile.getOrientation()==1 || newTile.getOrientation()==2);
 		}
 	}
@@ -725,15 +726,15 @@ public class PieceService {
 	
 	private void checkHeron(Round round) throws InvalidPositionException {
 		String authenticatedUsername = getCurrentUsername();
-		for(Piece piece : round.getPieces()) {
-			if(piece.getTile().getTileType().equals(TileType.HERON)) {
-				String pieceUsername = piece.getPlayer().getUser().getUsername();
-				if(pieceUsername.equals(authenticatedUsername)) {
-					piece.setNumSalmon(piece.getNumSalmon()-1);					
-					pieceRepository.save(piece);
-					if(piece.getNumSalmon() < 1) {
-						pieceRepository.delete(piece);
-					}
+		Player player = this.playerService.findPlayerByUsername(authenticatedUsername);
+		List<Piece> pieces = findPiecesOfPlayer(player.getId());
+		for(Piece piece : pieces) {
+			String pieceUsername = piece.getPlayer().getUser().getUsername();
+			if(pieceUsername.equals(authenticatedUsername)) {
+				piece.setNumSalmon(piece.getNumSalmon()-1);
+				pieceRepository.save(piece);				
+				if(piece.getNumSalmon() < 1) {
+					pieceRepository.delete(piece);
 				}
 			}
 		}
