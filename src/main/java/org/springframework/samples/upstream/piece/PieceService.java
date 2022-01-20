@@ -784,8 +784,7 @@ public class PieceService {
 				}
 			}
 		}
-		return piece;
-		
+		return piece;	
 	}
 	
 	private Pair<Integer, Integer> checkRapidsColumn1(Tile newTile, Integer newRow, Integer newColumn) {

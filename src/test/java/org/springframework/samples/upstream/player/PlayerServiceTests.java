@@ -34,6 +34,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.upstream.piece.Color;
 import org.springframework.samples.upstream.user.User;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Service;
@@ -79,6 +80,12 @@ class PlayerServiceTests {
 	void shouldNotFindPlayersByLastName() {
 		Collection<Player> players = this.playerService.findPlayerByLastName("Daviss");
 		assertThat(players.isEmpty()).isTrue();
+	}
+	
+	@Test
+	void shouldFindColor() {
+		Color color = this.playerService.getPlayerColor(28);
+		assertThat(color).isEqualTo(Color.YELLOW);
 	}
 	
 	@Test

@@ -39,6 +39,24 @@ public class RoundServiceTest {
 		assertThat(round.getNum_players()).isEqualTo(3);
 	}
 	
+	@Test
+	void shouldFindCreated() {
+		Collection<Round> rounds = this.roundService.findCreatedRounds();
+		assertThat(rounds.size()).isEqualTo(0);
+	}
+	
+	@Test
+	void shouldFindInCourse() {
+		Collection<Round> rounds = this.roundService.findInCourseRounds();
+		assertThat(rounds.size()).isEqualTo(4);
+	}
+	
+	@Test
+	void shouldFindFinished() {
+		Collection<Round> rounds = this.roundService.findFinishedRounds();
+		assertThat(rounds.size()).isEqualTo(1);
+	}
+	
 	
 	@Test
 	void shouldNotFindRoundById() {

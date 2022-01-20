@@ -24,17 +24,21 @@
         	</c:if>
         	 
             <th>RoundCreator</th>
+            <c:if test="${!isFinished}">
             <th>Player1</th>
             <th>Player2</th>
             <th>Player3</th>
             <th>Player4</th>
             <th>Player5</th>
+            </c:if>
             
-       
+       		<c:if test="${!isFinished && !isInCourse}">
             <th> 
                 <spring:url value="/rounds/new" var="roundUrl"></spring:url>
                 <a href="${fn:escapeXml(roundUrl)}" class="btn btn-default" type="submit">Create round</href></a>
             </th>
+            </c:if>
+            
         </tr>
         </thead>
         <tbody>
@@ -85,12 +89,14 @@
                 <td>
                     <c:out value="${round.player.user.username}"/>
                 </td>
-	                
+	            
+	            <c:if test="${!isFinished}">    
                 <c:forEach items="${round.players}" var="players">
                 	<td>
                 		<c:out value="${players.user.username}"/>
                 	</td>
                 </c:forEach>
+	            </c:if>
 	                 
 	            <c:if test="${round.players.size()<round.num_players && !isFinished &&!isInCourse}">
 	           		<td> 

@@ -52,12 +52,8 @@ public class PieceController {
 		MovementTypeWrapper movementTypeWrapper = new MovementTypeWrapper(piece, false);
 		Round round = piece.getRound();
 		if(!(round.getRound_state().equals(RoundState.IN_COURSE))) {
-			return "redirect:/rounds"; //NO SE PUEDE MODIFICAR UNA PIEZA SI LA PARTIDA NO HA EMPEZADO
-		}
-//		if(!(this.pieceService.checkUser(piece))){
-//			return "redirect:/rounds";	//NO SE PUEDE MODIFICAR UNA PIEZA SI NO ES TUYA O NO ES TU TURNO
-//		}
-		else {
+			return "redirect:/rounds";
+		} else {
 			model.addAttribute(round);
 			model.addAttribute(movementTypeWrapper);
 			return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
@@ -133,8 +129,7 @@ public class PieceController {
 			}catch(RoundNotInCourseException ex) {
 				model.addAttribute("message", ex.getMessage());
 				return VIEWS_PIECE_CREATE_OR_UPDATE_FORM;
-			}
-			
+			}			
 		}
 	}
 }

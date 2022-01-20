@@ -240,7 +240,12 @@ public class RoundController {
 				SalmonBoard salmonBoard=this.salmonBoardService.findByRoundId(round.getId());
 				salmonBoard.setRound(null);
 				this.salmonBoardService.delete(salmonBoard);
-				this.roundService.deleteRound(round);
+				if(round.getRound_state().equals(RoundState.FINISHED)) {	
+					round.setPlayer(player);
+					this.roundService.saveRound(round);
+				}else {
+					this.roundService.deleteRound(round);
+				}
 			}else {
 				this.scoreService.deleteScore(this.scoreService.findByPlayerAndRound(player.getId(), roundId));
 				player.setRound(null);
@@ -248,7 +253,9 @@ public class RoundController {
 				playerRounds.remove(round);
 				player.setRounds(playerRounds);
 				this.playerService.savePlayer(player);
-				players.remove(player);
+				if(!round.getRound_state().equals(RoundState.FINISHED)) {
+					players.remove(player);
+				}				
 				
 				pieces.removeAll(player.getPieces());
 				player.getPieces().removeAll(player.getPieces());
@@ -319,6 +326,7 @@ public class RoundController {
 			ModelAndView mav = new ModelAndView("rounds/roundScore");
 			List<Score> scores = this.scoreService.findByRound(roundId);
 			mav.addObject(scores);
+			mav.addObject(round);
 			return mav;
 		}
 	  }	
