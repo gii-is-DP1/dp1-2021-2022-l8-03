@@ -25,12 +25,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.upstream.piece.Color;
 
-/**
- * Spring Data JPA PlayerRepository interface
- *
- * @author Michael Isvy
- * @since 15.1.2013
- */
 public interface PlayerRepository extends CrudRepository<Player, Integer> {
 	@Query("SELECT DISTINCT player FROM Player player WHERE player.lastName LIKE :lastName%")
 	public Collection<Player> findByLastName(@Param("lastName") String lastName);
