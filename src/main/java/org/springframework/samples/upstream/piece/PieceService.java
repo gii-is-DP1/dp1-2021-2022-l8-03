@@ -31,7 +31,6 @@ import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundService;
 import org.springframework.samples.upstream.round.RoundState;
 import org.springframework.samples.upstream.tile.Tile;
-import org.springframework.samples.upstream.tile.TileRepository;
 import org.springframework.samples.upstream.tile.TileService;
 import org.springframework.samples.upstream.tile.TileType;
 import org.springframework.security.core.Authentication;

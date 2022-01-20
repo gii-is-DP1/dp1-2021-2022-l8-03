@@ -36,7 +36,7 @@ public class SalmonBoard extends BaseEntity{
     public SalmonBoard(){
         this.background="/resources/images/back_pattern.jpg";
         this.width=1160;
-        this.height=2000;//1500
+        this.height=2000;
     }
     
     public List<Piece> getPieces(){
