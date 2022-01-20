@@ -172,8 +172,6 @@ public class TileServiceTests {
 		assertThat(lowestRow).isEqualTo(null);
 	}
 	
-	
-	//Este test puede fallar
 	@Test
 	@Transactional
 	void shouldFindHighestRow() {

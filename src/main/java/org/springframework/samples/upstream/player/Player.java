@@ -25,15 +25,6 @@ import org.springframework.samples.upstream.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Simple JavaBean domain object representing an player.
- *
- * @author Ken Krebs
- * @author Juergen Hoeller
- * @author Sam Brannen
- * @author Michael Isvy
- */
-
 @Audited
 @Entity
 @Getter
