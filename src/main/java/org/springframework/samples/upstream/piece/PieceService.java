@@ -790,11 +790,11 @@ public class PieceService {
 	
 	private Pair<Integer, Integer> checkRapidsColumn2(Tile newTile, Integer newRow, Integer newColumn) {
 		if(newTile.getOrientation() == 1) {
-			newRow = newRow + 1;
-		}else if(newTile.getOrientation() == 2) {
-			newColumn = newColumn + 1;
-		}else if(newTile.getOrientation() == 3) {
 			newColumn = newColumn - 1;
+		}else if(newTile.getOrientation() == 2) {
+			newRow = newRow + 1;
+		}else if(newTile.getOrientation() == 3) {
+			newColumn = newColumn + 1;
 		}
 		Pair<Integer, Integer> tupla = Pair.of(newRow, newColumn);
 		return tupla;
