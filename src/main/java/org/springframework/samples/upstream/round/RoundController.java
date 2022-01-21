@@ -282,18 +282,25 @@ public class RoundController {
 				Collection<Round> playerRounds=player.getRounds();
 				playerRounds.remove(round);
 				player.setRounds(playerRounds);
+				pieces.removeAll(player.getPieces());
+				player.getPieces().removeAll(player.getPieces());
 				this.playerService.savePlayer(player);
 				if(!round.getRound_state().equals(RoundState.FINISHED)) {
 					players.remove(player);
+					this.roundService.saveRound(round);
 				}		
 				if(round.getRound_state().equals(RoundState.IN_COURSE)) {
-					round.setNum_players(round.getNum_players()-1);
+					if(round.getNum_players()-1<2) {
+						SalmonBoard salmonBoard=this.salmonBoardService.findByRoundId(round.getId());
+						salmonBoard.setRound(null);
+						this.salmonBoardService.delete(salmonBoard);
+						this.roundService.deleteRound(round);
+					}else {
+						round.setNum_players(round.getNum_players()-1);
+						this.roundService.saveRound(round);
+					}
 				}		
 				
-				pieces.removeAll(player.getPieces());
-				player.getPieces().removeAll(player.getPieces());
-
-				this.roundService.saveRound(round);
 			}
 			return "redirect:/rounds";
 		}catch(InvalidRoundException ex) {

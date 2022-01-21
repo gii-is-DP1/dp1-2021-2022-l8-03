@@ -26,12 +26,12 @@ public class RoundService {
 		this.playerService = playerService;
 	}
 	
-
+	@Transactional(readOnly = true)
 	public Round findRoundById(int id) throws DataAccessException {
 		return roundRepository.findById(id);
 	}
 	
-
+	@Transactional(readOnly = true)
 	public Collection<Round> findAll() throws DataAccessException {
 		return roundRepository.findAll();
 	}
@@ -49,12 +49,12 @@ public class RoundService {
 		roundRepository.delete(round);
 	}
 	
-
+	@Transactional(readOnly = true)
     public Collection<Round> findCreatedRounds() throws DataAccessException {
         return roundRepository.findCreatedRounds();
     }
 
-
+	@Transactional(readOnly = true)
     public Collection<Round> findInCourseRounds() throws DataAccessException,NoPermissionException {
     	if(this.playerService.checkAdminBoolean()) {
     		return roundRepository.findInCourseRounds();
@@ -63,7 +63,7 @@ public class RoundService {
     	}
     }
 
-
+	@Transactional(readOnly = true)
     public Collection<Round> findFinishedRounds() throws DataAccessException,NoPermissionException {
     	if(this.playerService.checkAdminBoolean()) {
     		return roundRepository.findFinishedRounds();
