@@ -315,36 +315,69 @@ class PlayerServiceTests {
 
 	@Test
 	@WithMockUser(username="mandommag")
-	void shouldCheckAdminAndInitiatedUser() {
-		Boolean result=this.playerService.checkAdminAndInitiatedUser("mandommag");
+	void shouldCheckAdminAndInitiatedUserBoolean() {
+		Boolean result=this.playerService.checkAdminAndInitiatedUserBoolean("mandommag");
 		assertThat(result).isEqualTo(true);
 	}
 	
 	@Test
 	@WithMockUser(username="admin1",authorities = "admin")
-	void shouldCheckAdminAndInitiatedUserBeingAdmin() {
-		Boolean result=this.playerService.checkAdminAndInitiatedUser("mandommag");
+	void shouldCheckAdminAndInitiatedUserBooleanBeingAdmin() {
+		Boolean result=this.playerService.checkAdminAndInitiatedUserBoolean("mandommag");
 		assertThat(result).isEqualTo(true);
 	}
 	
 	@Test
 	@WithMockUser(username="player1")
-	void shouldCheckAdminAndInitiatedUserBeingOtherUser() {
-		Boolean result=this.playerService.checkAdminAndInitiatedUser("mandommag");
+	void shouldCheckAdminAndInitiatedUserBooleanBeingOtherUser() {
+		Boolean result=this.playerService.checkAdminAndInitiatedUserBoolean("mandommag");
 		assertThat(result).isEqualTo(false);
 	}
 	
 	@Test
 	@WithMockUser(authorities = "admin")
-	void shouldCheckAdminBeingAdmin() {
-		Boolean result=this.playerService.checkAdmin();
+	void shouldCheckAdminBeingAdminBoolean() {
+		Boolean result=this.playerService.checkAdminBoolean();
 		assertThat(result).isEqualTo(true);
 	}
 	
 	@Test
 	@WithMockUser(authorities = "player")
-	void shouldCheckAdminNotBeingAdmin() {
-		Boolean result=this.playerService.checkAdmin();
+	void shouldCheckAdminNotBeingAdminBoolean() {
+		Boolean result=this.playerService.checkAdminBoolean();
 		assertThat(result).isEqualTo(false);
 	}
+	
+	@Test
+	@WithMockUser(authorities = "admin")
+	void shouldCheckAdmin() throws NoPermissionException{
+		this.playerService.checkAdmin();
+		
+	}
+	
+	@Test
+	@WithMockUser(authorities = "player")
+	void shouldCheckAdminNotBeingAdmin() throws NoPermissionException{
+		assertThrows(NoPermissionException.class, ()->this.playerService.checkAdmin());
+		
+	}
+	
+	@Test
+	@WithMockUser(username="mandommag")
+	void shouldCheckAdminAndInitiatedUser() throws NoPermissionException{
+		this.playerService.checkAdminAndInitiatedUser("mandommag");
+	}
+	
+	@Test
+	@WithMockUser(username="admin1",authorities = "admin")
+	void shouldCheckAdminAndInitiatedUserBeingAdmin() throws NoPermissionException{
+		this.playerService.checkAdminAndInitiatedUser("mandommag");
+	}
+	
+	@Test
+	@WithMockUser(username="player1")
+	void shouldCheckAdminAndInitiatedUserBeingOtherUser() throws NoPermissionException{
+		assertThrows(NoPermissionException.class, ()->this.playerService.checkAdminAndInitiatedUser("mandommag"));
+	}
+	
 }

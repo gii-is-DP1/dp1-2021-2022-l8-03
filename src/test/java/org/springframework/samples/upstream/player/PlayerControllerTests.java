@@ -17,6 +17,7 @@ import java.util.List;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.upstream.configuration.SecurityConfiguration;
+import org.springframework.samples.upstream.player.exceptions.NoPermissionException;
 import org.springframework.samples.upstream.user.AuthoritiesService;
 import org.springframework.samples.upstream.user.User;
 import org.springframework.samples.upstream.user.UserController;
@@ -86,7 +88,7 @@ public class PlayerControllerTests {
 		userGeorge2.setPassword("0wn3r2");
 		george2.setUser(userGeorge2);
 		given(this.playerService.findPlayerById(TEST_PLAYER_ID2)).willReturn(george2);
-		when(this.playerService.checkAdminAndInitiatedUser("player2")).thenReturn(true);
+		when(this.playerService.checkAdminAndInitiatedUserBoolean("player2")).thenReturn(true);
 		
 		pageable=PageRequest.of(0, 20);
 		
@@ -134,7 +136,7 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitFindFormSuccess() throws Exception {
-		when(this.playerService.checkAdmin()).thenReturn(true);
+		when(this.playerService.checkAdminBoolean()).thenReturn(true);
 		mockMvc.perform(get("/players/find"))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("player"))
@@ -145,22 +147,22 @@ public class PlayerControllerTests {
 	@Test
 	void testInitFindFormHasErrors() throws Exception {
 		mockMvc.perform(get("/players/find"))
-				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/"));
+				.andExpect(status().isOk())
+				.andExpect(view().name("players/findPlayers"));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormNoAdmin() throws Exception {
 		mockMvc.perform(get("/players"))
-				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/"));
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormOneElement() throws Exception {
-		when(this.playerService.checkAdmin()).thenReturn(true);
+		when(this.playerService.checkAdminBoolean()).thenReturn(true);
 		given(this.playerService.findAllPageable(pageable)).willReturn(page);
 		mockMvc.perform(get("/players"))
 				.andExpect(status().is3xxRedirection())
@@ -170,7 +172,7 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormEmptyPage() throws Exception {
-		when(this.playerService.checkAdmin()).thenReturn(true);
+		when(this.playerService.checkAdminBoolean()).thenReturn(true);
 		given(this.playerService.findAllPageable(pageable)).willReturn(pageEmpty);
 		mockMvc.perform(get("/players"))
 				.andExpect(status().isOk())
@@ -180,7 +182,7 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormMoreThanOneElement() throws Exception {
-		when(this.playerService.checkAdmin()).thenReturn(true);
+		when(this.playerService.checkAdminBoolean()).thenReturn(true);
 		given(this.playerService.findAllPageable(pageable)).willReturn(pageWithTwoElements);
 		mockMvc.perform(get("/players"))
 				.andExpect(status().isOk())
@@ -192,7 +194,7 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormByLastName() throws Exception {
-		when(this.playerService.checkAdmin()).thenReturn(true);
+		when(this.playerService.checkAdminBoolean()).thenReturn(true);
 		given(this.playerService.findPlayerByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
 		given(this.playerService.findPlayerByLastNamePageable(george.getLastName(), pageable)).willReturn(page);
 		mockMvc.perform(get("/players").param("lastName", "Franklin")).andExpect(status().is3xxRedirection())
@@ -202,7 +204,7 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitUpdatePlayerForm() throws Exception {
-		when(this.playerService.checkAdminAndInitiatedUser("player1")).thenReturn(true);
+		when(this.playerService.checkAdminAndInitiatedUserBoolean("player1")).thenReturn(true);
 		mockMvc.perform(get("/players/{playerId}/edit", TEST_PLAYER_ID)).andExpect(status().isOk())
 				.andExpect(model().attributeExists("player"))
 				.andExpect(model().attribute("player", hasProperty("lastName", is("Franklin"))))
@@ -211,12 +213,13 @@ public class PlayerControllerTests {
 				.andExpect(view().name("players/createOrUpdatePlayerForm"));
 	}
 	
-	@WithMockUser(value = "spring")
+	@WithMockUser(value = "spring",username="player2")
 	@Test
 	void testInitUpdatePlayerFormNoPermission() throws Exception {
+		Mockito.doThrow(NoPermissionException.class).when(this.playerService).checkAdminAndInitiatedUser("player1");
 		mockMvc.perform(get("/players/{playerId}/edit", TEST_PLAYER_ID))
-				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/"));
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
 	}
 	
 	@WithMockUser(value = "spring")
@@ -242,7 +245,7 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testDeletePlayerSuccess() throws Exception {
-		when(this.playerService.checkAdmin()).thenReturn(true);
+		when(this.playerService.checkAdminBoolean()).thenReturn(true);
 		mockMvc.perform(get("/players/delete/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk())
 				.andExpect(view().name("/players/playersList"));
 	}
@@ -250,7 +253,7 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testDeletePlayerNotFound() throws Exception {
-		when(this.playerService.checkAdmin()).thenReturn(true);
+		when(this.playerService.checkAdminBoolean()).thenReturn(true);
 		mockMvc.perform(get("/players/delete/{playerId}", 99))
 				.andExpect(status().isOk())
 				.andExpect(view().name("/players/playersList"));
@@ -259,7 +262,7 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testShowPlayer() throws Exception {
-		when(this.playerService.checkAdminAndInitiatedUser("player1")).thenReturn(true);
+		when(this.playerService.checkAdminAndInitiatedUserBoolean("player1")).thenReturn(true);
 		mockMvc.perform(get("/players/{playerId}", TEST_PLAYER_ID))
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("player", hasProperty("lastName", is("Franklin"))))
@@ -268,12 +271,13 @@ public class PlayerControllerTests {
 				.andExpect(view().name("players/playerDetails"));
 	}
 	
-	@WithMockUser(value = "spring")
+	@WithMockUser(value = "spring",username="player2")
 	@Test
 	void testShowPlayerNoPermission() throws Exception {
+		Mockito.doThrow(NoPermissionException.class).when(this.playerService).checkAdminAndInitiatedUser("player1");
 		mockMvc.perform(get("/players/{playerId}", TEST_PLAYER_ID))
 				.andExpect(status().isOk())
-				.andExpect(view().name("noPermissionException"));
+				.andExpect(view().name("exception"));
 	}
 	
 	@WithMockUser(value = "spring",username="player1")
@@ -287,16 +291,16 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testShowPlayerAuditNoAdmin() throws Exception {
-		when(this.playerService.checkAdmin()).thenReturn(false);
+		Mockito.doThrow(NoPermissionException.class).when(this.playerService).checkAdmin();
 		mockMvc.perform(get("/players/11/audit"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/"));
+			.andExpect(status().isOk())
+			.andExpect(view().name("exception"));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testShowPlayerAudit() throws Exception {
-		when(this.playerService.checkAdmin()).thenReturn(true);
+		when(this.playerService.checkAdminBoolean()).thenReturn(true);
 		mockMvc.perform(get("/players/" + TEST_PLAYER_ID + "/audit"))
 			.andExpect(status().isOk())
 			.andExpect(view().name("players/playerAudit"));

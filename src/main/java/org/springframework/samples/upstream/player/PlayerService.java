@@ -72,10 +72,9 @@ public class PlayerService {
 	}
 	
 	@Transactional(readOnly = true)
-    public Page<Player> findPlayerByLastNamePageable(String lastName, Pageable pageable) throws DataAccessException, NoPermissionException {
-       
-        if(checkAdmin()) {
-        	return playerRepository.findByLastNamePageable(lastName, pageable);
+    public Page<Player> findPlayerByLastNamePageable(String lastName, Pageable pageable) throws DataAccessException,NoPermissionException {
+		if(checkAdminBoolean()) {
+			return playerRepository.findByLastNamePageable(lastName, pageable);
 		}else {
 			throw new NoPermissionException();
 		}
@@ -88,17 +87,13 @@ public class PlayerService {
 	
 	@Transactional(readOnly = true)
 	public Collection<Object> auditByUsername(String username) throws DataAccessException, NoPermissionException {
-		if(checkAdmin()) {
-			return playerRepository.auditByUsername(username);
-		}else {
-			throw new NoPermissionException();
-		}		
+		return playerRepository.auditByUsername(username);
 	}
 
 	@Transactional
 	public void savePlayer(Player player) throws DataAccessException {
 		String username = findPlayerById(player.getId()).getUser().getUsername();
-		if(checkAdminAndInitiatedUser(username)) {
+		if(checkAdminAndInitiatedUserBoolean(username)) {
 			
 			playerRepository.save(player);		
 			
@@ -109,10 +104,9 @@ public class PlayerService {
 	}	
 	
 	@Transactional
-	public void editPlayer(Player player) throws DataAccessException, InvalidPlayerEditException {
+	public void editPlayer(Player player) throws DataAccessException,InvalidPlayerEditException {
 		String username = findPlayerById(player.getId()).getUser().getUsername();
-		if(checkAdminAndInitiatedUser(username)) {
-			
+		if(checkAdminAndInitiatedUserBoolean(username)) {
 			playerRepository.save(player);		
 			
 			userService.saveUser(player.getUser());
@@ -129,12 +123,12 @@ public class PlayerService {
     }
 	
 	@Transactional(readOnly = true)
-    public Page<Player> findAllPageable(Pageable pageable) throws DataAccessException, NoPermissionException {
-		if(checkAdmin()) {
+    public Page<Player> findAllPageable(Pageable pageable) throws DataAccessException,NoPermissionException {
+		if(checkAdminBoolean()) {
 			return playerRepository.findAllPageable(pageable);
 		}else {
 			throw new NoPermissionException();
-		}       
+		}
     }
 	
 	@Transactional
@@ -150,7 +144,7 @@ public class PlayerService {
 	@Transactional
 	public void delete(Player player) throws DataAccessException, NoPermissionException {
 		Collection<Round> rounds=this.roundRepository.findRoundByPlayerId(player.getId());
-		if(checkAdmin()) {
+		if(checkAdminBoolean()) {
 			if(!rounds.isEmpty()) {
 				for(Round r:rounds) {
 					if(this.salmonboardRepository.findBoardInRound(r.getId())!=null) {
@@ -170,7 +164,43 @@ public class PlayerService {
 	}
 
 
-  public Boolean checkAdminAndInitiatedUser(String username) {
+  public void checkAdminAndInitiatedUser(String username) throws NoPermissionException{
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		String currentUsername = currentUser.getUsername();
+		Boolean permission=false;
+		if(username.equals(currentUsername)) {
+			permission=true;
+		}
+		Collection<GrantedAuthority> authorities = currentUser.getAuthorities();
+		for(GrantedAuthority g : authorities) {
+			if(g.toString().equals("admin")) {
+				permission=true;
+			}
+		}
+		if(!permission) {
+			throw new NoPermissionException();
+		}
+		
+	}
+  
+  public void checkAdmin() throws NoPermissionException{
+	  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	  User currentUser = (User)authentication.getPrincipal(); 
+	  Collection<GrantedAuthority> authorities = currentUser.getAuthorities();
+	  Boolean admin=false;
+	  for(GrantedAuthority g : authorities) {
+		  if(g.toString().equals("admin")) {
+			  admin= true;
+		  }
+	  }
+	  if(!admin) {
+		  throw new NoPermissionException();
+	  }
+	  
+  }
+  
+  public Boolean checkAdminAndInitiatedUserBoolean(String username){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User currentUser = (User)authentication.getPrincipal();
 		String currentUsername = currentUser.getUsername();
@@ -186,7 +216,7 @@ public class PlayerService {
 		return false;
 	}
   
-  public Boolean checkAdmin() {
+  public Boolean checkAdminBoolean(){
 	  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	  User currentUser = (User)authentication.getPrincipal(); 
 	  Collection<GrantedAuthority> authorities = currentUser.getAuthorities();

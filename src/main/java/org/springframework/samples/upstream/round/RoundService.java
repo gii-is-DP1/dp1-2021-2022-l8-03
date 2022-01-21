@@ -4,6 +4,12 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.upstream.player.Player;
+import org.springframework.samples.upstream.player.PlayerService;
+import org.springframework.samples.upstream.player.exceptions.NoPermissionException;
+import org.springframework.samples.upstream.round.exceptions.FullRoundException;
+import org.springframework.samples.upstream.round.exceptions.InvalidRoundException;
+import org.springframework.samples.upstream.round.exceptions.NotYourRoundException;
+import org.springframework.samples.upstream.round.exceptions.PlayerOtherRoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,17 +18,20 @@ public class RoundService {
 	
 	private RoundRepository roundRepository;
 	
+	private PlayerService playerService;
+	
 	@Autowired
-	public RoundService(RoundRepository roundRepository) {
+	public RoundService(RoundRepository roundRepository,PlayerService playerService) {
 		this.roundRepository = roundRepository;
+		this.playerService = playerService;
 	}
 	
-	@Transactional(readOnly = true)
+
 	public Round findRoundById(int id) throws DataAccessException {
 		return roundRepository.findById(id);
 	}
 	
-	@Transactional(readOnly = true)
+
 	public Collection<Round> findAll() throws DataAccessException {
 		return roundRepository.findAll();
 	}
@@ -40,18 +49,50 @@ public class RoundService {
 		roundRepository.delete(round);
 	}
 	
-	@Transactional(readOnly = true)
+
     public Collection<Round> findCreatedRounds() throws DataAccessException {
         return roundRepository.findCreatedRounds();
     }
 
-    @Transactional(readOnly = true)
-    public Collection<Round> findInCourseRounds() throws DataAccessException {
-        return roundRepository.findInCourseRounds();
+
+    public Collection<Round> findInCourseRounds() throws DataAccessException,NoPermissionException {
+    	if(this.playerService.checkAdminBoolean()) {
+    		return roundRepository.findInCourseRounds();
+    	}else {
+    		throw new NoPermissionException();
+    	}
     }
 
-    @Transactional(readOnly = true)
-    public Collection<Round> findFinishedRounds() throws DataAccessException {
-        return roundRepository.findFinishedRounds();
+
+    public Collection<Round> findFinishedRounds() throws DataAccessException,NoPermissionException {
+    	if(this.playerService.checkAdminBoolean()) {
+    		return roundRepository.findFinishedRounds();
+		}else {
+			throw new NoPermissionException();
+		}
+    }
+    
+    public void checkRoundExist(Round round) throws InvalidRoundException{
+    	if(round==null) {
+    		throw new InvalidRoundException();
+    	}
+    }
+    
+    public void checkRoundCapacity(Round round) throws FullRoundException{
+    	if(round.getNum_players()==round.getPlayers().size()) {
+    		throw new FullRoundException();
+    	}
+    }
+    
+    public void checkPlayerInRound(Round round,Player player) throws NotYourRoundException {
+    	if(!round.getPlayers().contains(player)) {
+    		throw new NotYourRoundException();
+    	}
+    }
+    
+    public void checkPlayerInRound(Player player) throws PlayerOtherRoundException{
+    	if(player.getRound()!=null) {
+    		throw new PlayerOtherRoundException();
+    	}
     }
 }
