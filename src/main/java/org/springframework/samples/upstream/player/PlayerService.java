@@ -22,6 +22,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.upstream.piece.Color;
+import org.springframework.samples.upstream.player.exceptions.InvalidPlayerEditException;
+import org.springframework.samples.upstream.player.exceptions.NoPermissionException;
 import org.springframework.samples.upstream.round.Round;
 import org.springframework.samples.upstream.round.RoundRepository;
 import org.springframework.samples.upstream.round.RoundState;
@@ -70,8 +72,13 @@ public class PlayerService {
 	}
 	
 	@Transactional(readOnly = true)
-    public Page<Player> findPlayerByLastNamePageable(String lastName, Pageable pageable) throws DataAccessException {
-        return playerRepository.findByLastNamePageable(lastName, pageable);
+    public Page<Player> findPlayerByLastNamePageable(String lastName, Pageable pageable) throws DataAccessException, NoPermissionException {
+       
+        if(checkAdmin()) {
+        	return playerRepository.findByLastNamePageable(lastName, pageable);
+		}else {
+			throw new NoPermissionException();
+		}
     }
 	
 	@Transactional(readOnly = true)
@@ -80,8 +87,12 @@ public class PlayerService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Collection<Object> auditByUsername(String username) throws DataAccessException {
-		return playerRepository.auditByUsername(username);
+	public Collection<Object> auditByUsername(String username) throws DataAccessException, NoPermissionException {
+		if(checkAdmin()) {
+			return playerRepository.auditByUsername(username);
+		}else {
+			throw new NoPermissionException();
+		}		
 	}
 
 	@Transactional
@@ -97,14 +108,33 @@ public class PlayerService {
 		}		
 	}	
 	
+	@Transactional
+	public void editPlayer(Player player) throws DataAccessException, InvalidPlayerEditException {
+		String username = findPlayerById(player.getId()).getUser().getUsername();
+		if(checkAdminAndInitiatedUser(username)) {
+			
+			playerRepository.save(player);		
+			
+			userService.saveUser(player.getUser());
+			
+			authoritiesService.saveAuthorities(player.getUser().getUsername(), "player");
+		}else {
+			throw new InvalidPlayerEditException();
+		}
+	}	
+	
 	@Transactional(readOnly = true)
     public Collection<Player> findAll() throws DataAccessException {
         return playerRepository.findAll();
     }
 	
 	@Transactional(readOnly = true)
-    public Page<Player> findAllPageable(Pageable pageable) throws DataAccessException {
-        return playerRepository.findAllPageable(pageable);
+    public Page<Player> findAllPageable(Pageable pageable) throws DataAccessException, NoPermissionException {
+		if(checkAdmin()) {
+			return playerRepository.findAllPageable(pageable);
+		}else {
+			throw new NoPermissionException();
+		}       
     }
 	
 	@Transactional
@@ -118,7 +148,7 @@ public class PlayerService {
 	}	
 	
 	@Transactional
-	public void delete(Player player) throws DataAccessException {
+	public void delete(Player player) throws DataAccessException, NoPermissionException {
 		Collection<Round> rounds=this.roundRepository.findRoundByPlayerId(player.getId());
 		if(checkAdmin()) {
 			if(!rounds.isEmpty()) {
@@ -134,6 +164,8 @@ public class PlayerService {
 				}
 			}
 			this.playerRepository.delete(player);
+		}else {
+			throw new NoPermissionException();
 		}
 	}
 
