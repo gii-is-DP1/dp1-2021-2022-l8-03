@@ -145,16 +145,16 @@ public class PlayerControllerTests {
 	@Test
 	void testInitFindFormHasErrors() throws Exception {
 		mockMvc.perform(get("/players/find"))
-				.andExpect(status().is2xxSuccessful())
-				.andExpect(view().name("noPermissionException"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/"));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormNoAdmin() throws Exception {
 		mockMvc.perform(get("/players"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("noPermissionException"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/"));
 	}
 	
 	@WithMockUser(value = "spring")
@@ -215,8 +215,8 @@ public class PlayerControllerTests {
 	@Test
 	void testInitUpdatePlayerFormNoPermission() throws Exception {
 		mockMvc.perform(get("/players/{playerId}/edit", TEST_PLAYER_ID))
-				.andExpect(status().isOk())
-				.andExpect(view().name("noPermissionException"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/"));
 	}
 	
 	@WithMockUser(value = "spring")
@@ -242,6 +242,7 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testDeletePlayerSuccess() throws Exception {
+		when(this.playerService.checkAdmin()).thenReturn(true);
 		mockMvc.perform(get("/players/delete/{playerId}", TEST_PLAYER_ID)).andExpect(status().isOk())
 				.andExpect(view().name("/players/playersList"));
 	}
@@ -249,6 +250,7 @@ public class PlayerControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testDeletePlayerNotFound() throws Exception {
+		when(this.playerService.checkAdmin()).thenReturn(true);
 		mockMvc.perform(get("/players/delete/{playerId}", 99))
 				.andExpect(status().isOk())
 				.andExpect(view().name("/players/playersList"));
@@ -287,8 +289,8 @@ public class PlayerControllerTests {
 	void testShowPlayerAuditNoAdmin() throws Exception {
 		when(this.playerService.checkAdmin()).thenReturn(false);
 		mockMvc.perform(get("/players/11/audit"))
-			.andExpect(status().is2xxSuccessful())
-			.andExpect(view().name("noPermissionException"));
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name("redirect:/"));
 	}
 	
 	@WithMockUser(value = "spring")

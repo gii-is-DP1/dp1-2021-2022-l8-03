@@ -16,6 +16,7 @@
 package org.springframework.samples.upstream.player;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,11 +31,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.upstream.piece.Color;
+import org.springframework.samples.upstream.player.exceptions.InvalidPlayerEditException;
+import org.springframework.samples.upstream.player.exceptions.NoPermissionException;
 import org.springframework.samples.upstream.user.User;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Service;
@@ -101,7 +105,8 @@ class PlayerServiceTests {
 	}
 	
 	@Test
-	void shouldFindPlayerByLastnamePageable() {
+	@WithMockUser(authorities = "admin")
+	void shouldFindPlayerByLastnamePageable() throws DataAccessException, NoPermissionException {
 		Pageable pageable=PageRequest.of(0, 6);
 		Page<Player> pageExpected=new PageImpl<Player>(List.copyOf(this.playerService.findPlayerByLastName("Dominguez")),pageable,0);
 		Page<Player> page=this.playerService.findPlayerByLastNamePageable("Dominguez", pageable);
@@ -109,7 +114,15 @@ class PlayerServiceTests {
 	}
 	
 	@Test
-	void shouldNotFindPlayerByLastnamePageable() {
+	@WithMockUser(authorities = "player")
+	void shouldFindPlayerByLastNamePageableNoAuthority() throws DataAccessException, NoPermissionException {
+		Pageable pageable=PageRequest.of(0, 6);
+		assertThrows(NoPermissionException.class, () -> this.playerService.findPlayerByLastNamePageable("Dominguez", pageable));
+	}
+	
+	@Test
+	@WithMockUser(authorities = "admin")
+	void shouldNotFindPlayerByLastnamePageable() throws DataAccessException, NoPermissionException {
 		Pageable pageable=PageRequest.of(0, 6);
 		Page<Player> pageExpected=new PageImpl<Player>(new ArrayList<Player>(),pageable,0);
 		Page<Player> page=this.playerService.findPlayerByLastNamePageable("EsteApellidoNoExiste", pageable);
@@ -131,23 +144,33 @@ class PlayerServiceTests {
 	@Test
 	@Transactional
 	@WithMockUser(username="player1")
-	void shouldSavePlayerBeingThePlayer() {
+	void shouldEditPlayerBeingThePlayer() throws DataAccessException, InvalidPlayerEditException {
 		Player george=this.playerService.findPlayerByUsername("player1");
 		george.setEmail("george@gmail.com");
                 
-		this.playerService.savePlayer(george);
+		this.playerService.editPlayer(george);
+		assertThat(this.playerService.findPlayerByUsername("player1").getEmail()).isEqualTo("george@gmail.com");
+	}
+	
+	@Test
+	@Transactional
+	@WithMockUser(authorities="admin")
+	void shouldEditPlayerBeingAdmin() throws DataAccessException, InvalidPlayerEditException {
+		Player george=this.playerService.findPlayerByUsername("player1");
+		george.setEmail("george@gmail.com");
+                
+		this.playerService.editPlayer(george);
 		assertThat(this.playerService.findPlayerByUsername("player1").getEmail()).isEqualTo("george@gmail.com");
 	}
 	
 	@Test
 	@Transactional
 	@WithMockUser(username="mandommag")
-	void shouldNotSavePlayerBeingOtherPlayer() {
+	void shouldNotEditPlayerBeingOtherPlayer() throws DataAccessException, InvalidPlayerEditException {
 		Player george=this.playerService.findPlayerByUsername("player1");
 		george.setEmail("george@gmail.com");
                 
-		this.playerService.savePlayer(george);
-		assertThat(this.playerService.findPlayerByUsername("player1").getEmail()).isEqualTo("george@gmail.com");
+		assertThrows(InvalidPlayerEditException.class, () -> this.playerService.editPlayer(george));
 	}
 	
 	@Test
@@ -213,7 +236,8 @@ class PlayerServiceTests {
 	}
 	
 	@Test
-	void shouldFindAllPageable() {
+	@WithMockUser(authorities = "admin")
+	void shouldFindAllPageable() throws DataAccessException, NoPermissionException {
 		Pageable pageable=PageRequest.of(0, 6);
 		Page<Player> allPlayersFirstPage=this.playerService.findAllPageable(pageable);
 		Pageable pageable2=allPlayersFirstPage.getPageable().next();
@@ -224,9 +248,16 @@ class PlayerServiceTests {
 	}
 	
 	@Test
+	@WithMockUser(authorities = "player")
+	void shouldFindAllPageableNoAuthority() throws DataAccessException, NoPermissionException {
+		Pageable pageable=PageRequest.of(0, 6);
+		assertThrows(NoPermissionException.class, () -> this.playerService.findAllPageable(pageable));
+	}
+	
+	@Test
 	@Transactional
 	@WithMockUser(authorities = "admin")
-	void shouldDeletePlayerRoundsEmpty() {               
+	void shouldDeletePlayerRoundsEmpty() throws DataAccessException, NoPermissionException {               
         Player playerToDelete = playerService.findPlayerByUsername("player1");
         assertThat(playerToDelete).isNotEqualTo(null);
         
@@ -239,7 +270,7 @@ class PlayerServiceTests {
 	@Test
 	@Transactional
 	@WithMockUser(authorities = "admin")
-	void shouldDeletePlayerRoundsNotEmpty() {               
+	void shouldDeletePlayerRoundsNotEmpty() throws DataAccessException, NoPermissionException {               
         Player playerToDelete = playerService.findPlayerByUsername("celhersot");
         assertThat(playerToDelete).isNotEqualTo(null);
         
@@ -252,15 +283,10 @@ class PlayerServiceTests {
 	@Test
 	@Transactional
 	@WithMockUser(authorities = "player")
-	void shouldNotDeletePlayer() {
+	void shouldNotDeletePlayer() throws DataAccessException, NoPermissionException {
 		Player playerToDelete = playerService.findPlayerByUsername("manlopalm");
-		assertThat(playerToDelete).isNotEqualTo(null);
 		
-		playerService.delete(playerToDelete);
-		
-		Player deletedPlayer = playerService.findPlayerByUsername("manlopalm");
-        assertThat(deletedPlayer).isNotEqualTo(null);
-		
+		assertThrows(NoPermissionException.class, () -> this.playerService.delete(playerToDelete));
 	}
 
 	@Test
