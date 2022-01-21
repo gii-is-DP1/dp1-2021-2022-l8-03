@@ -39,7 +39,7 @@
 
 <img id="RAPIDS-1" src="/resources/images/RAPIDS-1.png" style="display:none">
 <img id="RAPIDS-2" src="/resources/images/RAPIDS-2.png" style="display:none">
-<img id="RAPIDS-3" src="/resources/images/RAPIDS-0.png" style="display:none">
+<img id="RAPIDS-3" src="/resources/images/RAPIDS-3.png" style="display:none">
 
 
 <!-- PIECES -->
