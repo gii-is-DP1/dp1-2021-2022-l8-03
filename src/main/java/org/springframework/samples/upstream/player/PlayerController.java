@@ -61,86 +61,83 @@ public class PlayerController {
 
 	@GetMapping(value = "/players/find")
 	public String initFindForm(Map<String, Object> model) {
-		Boolean admin = this.playerService.checkAdmin();
-		if(!admin) {
-			return "redirect:/";
+		try {
+			this.playerService.checkAdmin();
+			model.put("player", new Player());
+			return "players/findPlayers";
+		}catch (NoPermissionException ex) {
+			model.put("message", ex.getMessage());
+			return "exception";
 		}
-		model.put("player", new Player());
-		return "players/findPlayers";
+
 	}
 
 	@GetMapping(value = "/players")
 	public String processFindForm(Player player, BindingResult result, Map<String, Object> model,Pageable pageable) {
-		Boolean admin = this.playerService.checkAdmin();
-		if(!admin) {
-			return "redirect:/";
-		}
-		if (player.getLastName() == null) {
-			player.setLastName(""); 
-		}
-		
-		Page<Player> results=null;
-		
-		if(player.getLastName()=="") {
-			try {
+		try {
+			this.playerService.checkAdmin();
+			if (player.getLastName() == null) {
+				player.setLastName(""); 
+			}
+			
+			Page<Player> results=null;
+			
+			if(player.getLastName()=="") {
 				results = this.playerService.findAllPageable(pageable);
-			}catch(NoPermissionException ex) {
-				model.put("message", ex.getMessage());
-				return "exception";
-			}			
-		}else {
-			try {
-				results = this.playerService.findPlayerByLastNamePageable(player.getLastName(), pageable);
-			}catch(NoPermissionException ex) {
-				model.put("message", ex.getMessage());
-				return "exception";
-			}						
+			}else {
+				results = this.playerService.findPlayerByLastNamePageable(player.getLastName(), pageable);		
+			}
+			
+	        boolean esPrimera=results.isFirst();
+	        boolean esUltima=results.isLast();
+			if (results.isEmpty()) {
+				result.rejectValue("lastName", "notFound", "not found");
+				return "players/findPlayers";
+			}
+			
+			else if (results.getTotalElements() == 1) {
+				player = results.iterator().next();
+				return "redirect:/players/" + player.getId();
+			}
+			else {
+				model.put("selections", results);
+				model.put("esPrimera",!esPrimera);
+				model.put("esUltima",!esUltima);
+				return "players/playersList";
+			}
+		}catch(NoPermissionException ex) {
+			model.put("message", ex.getMessage());
+			return "exception";
 		}
 		
-        boolean esPrimera=results.isFirst();
-        boolean esUltima=results.isLast();
-		if (results.isEmpty()) {
-			result.rejectValue("lastName", "notFound", "not found");
-			return "players/findPlayers";
-		}
-		
-		else if (results.getTotalElements() == 1) {
-			player = results.iterator().next();
-			return "redirect:/players/" + player.getId();
-		}
-		else {
-			model.put("selections", results);
-			model.put("esPrimera",!esPrimera);
-			model.put("esUltima",!esUltima);
-			return "players/playersList";
-		}
 	}
 
 	@GetMapping(value = "/players/{playerId}/edit")
 	public String initUpdatePlayerForm(@PathVariable("playerId") int playerId, Model model) {
 		Player player = this.playerService.findPlayerById(playerId);
 		String username = player.getUser().getUsername();
-		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
-		if(permission) {
-			return "redirect:/";
-		} else {
+		try {
+			this.playerService.checkAdminAndInitiatedUser(username);
 			Boolean isNew=false;
 			model.addAttribute(isNew);
 			model.addAttribute(player);
 			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
-		}		
+		}catch(NoPermissionException ex) {
+			model.addAttribute("message", ex.getMessage());
+			return "exception";
+		}
 	}
 	
 	@PostMapping(value = "/players/{playerId}/edit")
 	public String processUpdatePlayerForm(@Valid Player player, BindingResult result,
 			@PathVariable("playerId") int playerId,Model model) {
-		if (result.hasErrors()) {
-			Boolean isNew=false;
-			model.addAttribute(isNew);
-			return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
-		}
-		else {
-			try {
+		try {
+			if (result.hasErrors()) {
+				Boolean isNew=false;
+				model.addAttribute(isNew);
+				return VIEWS_PLAYER_CREATE_OR_UPDATE_FORM;
+			}
+			else {
 				Player oldPlayer = this.playerService.findPlayerById(playerId);
 				player.setId(playerId);
 				player.getUser().setUsername(oldPlayer.getUser().getUsername());
@@ -148,61 +145,61 @@ public class PlayerController {
 				player.setRound(oldPlayer.getRound());
 				player.setScores(oldPlayer.getScores());
 				this.playerService.editPlayer(player);
-				return "redirect:/players/{playerId}";
-			}catch(InvalidPlayerEditException ex) {
-				model.addAttribute("message", ex.getMessage());
-				return "exception";
-			}								
+				return "redirect:/players/{playerId}";					
+			}
+		}catch(InvalidPlayerEditException ex) {
+			model.addAttribute("message", ex.getMessage());
+			return "exception";
 		}
+		
 	}
 	
 	@GetMapping(value = "/players/delete/{playerId}")
 	public String deletePlayer(@PathVariable("playerId") int playerId, ModelMap model) {
-		String view = "/players/playersList";
-		Boolean admin = this.playerService.checkAdmin();
-		Player player = this.playerService.findPlayerById(playerId);
-		if(!admin) {
-			return "redirect:/";
-		}
-		if(player!=null) {
-			try {
+		try {
+			String view = "/players/playersList";
+			this.playerService.checkAdmin();
+			Player player = this.playerService.findPlayerById(playerId);
+			if(player!=null) {
 				this.playerService.delete(player);
-				model.addAttribute("message","Player successfully deleted");
-			}catch(NoPermissionException ex){
-				model.addAttribute("message", ex.getMessage());
-				return "exception";
-			}						
+				model.addAttribute("message","Player successfully deleted");	
+			}
+			else {
+				model.addAttribute("message", "Player not found");
+			}
+			return view;
+		}catch(NoPermissionException ex) {
+			model.addAttribute("message", ex.getMessage());
+			return "exception";
 		}
-		else {
-			model.addAttribute("message", "Player not found");
-		}
-		return view;
+		
 	}
 	
 	@GetMapping("/players/{playerId}")
 	public ModelAndView showPlayer(@PathVariable("playerId") int playerId) {
-		ModelAndView mav = new ModelAndView("players/playerDetails");
-		Player player = this.playerService.findPlayerById(playerId);
-		String username = player.getUser().getUsername();
-		Boolean permission = !this.playerService.checkAdminAndInitiatedUser(username);
-		Boolean admin = this.playerService.checkAdmin();
-		if(permission) {
-			ModelAndView exception = new ModelAndView("noPermissionException");
+		try {
+			ModelAndView mav = new ModelAndView("players/playerDetails");
+			Player player = this.playerService.findPlayerById(playerId);
+			String username = player.getUser().getUsername();
+			this.playerService.checkAdminAndInitiatedUser(username);
+			Boolean permission = !this.playerService.checkAdminAndInitiatedUserBoolean(username);
+			Boolean admin = this.playerService.checkAdminBoolean();
+			mav.addObject(player);
+			mav.addObject("permission", !permission);
+			mav.addObject("admin", admin);
+			return mav;
+		}catch(NoPermissionException ex) {
+			ModelAndView exception = new ModelAndView("exception");
+			exception.addObject("message", ex.getMessage());
 			return exception;
 		}
-		mav.addObject(player);
-		mav.addObject("permission", !permission);
-		mav.addObject("admin", admin);
-		return mav;
+
 	}
 	
 	@GetMapping("/players/{playerId}/audit")
 	public String auditPlayerData(@PathVariable("playerId") int playerId, Map<String, Object> model) {
-		Boolean admin = this.playerService.checkAdmin();
-		if(!admin) {
-			return "redirect:/";
-		}
 		try {
+			this.playerService.checkAdmin();
 			Player player = this.playerService.findPlayerById(playerId);
 			List<Object> auditedData = (List<Object>) this.playerService.auditByUsername(player.getUser().getUsername());
 			model.put("auditedData", auditedData);
@@ -212,7 +209,6 @@ public class PlayerController {
 			model.put("message", ex.getMessage());
 			return "exception";
 		}
-		
 	}
 	
 	@GetMapping("/players/playerDetails")
